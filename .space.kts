@@ -2,9 +2,6 @@ job("Deploy") {
     container(displayName="Build", image="laauurraaa/php-composer-node-npm") {
         shellScript {
             content = """
-                composer install --no-interaction --no-dev
-                npm install
-                npm run prod
                 zip -r main_release.zip . -x .gitignore -x .space.kts -x .git/\*
                 cp main_release.zip /mnt/space/share
             """
