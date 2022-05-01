@@ -1,0 +1,45 @@
+{
+    "highlights": [
+        [
+            {
+                "length": 18,
+                "rects": [
+                    {
+                        "height": 44.25068803267055,
+                        "width": 257.3467980587121,
+                        "x": 1009.6399665601326,
+                        "y": 435.5402388139205
+                    }
+                ],
+                "start": 525,
+                "text": "the faster a tumor"
+            },
+            {
+                "length": 68,
+                "rects": [
+                    {
+                        "height": 44.36465731534088,
+                        "width": 1138.0828043619795,
+                        "x": 134.33495723839962,
+                        "y": 485.444550485322
+                    }
+                ],
+                "start": 545,
+                "text": "grew, and the more aggressive it was—the lower the overall number of"
+            },
+            {
+                "length": 47,
+                "rects": [
+                    {
+                        "height": 44.36465731534065,
+                        "width": 813.2791849772136,
+                        "x": 140.10864350290012,
+                        "y": 535.424841678504
+                    }
+                ],
+                "start": 615,
+                "text": "mitochondria, and the more it fermented glucose"
+            }
+        ]
+    ]
+}

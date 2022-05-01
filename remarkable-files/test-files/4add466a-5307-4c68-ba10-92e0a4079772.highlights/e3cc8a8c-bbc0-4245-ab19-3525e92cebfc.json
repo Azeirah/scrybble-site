@@ -1,0 +1,58 @@
+{
+    "highlights": [
+        [
+            {
+                "length": 31,
+                "rects": [
+                    {
+                        "height": 44.212698271780255,
+                        "width": 429.2480616714016,
+                        "x": 835.0388331557766,
+                        "y": 284.6774162523675
+                    }
+                ],
+                "start": 300,
+                "text": "Every scientist eventually gets"
+            },
+            {
+                "length": 1,
+                "rects": [
+                    {
+                        "height": 24.802431048768938,
+                        "width": 16.331868489583343,
+                        "x": 139.27297696200284,
+                        "y": 343.5469267874055
+                    }
+                ],
+                "start": 333,
+                "text": "t"
+            },
+            {
+                "length": 71,
+                "rects": [
+                    {
+                        "height": 44.250688032670496,
+                        "width": 1125.3489009972777,
+                        "x": 139.27297696200284,
+                        "y": 334.620487097538
+                    }
+                ],
+                "start": 333,
+                "text": "to this point—sloughed o% like a dead layer of skin as a new generation"
+            },
+            {
+                "length": 25,
+                "rects": [
+                    {
+                        "height": 44.02274946732962,
+                        "width": 417.2875745368727,
+                        "x": 138.66522494229406,
+                        "y": 384.6015477035985
+                    }
+                ],
+                "start": 406,
+                "text": "pushed up from the bottom"
+            }
+        ]
+    ]
+}

@@ -1,0 +1,32 @@
+{
+    "highlights": [
+        [
+            {
+                "length": 54,
+                "rects": [
+                    {
+                        "height": 44.250688032670496,
+                        "width": 820.3237970525569,
+                        "x": 436.3726473721591,
+                        "y": 935.3780628551137
+                    }
+                ],
+                "start": 1243,
+                "text": "cancer cells generated abnormal amounts of lactic acid"
+            },
+            {
+                "length": 37,
+                "rects": [
+                    {
+                        "height": 44.250688032670496,
+                        "width": 547.1743866891575,
+                        "x": 533.7086181640625,
+                        "y": 1035.33710641572
+                    }
+                ],
+                "start": 1399,
+                "text": "they did it in the presence of oxygen"
+            }
+        ]
+    ]
+}

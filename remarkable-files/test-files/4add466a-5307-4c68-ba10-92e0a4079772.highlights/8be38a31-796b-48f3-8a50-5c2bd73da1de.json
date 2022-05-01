@@ -1,0 +1,71 @@
+{
+    "highlights": [
+        [
+            {
+                "length": 1,
+                "rects": [
+                    {
+                        "height": 31.79168146306813,
+                        "width": 41.32586115056813,
+                        "x": 527.7716360381156,
+                        "y": 486.60867217092823
+                    }
+                ],
+                "start": 602,
+                "text": "W"
+            },
+            {
+                "length": 43,
+                "rects": [
+                    {
+                        "height": 33.880829782196884,
+                        "width": 736.7802253491951,
+                        "x": 527.7716360381156,
+                        "y": 484.59550337357973
+                    }
+                ],
+                "start": 602,
+                "text": "When bound to Hexokinase II VDAC locked the"
+            },
+            {
+                "length": 51,
+                "rects": [
+                    {
+                        "height": 44.250688032670496,
+                        "width": 750.1334339488637,
+                        "x": 138.36134292140153,
+                        "y": 534.53857421875
+                    }
+                ],
+                "start": 647,
+                "text": "gate, preventing the release of cytochrome c therby"
+            },
+            {
+                "length": 29,
+                "rects": [
+                    {
+                        "height": 44.212698271780255,
+                        "width": 444.7112408262311,
+                        "x": 820.7161162405304,
+                        "y": 534.5765639796402
+                    }
+                ],
+                "start": 694,
+                "text": "erby preventing apoptosis and"
+            },
+            {
+                "length": 32,
+                "rects": [
+                    {
+                        "height": 44.250688032670496,
+                        "width": 468.61943562825536,
+                        "x": 139.08306422378078,
+                        "y": 584.5165571732955
+                    }
+                ],
+                "start": 725,
+                "text": "e%ectively immortalizing the cel"
+            }
+        ]
+    ]
+}

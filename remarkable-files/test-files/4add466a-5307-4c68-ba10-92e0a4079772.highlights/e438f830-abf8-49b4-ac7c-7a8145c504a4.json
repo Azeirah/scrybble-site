@@ -1,0 +1,71 @@
+{
+    "highlights": [
+        [
+            {
+                "length": 38,
+                "rects": [
+                    {
+                        "height": 44.212698271780255,
+                        "width": 586.9121093750001,
+                        "x": 677.3747854521781,
+                        "y": 1096.3510668205495
+                    }
+                ],
+                "start": 1497,
+                "text": "One thing both sides have in common is"
+            },
+            {
+                "length": 21,
+                "rects": [
+                    {
+                        "height": 33.7668604995265,
+                        "width": 322.4315536961411,
+                        "x": 139.34895648378316,
+                        "y": 1146.3305886008525
+                    }
+                ],
+                "start": 1537,
+                "text": "an almost instantaneo"
+            },
+            {
+                "length": 21,
+                "rects": [
+                    {
+                        "height": 40.794052586411,
+                        "width": 308.6386015920928,
+                        "x": 458.1983901515152,
+                        "y": 1149.7492342862217
+                    }
+                ],
+                "start": 1558,
+                "text": "us gut-reaction in on"
+            },
+            {
+                "length": 50,
+                "rects": [
+                    {
+                        "height": 44.022749467329504,
+                        "width": 675.3194043708571,
+                        "x": 139.27297696200284,
+                        "y": 1196.311649206913
+                    }
+                ],
+                "start": 1617,
+                "text": "that usually has little to do with the actual evid"
+            },
+            {
+                "length": 32,
+                "rects": [
+                    {
+                        "height": 38.74289402817226,
+                        "width": 441.31269605232023,
+                        "x": 762.8487178918087,
+                        "y": 1146.3305886008525
+                    }
+                ],
+                "start": 1579,
+                "text": "e direction or the other, a reac"
+            }
+        ]
+    ]
+}

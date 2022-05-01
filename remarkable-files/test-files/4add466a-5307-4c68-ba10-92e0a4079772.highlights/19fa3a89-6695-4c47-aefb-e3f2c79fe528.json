@@ -1,0 +1,45 @@
+{
+    "highlights": [
+        [
+            {
+                "length": 1,
+                "rects": [
+                    {
+                        "height": 22.447402491714,
+                        "width": 19.7125244140625,
+                        "x": 685.0052453243372,
+                        "y": 1396.4783528645835
+                    }
+                ],
+                "start": 1900,
+                "text": "a"
+            },
+            {
+                "length": 40,
+                "rects": [
+                    {
+                        "height": 33.91881954308724,
+                        "width": 580.3413233901517,
+                        "x": 685.0052453243372,
+                        "y": 1385.1968365293562
+                    }
+                ],
+                "start": 1900,
+                "text": "a scientist documented that the transfer"
+            },
+            {
+                "length": 54,
+                "rects": [
+                    {
+                        "height": 44.25068803267027,
+                        "width": 857.9954297614821,
+                        "x": 139.27297696200284,
+                        "y": 1435.177897135417
+                    }
+                ],
+                "start": 1942,
+                "text": "of a single leukemia cell was suPcient to kill a mouse"
+            }
+        ]
+    ]
+}
