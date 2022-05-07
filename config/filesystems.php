@@ -36,6 +36,15 @@ return [
             'throw' => false,
         ],
 
+        'efs' => [
+            'driver' => 'local',
+            'root' => env('APP_ENV') === "local"
+                ? storage_path('efs')
+                : storage_path
+            ('/efs'),
+            'throw' => false
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

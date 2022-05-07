@@ -19,12 +19,10 @@ class ReMarkableAuthenticatedEvent
 	/**
      * Create a new event instance.
      *
-	 * @param string $authFileContents
 	 * @return void
      */
-    public function __construct(string $authFileContents)
+    public function __construct()
     {
-	    $this->authFileContents = $authFileContents;
     }
 
     /**

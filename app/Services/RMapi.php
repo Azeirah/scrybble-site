@@ -3,53 +3,36 @@
 namespace App\Services;
 
 use App\Events\ReMarkableAuthenticatedEvent;
-use Exception;
 use http\Exception\InvalidArgumentException;
-use Illuminate\Support\Arr;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use RuntimeException;
-use function PHPUnit\Framework\directoryExists;
 
 class RMapi {
-    public function isAuthenticated() {
-        return false;
-    }
+    private Filesystem $storage;
 
-    private function userPath(string $path = "") {
-        if (strlen($path)) {
-            return storage_path("user-" . Auth::user()->id . "/" . $path);
+    public function __construct() {
+        $this->storage = Storage::disk('efs');
+        if (!$this->storage->exists("user-" . Auth::user()->id)) {
+            $this->storage->makeDirectory("user-" . Auth::user()->id);
         }
-        return storage_path("user-" . Auth::user()->id . "/");
     }
 
-    private function getRMApiPath() {
-        return base_path('binaries/rmapi');
+    public function isAuthenticated(): bool {
+        return $this->storage->exists('.rmapi-auth');
     }
 
-    private function resetUserFolder() {
-        $path =
-            $this->userPath();
-        $auth =
-            $this->userPath('.rmapi-auth');
-        $tree = $this->userPath('rmapi/.tree');
-        $rmapiDir = $this->userPath('rmapi');
-
-        if (file_exists($path)) {
-            if (file_exists($auth)) {
-                unlink($auth);
-            }
-            if (file_exists($tree)) {
-                unlink($tree);
-            }
-            if (file_exists($rmapiDir)) {
-                rmdir($rmapiDir);
-            }
-            rmdir($path);
-        }
-        mkdir($path);
+    /**
+     * @param string $command
+     * @return array
+     */
+    public function executeRMApi(string $command): array {
+        putenv('RMAPI_CONFIG=' . $this->storage->path('.rmapi-auth'));
+        putenv('XDG_CACHE_HOME=' . $this->storage->path(''));
+        exec($command, $output, $exit_code);
+        return [$output, $exit_code];
     }
 
     /**
@@ -57,15 +40,10 @@ class RMapi {
      * @return bool
      */
     public function authenticate(string $code): bool {
-        $rmapi =
-            $this->getRMApiPath();
-        $this->resetUserFolder();
-        putenv('RMAPI_CONFIG=' . $this->userPath('.rmapi-auth'));
-        putenv('XDG_CACHE_HOME=' . $this->userPath());
-        exec("echo $code | $rmapi", $output, $exit_code);
+        $rmapi = base_path('binaries/rmapi');
+        [$output, $exit_code] = $this->executeRMApi("echo $code | $rmapi");
         foreach ($output as $item) {
-            $i =
-                Str::lower($item);
+            $i = Str::lower($item);
             if (Str::contains($i, 'incorrect')) {
                 throw new InvalidArgumentException('Invalid code');
             }
@@ -73,8 +51,7 @@ class RMapi {
                 throw new RuntimeException("Failed to create token");
             }
             if (Str::contains($i, 'refresh')) {
-                $s = Storage::build($this->userPath());
-                event(new ReMarkableAuthenticatedEvent($s->get('.rmapi-auth')));
+                event(new ReMarkableAuthenticatedEvent());
                 return true;
             }
         }
@@ -84,5 +61,4 @@ class RMapi {
         }
         throw new RuntimeException("unknown error");
     }
-
 }
