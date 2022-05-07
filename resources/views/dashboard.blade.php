@@ -10,6 +10,7 @@
             <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
+                        <h1 class="text-xl font-bold">{{$currentWorkingDirectory}}</h1>
                         <ul>
                             @foreach($ls as $item)
                                 <li class="flex items-center">
@@ -26,7 +27,7 @@
                                                   d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                                         </svg>
                                     @endif
-                                    <span class="ml-1">{{ $item['path']}}</span></li>
+                                    <span class="ml-1"><a href="{{'/dashboard?path=' . $item['path']}}">{{$item['name']}}</a></span></li>
                             @endforeach
                         </ul>
                         @else

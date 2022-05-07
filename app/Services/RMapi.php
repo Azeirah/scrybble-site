@@ -84,13 +84,13 @@ class RMapi {
         $rmapi = base_path('binaries/rmapi');
         [$output, $exit_code] = $this->executeRMApiCommand("ls $path");
 
-        return $output->sort()->map(function ($path) {
-            preg_match("/\[([df])]\s(.+)/", $path, $matches);
-            $type = $matches[1];
-            $path = $matches[2];
+        return $output->sort()->map(function ($name) use ($path) {
+            preg_match("/\[([df])]\s(.+)/", $name, $matches);
+            [, $type, $filepath] = $matches;
             return [
                 'type' => $type,
-                'path' => $path
+                'name' => $filepath,
+                'path' => "$path$filepath/"
             ];
         })->all();
     }

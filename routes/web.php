@@ -20,7 +20,7 @@ Route::get('/', [HomeController::class, "index"]);
 
 
 Route::group(['middleware' => ['auth']], static function () {
-    Route::get('/dashboard', [DashboardController::class, "index"])
+    Route::get('/dashboard/', [DashboardController::class, "index"])
          ->name('dashboard');
 
     Route::post(
