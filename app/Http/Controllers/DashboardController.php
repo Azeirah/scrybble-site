@@ -9,7 +9,8 @@ class DashboardController extends Controller
 {
     public function index(RMapi $rmapi) {
         return view('dashboard', [
-            'isRmApiAuthenticated' => $rmapi->isAuthenticated()
+            'isRmApiAuthenticated' => $rmapi->isAuthenticated(),
+            'ls' => $rmapi->list()
         ]);
     }
 }

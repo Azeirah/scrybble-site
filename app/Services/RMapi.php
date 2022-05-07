@@ -24,14 +24,29 @@ class RMapi {
         return $this->storage->exists('.rmapi-auth');
     }
 
-    /**
-     * @param string $command
-     * @return array
-     */
-    public function executeRMApi(string $command): array {
+    public function executeRMApiCommand(string $command) {
         putenv('RMAPI_CONFIG=' . $this->storage->path('.rmapi-auth'));
         putenv('XDG_CACHE_HOME=' . $this->storage->path(''));
-        exec($command, $output, $exit_code);
+
+        $rmapi = base_path('binaries/rmapi');
+        exec("$rmapi -ni $command", $output, $exit_code);
+
+        $output = collect($output)->filter(function ($line) {
+            if (Str::startsWith($line, 'Refreshing tree')) {
+                return false;
+            }
+            if (Str::startsWith( $line, "WARNING")) {
+                return false;
+            }
+            if (Str::contains($line, 'Using the new 1.5 sync')) {
+                return false;
+            }
+            if (Str::contains($line, 'Make sure you have a backup')) {
+                return false;
+            }
+            return true;
+        });
+
         return [$output, $exit_code];
     }
 
@@ -41,7 +56,10 @@ class RMapi {
      */
     public function authenticate(string $code): bool {
         $rmapi = base_path('binaries/rmapi');
-        [$output, $exit_code] = $this->executeRMApi("echo $code | $rmapi");
+        putenv('RMAPI_CONFIG=' . $this->storage->path('.rmapi-auth'));
+        putenv('XDG_CACHE_HOME=' . $this->storage->path(''));
+        exec("echo $code | $rmapi", $output, $exit_code);
+
         foreach ($output as $item) {
             $i = Str::lower($item);
             if (Str::contains($i, 'incorrect')) {
@@ -60,5 +78,20 @@ class RMapi {
             throw new RuntimeException('exit code: ' . $exit_code);
         }
         throw new RuntimeException("unknown error");
+    }
+
+    public function list(string $path="/"): Array {
+        $rmapi = base_path('binaries/rmapi');
+        [$output, $exit_code] = $this->executeRMApiCommand("ls $path");
+
+        return $output->sort()->map(function ($path) {
+            preg_match("/\[([df])]\s(.+)/", $path, $matches);
+            $type = $matches[1];
+            $path = $matches[2];
+            return [
+                'type' => $type,
+                'path' => $path
+            ];
+        })->all();
     }
 }
