@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OnetimecodeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,8 +18,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, "index"]);
 
-Route::get('/dashboard', [DashboardController::class, "index"])
-     ->middleware(['auth'])
-     ->name('dashboard');
+
+Route::group(['middleware' => ['auth']], static function () {
+    Route::get('/dashboard', [DashboardController::class, "index"])
+         ->name('dashboard');
+
+    Route::post(
+        '/onetimecode',
+        [OnetimecodeController::class, 'create']);
+});
 
 require __DIR__ . '/auth.php';
