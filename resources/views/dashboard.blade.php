@@ -27,8 +27,16 @@
                                                   d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                                         </svg>
                                     @endif
-                                    <span class="ml-1"><a href="{{'/dashboard?path=' . $item['path']}}">{{$item['name']}}</a></span></li>
+                                    @if($item['type'] === 'd')
+                                        <span class="ml-1"><a
+                                                href="{{'/dashboard?path=' . $item['path']}}">{{$item['name']}}</a></span>
+                                    @else
+                                        <span class="ml-1"><a
+                                                href="{{"/file{$item['path']}"}}">{{$item['name']}}</a></span>
+                                    @endif
+                                </li>
                             @endforeach
+
                         </ul>
                         @else
                             <div class="max-w-xl mx-auto sm:px-6 lg:px-8">

@@ -30,7 +30,13 @@ class RMapi {
         $this->configureEnv();
 
         $rmapi = base_path('binaries/rmapi');
-        exec("$rmapi -ni $command", $output, $exit_code);
+        $cwdBefore = getcwd();
+        chdir($this->storage->path($this->userPath));
+        try {
+            exec("$rmapi -ni $command", $output, $exit_code);
+        } finally {
+            chdir($cwdBefore);
+        }
 
         $output = collect($output)->filter(function ($line) {
             if (Str::startsWith($line, 'Refreshing tree')) {
@@ -93,6 +99,13 @@ class RMapi {
                 'path' => "$path$filepath/"
             ];
         })->all();
+    }
+
+    public function get(string $path): bool {
+        $path = Str::replace('"', '\"', $path);
+        [$output, $exit_code] = $this->executeRMApiCommand("get \"$path\"");
+
+        return $exit_code === 0;
     }
 
     /**
