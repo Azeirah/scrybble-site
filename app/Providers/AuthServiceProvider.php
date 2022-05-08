@@ -31,6 +31,6 @@ class AuthServiceProvider extends ServiceProvider
             Passport::routes();
         }
 
-        Passport::loadKeysFrom(Storage::drive('efs')->path('/'));
+        Passport::loadKeysFrom(Storage::drive('efs')->path(''));
     }
 }
