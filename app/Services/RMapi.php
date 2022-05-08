@@ -12,21 +12,22 @@ use RuntimeException;
 
 class RMapi {
     private Filesystem $storage;
+    private string $userPath;
 
     public function __construct() {
         $this->storage = Storage::disk('efs');
-        if (!$this->storage->exists("user-" . Auth::user()->id)) {
-            $this->storage->makeDirectory("user-" . Auth::user()->id);
+        $this->userPath = "user-" . Auth::user()->id . "/";
+        if (!$this->storage->exists($this->userPath)) {
+            $this->storage->makeDirectory($this->userPath);
         }
     }
 
     public function isAuthenticated(): bool {
-        return $this->storage->exists('.rmapi-auth');
+        return $this->storage->exists("{$this->userPath}.rmapi-auth");
     }
 
     public function executeRMApiCommand(string $command) {
-        putenv('RMAPI_CONFIG=' . $this->storage->path('.rmapi-auth'));
-        putenv('XDG_CACHE_HOME=' . $this->storage->path(''));
+        $this->configureEnv();
 
         $rmapi = base_path('binaries/rmapi');
         exec("$rmapi -ni $command", $output, $exit_code);
@@ -56,8 +57,7 @@ class RMapi {
      */
     public function authenticate(string $code): bool {
         $rmapi = base_path('binaries/rmapi');
-        putenv('RMAPI_CONFIG=' . $this->storage->path('.rmapi-auth'));
-        putenv('XDG_CACHE_HOME=' . $this->storage->path(''));
+        $this->configureEnv();
         exec("echo $code | $rmapi", $output, $exit_code);
 
         foreach ($output as $item) {
@@ -93,5 +93,13 @@ class RMapi {
                 'path' => "$path$filepath/"
             ];
         })->all();
+    }
+
+    /**
+     * @return void
+     */
+    public function configureEnv(): void {
+        putenv('RMAPI_CONFIG=' . $this->storage->path("{$this->userPath}.rmapi-auth"));
+        putenv('XDG_CACHE_HOME=' . $this->storage->path($this->userPath));
     }
 }
