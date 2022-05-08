@@ -40,8 +40,7 @@ return [
             'driver' => 'local',
             'root' => env('APP_ENV') === "local"
                 ? storage_path('efs')
-                : storage_path
-            ('/efs'),
+                : '/efs',
             'throw' => false
         ],
 
