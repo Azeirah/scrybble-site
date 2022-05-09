@@ -3,7 +3,7 @@ job("Deploy") {
         shellScript {
             content = """
                 composer install --no-interaction --no-dev
-                npm ci
+                npm install
                 npm run prod
                 zip -r main_release.zip . -x .gitignore -x .space.kts -x .git/\*
                 cp main_release.zip /mnt/space/share
