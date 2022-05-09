@@ -1,6 +1,5 @@
 <?php
 
-use Fruitcake\Cors\CorsService;
 use Illuminate\Support\Facades\Facade;
 
 return [
@@ -186,7 +185,6 @@ return [
         /*
          * Package Service Providers...
          */
-        CorsService::class,
 
         /*
          * Application Service Providers...
