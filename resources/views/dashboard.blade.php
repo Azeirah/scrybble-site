@@ -32,7 +32,7 @@
                                                 href="{{'/dashboard?path=' . $item['path']}}">{{$item['name']}}</a></span>
                                     @else
                                         <span class="ml-1"><a
-                                                href="{{"/file{$item['path']}"}}">{{$item['name']}}</a></span>
+                                                href="{{"/file?path={$item['path']}"}}">{{$item['name']}}</a></span>
                                     @endif
                                 </li>
                             @endforeach
