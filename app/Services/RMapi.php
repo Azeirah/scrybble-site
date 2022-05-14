@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Events\ReMarkableAuthenticatedEvent;
+use App\Helpers\FileManipulations;
 use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Exception\InvalidPathStateException;
 use Eloquent\Pathogen\Path;
@@ -92,7 +93,7 @@ class RMapi {
 
     public function list(string $path = "/"): array {
         $rmapi = base_path('binaries/rmapi');
-        [$output, $exit_code] = $this->executeRMApiCommand("ls $path");
+        [$output, $exit_code] = $this->executeRMApiCommand("ls \"$path\"");
 
         return $output->sort()->map(function ($name) use ($path) {
             preg_match("/\[([df])]\s(.+)/", $name, $matches);
@@ -108,16 +109,12 @@ class RMapi {
      * @throws InvalidPathStateException
      */
     public function get(string $filePath): bool {
-        $destination_dir = $this->ensureDirectoryTreeExists($filePath);
+        $destination_dir = FileManipulations::ensureDirectoryTreeExists($filePath, $this->userDir, $this->storage);
         $rmapiDownloadPath = Str::replace('"', '\"', $filePath);
-        [$output,
-         $exit_code] = $this->executeRMApiCommand("get \"$rmapiDownloadPath\"");
+        [$output, $exit_code] = $this->executeRMApiCommand("get \"$rmapiDownloadPath\"");
         if ($exit_code === 0) {
-            $filePathWithExtension =
-                (Path::fromString($filePath))->joinExtensions('zip')->name();
-            $from =
-                (Path::fromString($this->userDir))->joinAtoms($filePathWithExtension)
-                                                  ->toRelative();
+            $filePathWithExtension = (Path::fromString($filePath))->joinExtensions('zip')->name();
+            $from = (Path::fromString($this->userDir))->joinAtoms($filePathWithExtension)->toRelative();
             $to = $destination_dir->joinAtoms($filePathWithExtension);
             $this->storage->move($from, $to);
         }
@@ -132,36 +129,4 @@ class RMapi {
         putenv('RMAPI_CONFIG=' . $this->storage->path("{$this->userDir}.rmapi-auth"));
         putenv('XDG_CACHE_HOME=' . $this->storage->path($this->userDir));
     }
-
-    /**
-     * Creates all directories under $USERDIR/files/$filepath
-     * Returns absolute path relative to storage (to use in
-     * $this->storage->path($returnValue)
-     *
-     * @param string $filepath
-     * @return PathInterface Path relative to storage root (includes user-dir),
-     *              excludes filename
-     * @throws InvalidPathStateException
-     * @throws EmptyPathException
-     */
-    private function ensureDirectoryTreeExists(string $filepath): PathInterface {
-        $atoms = Path::fromString($this->userDir)
-                     ->joinAtoms("files")
-                     ->join(Path::fromString($filepath)->toRelative())
-                     ->atoms();
-
-        // last atom is file
-        unset($atoms[count($atoms) - 1]);
-        $tree = Path::fromString("");
-        foreach ($atoms as $directory_name) {
-            $tree = $tree->joinAtoms($directory_name);
-            $dir_path = $tree->toAbsolute();
-
-            if (!$this->storage->exists($dir_path)) {
-                $this->storage->makeDirectory($dir_path);
-            }
-        }
-        return $tree;
-    }
-
 }
