@@ -7,6 +7,7 @@ use App\Helpers\FileManipulations;
 use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Exception\InvalidPathStateException;
 use Eloquent\Pathogen\Path;
+use Eloquent\Pathogen\PathInterface;
 use Exception;
 use http\Exception\InvalidArgumentException;
 use Illuminate\Contracts\Filesystem\Filesystem;
@@ -109,29 +110,11 @@ class RMapi {
      * @throws InvalidPathStateException
      */
     public function get(string $filePath): bool {
-        $fullPath = Path::fromString($this->userDir)
-            ->joinAtoms("files")
-            ->join(Path::fromString($filePath)->toRelative());
-        $destination_dir = FileManipulations::ensureDirectoryTreeExists($fullPath, $this->storage);
         $rmapiDownloadPath = Str::replace('"', '\"', $filePath);
         [$output, $exit_code] = $this->executeRMApiCommand("get \"$rmapiDownloadPath\"");
         if ($exit_code === 0) {
-            $filePathWithExtension = (Path::fromString($filePath))->joinExtensions('zip')->name();
-            $from = (Path::fromString($this->userDir))->joinAtoms($filePathWithExtension)->toRelative();
-            $to = $destination_dir->joinAtoms($filePathWithExtension);
-            $this->storage->move($from, $to);
-
-            $zip = new \ZipArchive();
-            $result = $zip->open($this->storage->path($to));
-            if ($result === true) {
-                $extract_result = $zip->extractTo($this->storage->path(Path::fromString($to)->parent()->normalize()));
-                if (!$extract_result !== true) {
-                    throw new \RuntimeException("zip extract problem");
-                }
-                $zip->close();
-            } else {
-                throw new \RuntimeException("zip problem");
-            }
+            $to = $this->moveDownloadedFileToUserDir($filePath);
+            $this->extractDownloadedZip($to);
         }
 
         return $exit_code === 0;
@@ -143,5 +126,41 @@ class RMapi {
     public function configureEnv(): void {
         putenv('RMAPI_CONFIG=' . $this->storage->path("{$this->userDir}.rmapi-auth"));
         putenv('XDG_CACHE_HOME=' . $this->storage->path($this->userDir));
+    }
+
+    /**
+     * @param string $filePath
+     * @return PathInterface
+     * @throws EmptyPathException
+     * @throws InvalidPathStateException
+     */
+    public function moveDownloadedFileToUserDir(string $filePath): PathInterface {
+        $fullPath =
+            Path::fromString($this->userDir)->joinAtoms("files")->join(Path::fromString($filePath)->toRelative());
+        $destination_dir = FileManipulations::ensureDirectoryTreeExists($fullPath, $this->storage);
+        $filePathWithExtension = (Path::fromString($filePath))->joinExtensions('zip')->name();
+        $from = (Path::fromString($this->userDir))->joinAtoms($filePathWithExtension)->toRelative();
+        $to = $destination_dir->joinAtoms($filePathWithExtension);
+        $this->storage->move($from, $to);
+        return $to;
+    }
+
+    /**
+     * @param PathInterface $to
+     * @return void
+     * @throws InvalidPathStateException
+     */
+    public function extractDownloadedZip(PathInterface $to): void {
+        $zip = new \ZipArchive();
+        $result = $zip->open($this->storage->path($to));
+        if ($result === true) {
+            $extract_result = $zip->extractTo($this->storage->path(Path::fromString($to)->parent()->normalize()));
+            if (!$extract_result !== true) {
+                throw new \RuntimeException("zip extract problem");
+            }
+            $zip->close();
+        } else {
+            throw new \RuntimeException("zip problem");
+        }
     }
 }
