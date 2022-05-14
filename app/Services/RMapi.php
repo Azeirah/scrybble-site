@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use RuntimeException;
+use ZipArchive;
 
 class RMapi {
     private Filesystem $storage;
@@ -152,16 +153,16 @@ class RMapi {
      * @throws InvalidPathStateException
      */
     public function extractDownloadedZip(PathInterface $to): void {
-        $zip = new \ZipArchive();
+        $zip = new ZipArchive();
         $result = $zip->open($this->storage->path($to));
         if ($result === true) {
             $extract_result = $zip->extractTo($this->storage->path(Path::fromString($to)->parent()->normalize()));
             if ($extract_result !== true) {
                 $zip->close();
-                throw new \RuntimeException("zip extract problem");
+                throw new RuntimeException("zip extract problem");
             }
         } else {
-            throw new \RuntimeException("zip problem");
+            throw new RuntimeException("zip problem");
         }
     }
 }
