@@ -7,6 +7,7 @@ use App\Helpers\FileManipulations;
 use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Exception\InvalidPathStateException;
 use Eloquent\Pathogen\Path;
+use Exception;
 use http\Exception\InvalidArgumentException;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Auth;
@@ -119,6 +120,18 @@ class RMapi {
             $from = (Path::fromString($this->userDir))->joinAtoms($filePathWithExtension)->toRelative();
             $to = $destination_dir->joinAtoms($filePathWithExtension);
             $this->storage->move($from, $to);
+
+            $zip = new \ZipArchive();
+            $result = $zip->open($this->storage->path($to));
+            if ($result === true) {
+                $extract_result = $zip->extractTo($this->storage->path(Path::fromString($to)->parent()->normalize()));
+                if (!$extract_result !== true) {
+                    throw new \RuntimeException("zip extract problem");
+                }
+                $zip->close();
+            } else {
+                throw new \RuntimeException("zip problem");
+            }
         }
 
         return $exit_code === 0;

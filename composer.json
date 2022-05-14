@@ -14,7 +14,8 @@
         "laravel/passport": "^10.4",
         "laravel/sanctum": "^2.14.1",
         "laravel/tinker": "^2.7",
-        "mschop/pathogen": "^0.7.1"
+        "mschop/pathogen": "^0.7.1",
+      "ext-zip": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
