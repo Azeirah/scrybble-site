@@ -155,10 +155,10 @@ class RMapi {
         $result = $zip->open($this->storage->path($to));
         if ($result === true) {
             $extract_result = $zip->extractTo($this->storage->path(Path::fromString($to)->parent()->normalize()));
-            if (!$extract_result !== true) {
+            if ($extract_result !== true) {
+                $zip->close();
                 throw new \RuntimeException("zip extract problem");
             }
-            $zip->close();
         } else {
             throw new \RuntimeException("zip problem");
         }
