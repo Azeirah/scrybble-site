@@ -2,10 +2,12 @@
 
 namespace App\Helpers;
 
+use Eloquent\Pathogen\AbsolutePath;
 use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Exception\InvalidPathStateException;
 use Eloquent\Pathogen\Path;
 use Eloquent\Pathogen\PathInterface;
+use Eloquent\Pathogen\RelativePath;
 use Illuminate\Contracts\Filesystem\Filesystem;
 
 class FileManipulations {
@@ -13,15 +15,14 @@ class FileManipulations {
      * Creates all directories under $USERDIR/files/$filepath
      * Returns path relative to storage (to use in $torage->path($returnValue)
      *
-     * @param string $filepath
-     * @param string $start
+     * @param PathInterface $filepath A path including a file at the end.
      * @param Filesystem $storage
      * @return PathInterface Path relative to storage root (includes user-dir),
      *              excludes filename
-     * @throws EmptyPathException
      * @throws InvalidPathStateException
      */
-    public static function ensureDirectoryTreeExists(string $filepath, string $start, Filesystem $storage): PathInterface {
+    public static function ensureDirectoryTreeExists(PathInterface $filepath, Filesystem $storage):
+    PathInterface {
         /**
          * The "files" directory prevents a potential problem
          * Consider these files existing on your remarkable
@@ -33,10 +34,7 @@ class FileManipulations {
          * For that reason, I create the "files" dir where the rm directory
          * structure gets mirrored as files get downloaded
          */
-        $atoms = Path::fromString($start)
-                     ->joinAtoms("files")
-                     ->join(Path::fromString($filepath)->toRelative())
-                     ->atoms();
+        $atoms = $filepath->atoms();
 
         // last atom is file
         unset($atoms[count($atoms) - 1]);

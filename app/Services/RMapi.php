@@ -7,7 +7,6 @@ use App\Helpers\FileManipulations;
 use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Exception\InvalidPathStateException;
 use Eloquent\Pathogen\Path;
-use Eloquent\Pathogen\PathInterface;
 use http\Exception\InvalidArgumentException;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Auth;
@@ -109,7 +108,10 @@ class RMapi {
      * @throws InvalidPathStateException
      */
     public function get(string $filePath): bool {
-        $destination_dir = FileManipulations::ensureDirectoryTreeExists($filePath, $this->userDir, $this->storage);
+        $fullPath = Path::fromString($this->userDir)
+            ->joinAtoms("files")
+            ->join(Path::fromString($filePath)->toRelative());
+        $destination_dir = FileManipulations::ensureDirectoryTreeExists($fullPath, $this->storage);
         $rmapiDownloadPath = Str::replace('"', '\"', $filePath);
         [$output, $exit_code] = $this->executeRMApiCommand("get \"$rmapiDownloadPath\"");
         if ($exit_code === 0) {
