@@ -115,6 +115,7 @@ class RMapi {
         if ($exit_code === 0) {
             $to = $this->moveDownloadedFileToUserDir($filePath);
             $this->extractDownloadedZip($to);
+            $this->storage->delete($to);
         }
 
         return $exit_code === 0;
