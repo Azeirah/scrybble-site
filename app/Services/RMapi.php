@@ -93,7 +93,6 @@ class RMapi {
     }
 
     public function list(string $path = "/"): array {
-        $rmapi = base_path('binaries/rmapi');
         [$output, $exit_code] = $this->executeRMApiCommand("ls \"$path\"");
 
         return $output->sort()->map(function ($name) use ($path) {
@@ -117,7 +116,7 @@ class RMapi {
             $this->extractDownloadedZip($location);
             $deleted = $this->storage->delete($location->string());
             if (!$deleted) {
-                throw new \RuntimeException("Failed to delete zip");
+                throw new RuntimeException("Failed to delete zip");
             }
         }
 
