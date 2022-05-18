@@ -4,10 +4,13 @@ namespace App\Services;
 
 use App\Events\ReMarkableAuthenticatedEvent;
 use App\Helpers\FileManipulations;
+use Eloquent\Pathogen\AbsolutePath;
 use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Exception\InvalidPathStateException;
 use Eloquent\Pathogen\Path;
 use Eloquent\Pathogen\PathInterface;
+use Eloquent\Pathogen\RelativePath;
+use Eloquent\Pathogen\RelativePathInterface;
 use Exception;
 use http\Exception\InvalidArgumentException;
 use Illuminate\Contracts\Filesystem\Filesystem;
@@ -114,9 +117,12 @@ class RMapi {
         $rmapiDownloadPath = Str::replace('"', '\"', $filePath);
         [$output, $exit_code] = $this->executeRMApiCommand("get \"$rmapiDownloadPath\"");
         if ($exit_code === 0) {
-            $to = $this->moveDownloadedFileToUserDir($filePath);
-            $this->extractDownloadedZip($to);
-            $this->storage->delete($to);
+            $location = $this->getDownloadedZipLocation($rmapiDownloadPath)->toRelative();
+            $this->extractDownloadedZip($location);
+            $deleted = $this->storage->delete($location->string());
+            if (!$deleted) {
+                throw new \RuntimeException("Failed to delete zip");
+            }
         }
 
         return $exit_code === 0;
@@ -148,21 +154,27 @@ class RMapi {
     }
 
     /**
-     * @param PathInterface $to
+     * @param RelativePathInterface $to
      * @return void
      * @throws InvalidPathStateException
      */
-    public function extractDownloadedZip(PathInterface $to): void {
+    public function extractDownloadedZip(RelativePathInterface $to): void {
         $zip = new ZipArchive();
         $result = $zip->open($this->storage->path($to));
         if ($result === true) {
             $extract_result = $zip->extractTo($this->storage->path(Path::fromString($to)->parent()->normalize()));
             if ($extract_result !== true) {
                 $zip->close();
-                throw new RuntimeException("zip extract problem");
+                throw new RuntimeException("Unable to extract zip");
             }
         } else {
-            throw new RuntimeException("zip problem");
+            throw new RuntimeException("Unable to open zip");
         }
     }
+
+    private function getDownloadedZipLocation(string $rmapiDownloadPath): PathInterface {
+        $filename = Path::fromString($rmapiDownloadPath)->name();
+        return Path::fromString($this->userDir)->joinAtoms($filename)->joinExtensions("zip");
+    }
+
 }
