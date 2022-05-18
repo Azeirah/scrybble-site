@@ -18,18 +18,18 @@ use ZipArchive;
 
 class RMapi {
     private Filesystem $storage;
-    private string $userDir;
 
     public function __construct() {
-        $this->storage = Storage::disk('efs');
-        $this->userDir = "user-" . Auth::user()->id . "/";
-        if (!$this->storage->exists($this->userDir)) {
-            $this->storage->makeDirectory($this->userDir);
+        $efs = Storage::disk('efs');
+        $userDir = "user-" . Auth::user()->id . "/";
+        $this->storage = Storage::build($efs->path($userDir));
+        if (!$this->storage->exists('')) {
+            $this->storage->makeDirectory('');
         }
     }
 
     public function isAuthenticated(): bool {
-        return $this->storage->exists("{$this->userDir}.rmapi-auth");
+        return $this->storage->exists(".rmapi-auth");
     }
 
     public function executeRMApiCommand(string $command) {
@@ -37,7 +37,9 @@ class RMapi {
 
         $rmapi = base_path('binaries/rmapi');
         $cwdBefore = getcwd();
-        chdir($this->storage->path($this->userDir));
+        if (!chdir($this->storage->path(''))) {
+            throw new RuntimeException("Could not cd into userdir");
+        }
         try {
             exec("$rmapi -ni $command", $output, $exit_code);
         } finally {
@@ -127,8 +129,8 @@ class RMapi {
      * @return void
      */
     public function configureEnv(): void {
-        putenv('RMAPI_CONFIG=' . $this->storage->path("{$this->userDir}.rmapi-auth"));
-        putenv('XDG_CACHE_HOME=' . $this->storage->path($this->userDir));
+        putenv('RMAPI_CONFIG=' . $this->storage->path(".rmapi-auth"));
+        putenv('XDG_CACHE_HOME=' . $this->storage->path(''));
     }
 
     /**
@@ -152,7 +154,7 @@ class RMapi {
 
     private function getDownloadedZipLocation(string $rmapiDownloadPath): PathInterface {
         $filename = Path::fromString($rmapiDownloadPath)->name();
-        return Path::fromString($this->userDir)->joinAtoms($filename)->joinExtensions("zip");
+        return Path::fromString($filename)->joinExtensions("zip");
     }
 
 }
