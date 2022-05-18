@@ -115,11 +115,6 @@ class RMapi {
         [$output, $exit_code] = $this->executeRMApiCommand("get \"$rmapiDownloadPath\"");
         if ($exit_code === 0) {
             $location = $this->getDownloadedZipLocation($rmapiDownloadPath)->toRelative();
-            $this->extractDownloadedZip($location);
-            $deleted = $this->storage->delete($location->string());
-            if (!$deleted) {
-                throw new RuntimeException("Failed to delete zip");
-            }
         }
 
         return $exit_code === 0;
@@ -133,24 +128,6 @@ class RMapi {
         putenv('XDG_CACHE_HOME=' . $this->storage->path(''));
     }
 
-    /**
-     * @param RelativePathInterface $to
-     * @return void
-     * @throws InvalidPathStateException
-     */
-    public function extractDownloadedZip(RelativePathInterface $to): void {
-        $zip = new ZipArchive();
-        $result = $zip->open($this->storage->path($to));
-        if ($result === true) {
-            $extract_result = $zip->extractTo($this->storage->path(Path::fromString($to)->parent()->normalize()));
-            if ($extract_result !== true) {
-                $zip->close();
-                throw new RuntimeException("Unable to extract zip");
-            }
-        } else {
-            throw new RuntimeException("Unable to open zip");
-        }
-    }
 
     private function getDownloadedZipLocation(string $rmapiDownloadPath): PathInterface {
         $filename = Path::fromString($rmapiDownloadPath)->name();

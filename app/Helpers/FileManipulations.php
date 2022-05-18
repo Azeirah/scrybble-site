@@ -8,7 +8,10 @@ use Eloquent\Pathogen\Exception\InvalidPathStateException;
 use Eloquent\Pathogen\Path;
 use Eloquent\Pathogen\PathInterface;
 use Eloquent\Pathogen\RelativePath;
+use Eloquent\Pathogen\RelativePathInterface;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use RuntimeException;
+use ZipArchive;
 
 class FileManipulations {
     /**
@@ -48,6 +51,26 @@ class FileManipulations {
             }
         }
         return $tree;
+    }
+
+    /**
+     * @param Filesystem $storage
+     * @param RelativePathInterface $to
+     * @return void
+     * @throws InvalidPathStateException
+     */
+    public function extractDownloadedZip(Filesystem $storage, RelativePathInterface $to): void {
+        $zip = new ZipArchive();
+        $result = $zip->open($storage->path($to));
+        if ($result === true) {
+            $extract_result = $zip->extractTo($storage->path(Path::fromString($to)->parent()->normalize()));
+            if ($extract_result !== true) {
+                $zip->close();
+                throw new RuntimeException("Unable to extract zip");
+            }
+        } else {
+            throw new RuntimeException("Unable to open zip");
+        }
     }
 
 }
