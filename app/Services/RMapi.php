@@ -137,23 +137,6 @@ class RMapi {
     }
 
     /**
-     * @param string $filePath
-     * @return PathInterface
-     * @throws EmptyPathException
-     * @throws InvalidPathStateException
-     */
-    public function moveDownloadedFileToUserDir(string $filePath): PathInterface {
-        $fullPath =
-            Path::fromString($this->userDir)->joinAtoms("files")->join(Path::fromString($filePath)->toRelative());
-        $destination_dir = FileManipulations::ensureDirectoryTreeExists($fullPath, $this->storage);
-        $filePathWithExtension = (Path::fromString($filePath))->joinExtensions('zip')->name();
-        $from = (Path::fromString($this->userDir))->joinAtoms($filePathWithExtension)->toRelative();
-        $to = $destination_dir->joinAtoms($filePathWithExtension);
-        $this->storage->move($from, $to);
-        return $to;
-    }
-
-    /**
      * @param RelativePathInterface $to
      * @return void
      * @throws InvalidPathStateException
