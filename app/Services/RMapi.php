@@ -3,20 +3,16 @@
 namespace App\Services;
 
 use App\Events\ReMarkableAuthenticatedEvent;
-use App\Helpers\FileManipulations;
-use Eloquent\Pathogen\AbsolutePath;
 use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Exception\InvalidPathStateException;
 use Eloquent\Pathogen\Path;
 use Eloquent\Pathogen\PathInterface;
-use Eloquent\Pathogen\RelativePath;
 use Eloquent\Pathogen\RelativePathInterface;
-use Exception;
-use http\Exception\InvalidArgumentException;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use RuntimeException;
 use ZipArchive;
 
