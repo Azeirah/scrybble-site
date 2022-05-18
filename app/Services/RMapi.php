@@ -4,17 +4,15 @@ namespace App\Services;
 
 use App\Events\ReMarkableAuthenticatedEvent;
 use Eloquent\Pathogen\Exception\EmptyPathException;
-use Eloquent\Pathogen\Exception\InvalidPathStateException;
 use Eloquent\Pathogen\Path;
 use Eloquent\Pathogen\PathInterface;
-use Eloquent\Pathogen\RelativePathInterface;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\ArrayShape;
 use RuntimeException;
-use ZipArchive;
 
 class RMapi {
     private Filesystem $storage;
@@ -32,7 +30,12 @@ class RMapi {
         return $this->storage->exists(".rmapi-auth");
     }
 
-    public function executeRMApiCommand(string $command) {
+    /**
+     * @param string $command
+     * @return array
+     */
+    #[ArrayShape(["array", "int"])]
+    public function executeRMApiCommand(string $command): array {
         $this->configureEnv();
 
         $rmapi = base_path('binaries/rmapi');
@@ -97,6 +100,10 @@ class RMapi {
     public function list(string $path = "/"): array {
         [$output, $exit_code] = $this->executeRMApiCommand("ls \"$path\"");
 
+        if ($exit_code !== 0) {
+            throw new RuntimeException("rmapi ls path failed");
+        }
+
         return $output->sort()->map(function ($name) use ($path) {
             preg_match("/\[([df])]\s(.+)/", $name, $matches);
             [, $type, $filepath] = $matches;
@@ -108,14 +115,14 @@ class RMapi {
 
     /**
      * @throws EmptyPathException
-     * @throws InvalidPathStateException
      */
     public function get(string $filePath): bool {
         $rmapiDownloadPath = Str::replace('"', '\"', $filePath);
         [$output, $exit_code] = $this->executeRMApiCommand("get \"$rmapiDownloadPath\"");
-        if ($exit_code === 0) {
-            $location = $this->getDownloadedZipLocation($rmapiDownloadPath)->toRelative();
+        if ($exit_code !== 0) {
+            throw new RuntimeException("RMapi `get` command failed");
         }
+        $location = $this->getDownloadedZipLocation($rmapiDownloadPath)->toRelative();
 
         return $exit_code === 0;
     }
