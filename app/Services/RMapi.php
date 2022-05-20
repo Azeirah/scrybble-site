@@ -3,12 +3,12 @@
 namespace App\Services;
 
 use App\Events\ReMarkableAuthenticatedEvent;
+use App\Helpers\UserStorage;
 use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Path;
 use Eloquent\Pathogen\PathInterface;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
@@ -18,12 +18,7 @@ class RMapi {
     private Filesystem $storage;
 
     public function __construct() {
-        $efs = Storage::disk('efs');
-        $userDir = "user-" . Auth::user()->id . "/";
-        $this->storage = Storage::build($efs->path($userDir));
-        if (!$this->storage->exists('')) {
-            $this->storage->makeDirectory('');
-        }
+        $this->storage = UserStorage::get(User: Auth::user());
     }
 
     public function isAuthenticated(): bool {
