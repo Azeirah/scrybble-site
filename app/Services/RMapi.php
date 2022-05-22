@@ -10,6 +10,7 @@ use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Path;
 use Eloquent\Pathogen\PathInterface;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -32,7 +33,7 @@ class RMapi {
      * @param string $command
      * @return array
      */
-    #[ArrayShape(["array", "int"])]
+    #[ArrayShape([Collection::class, "int"])]
     public function executeRMApiCommand(string $command): array {
         $this->configureEnv();
 
@@ -99,7 +100,8 @@ class RMapi {
         [$output, $exit_code] = $this->executeRMApiCommand("ls \"$path\"");
 
         if ($exit_code !== 0) {
-            throw new RuntimeException("rmapi ls path failed with exit code `$exit_code`: " . implode("\n", $output));
+            throw new RuntimeException("rmapi ls path failed with exit code `$exit_code`: " . implode("\n",
+                    $output->values()));
         }
 
         return $output->sort()->map(function ($name) use ($path) {
