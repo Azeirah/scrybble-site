@@ -99,7 +99,7 @@ class RMapi {
         [$output, $exit_code] = $this->executeRMApiCommand("ls \"$path\"");
 
         if ($exit_code !== 0) {
-            throw new RuntimeException("rmapi ls path failed");
+            throw new RuntimeException("rmapi ls path failed with exit code `$exit_code`: " . implode("\n", $output));
         }
 
         return $output->sort()->map(function ($name) use ($path) {
