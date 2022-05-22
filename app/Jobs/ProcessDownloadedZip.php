@@ -61,7 +61,8 @@ class ProcessDownloadedZip implements ShouldQueue {
             $userStorage->makeDirectory($jobId);
         }
 
-        FileManipulations::extractDownloadedZip($userStorage, from: $this->zipLocation, to: $to);
+        // 2. Extract the zip
+        FileManipulations::extractZip($userStorage, from: $this->zipLocation, to: $to);
 
         $absJobdir = AbsolutePath::fromString($userStorage->path($jobdir->string()));
         $absOutdir = AbsolutePath::fromString($userStorage->path($jobdir->joinAtoms('out')));

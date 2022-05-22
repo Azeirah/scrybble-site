@@ -43,7 +43,7 @@ class FileManipulations {
      * @param RelativePathInterface $to
      * @return void
      */
-    public static function extractDownloadedZip(Filesystem $storage, RelativePathInterface $from, RelativePathInterface $to): void {
+    public static function extractZip(Filesystem $storage, RelativePathInterface $from, RelativePathInterface $to): void {
         $zip = new ZipArchive();
         $result = $zip->open($storage->path($from));
         if ($result === true) {
