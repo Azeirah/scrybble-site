@@ -76,7 +76,10 @@ class ProcessDownloadedZip implements ShouldQueue {
         }
 
         // 5. Zip the out dir
-        // 6. Upload zip to Z3
+        $zipLocation = $jobdir->joinAtoms($jobId)->joinExtensions('zip')->toRelative();
+        FileManipulations::zipDirectory($userStorage, from: $jobdir->joinAtoms('out.zip')->toRelative(), to: $zipLocation);
+
+        // 6. Upload zip to S3
         // 7. Unless user has telemetry=on && remarksService exception happened, delete temporary folder
         // 8. Insert a row in "sync" table
     }

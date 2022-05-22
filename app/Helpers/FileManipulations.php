@@ -2,14 +2,15 @@
 
 namespace App\Helpers;
 
-use Eloquent\Pathogen\AbsolutePath;
-use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Exception\InvalidPathStateException;
 use Eloquent\Pathogen\Path;
 use Eloquent\Pathogen\PathInterface;
-use Eloquent\Pathogen\RelativePath;
 use Eloquent\Pathogen\RelativePathInterface;
+use FilesystemIterator;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Support\Str;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use RuntimeException;
 use ZipArchive;
 
@@ -54,6 +55,36 @@ class FileManipulations {
             }
         } else {
             throw new RuntimeException("Unable to open zip");
+        }
+    }
+
+    public static function zipDirectory(Filesystem $storage, RelativePathInterface $from, RelativePathInterface $to): void {
+        $zip = new ZipArchive();
+        $zipLocation = $storage->path($to->string());
+        if ($zip->open($zipLocation, flags: ZipArchive::CREATE) !== true) {
+            throw new RuntimeException("Was unable to open zip at $zipLocation");
+        }
+
+        $root = $storage->path($from);
+        $dirIter = new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS);
+        $iter = new RecursiveIteratorIterator($dirIter);
+
+        $removeRoot = Path::fromString($storage->path('.'))->normalize()->string();
+        foreach ($iter as $info) {
+            $path = $info->getPathname();
+            // name inside zip, otherwise includes whole path like /var/www/html/.....
+            $entry = Str::replace(search: $removeRoot, replace: '', subject: $path);
+            echo $path . PHP_EOL;
+
+            if (is_dir($path)) {
+                $zip->addEmptyDir($path, $entry);
+            } else if (is_file($path)) {
+                $zip->addFile($path, $entry);
+            }
+        }
+
+        if (!$zip->close()) {
+            throw new RuntimeException("Was unable to close zip after creation");
         }
     }
 
