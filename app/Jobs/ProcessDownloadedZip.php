@@ -78,7 +78,7 @@ class ProcessDownloadedZip implements ShouldQueue {
 
         // 5. Zip the out dir
         $zipLocation = $jobdir->joinAtoms($jobId)->joinExtensions('zip')->toRelative();
-        FileManipulations::zipDirectory($userStorage, from: $jobdir->joinAtoms('out.zip')->toRelative(), to: $zipLocation);
+        FileManipulations::zipDirectory($userStorage, from: $zipLocation, to: $jobdir->joinAtoms('out.zip')->toRelative());
 
         // 6. Upload zip to S3
         if (!Storage::disk('s3')->put('userZips', $userStorage->path($zipLocation))) {
