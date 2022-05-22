@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 
 class FileController extends Controller
 {
-    public function show(RMapi $RMapi, string $file) {
+    public function show(Request $request, RMapi $RMapi) {
+        $file = $request->query('path');
+
         $RMapi->get($file);
     }
 }

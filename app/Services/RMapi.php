@@ -2,36 +2,45 @@
 
 namespace App\Services;
 
+use App\DataClasses\RemarksConfig;
 use App\Events\ReMarkableAuthenticatedEvent;
-use http\Exception\InvalidArgumentException;
+use App\Helpers\UserStorage;
+use App\Jobs\ProcessDownloadedZip;
+use Eloquent\Pathogen\Exception\EmptyPathException;
+use Eloquent\Pathogen\Path;
+use Eloquent\Pathogen\PathInterface;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
+use JetBrains\PhpStorm\ArrayShape;
 use RuntimeException;
+use Symfony\Component\Process\Process;
 
 class RMapi {
     private Filesystem $storage;
-    private string $userPath;
 
     public function __construct() {
-        $this->storage = Storage::disk('efs');
-        $this->userPath = "user-" . Auth::user()->id . "/";
-        if (!$this->storage->exists($this->userPath)) {
-            $this->storage->makeDirectory($this->userPath);
-        }
+        $this->storage = UserStorage::get(Auth::user());
     }
 
     public function isAuthenticated(): bool {
-        return $this->storage->exists("{$this->userPath}.rmapi-auth");
+        return $this->storage->exists(".rmapi-auth");
     }
 
-    public function executeRMApiCommand(string $command) {
+    /**
+     * @param string $command
+     * @return array
+     */
+    #[ArrayShape(["array", "int"])]
+    public function executeRMApiCommand(string $command): array {
         $this->configureEnv();
 
         $rmapi = base_path('binaries/rmapi');
         $cwdBefore = getcwd();
-        chdir($this->storage->path($this->userPath));
+        if (!chdir($this->storage->path(''))) {
+            throw new RuntimeException("Could not cd into userdir");
+        }
         try {
             exec("$rmapi -ni $command", $output, $exit_code);
         } finally {
@@ -42,7 +51,7 @@ class RMapi {
             if (Str::startsWith($line, 'Refreshing tree')) {
                 return false;
             }
-            if (Str::startsWith( $line, "WARNING")) {
+            if (Str::startsWith($line, "WARNING")) {
                 return false;
             }
             if (Str::contains($line, 'Using the new 1.5 sync')) {
@@ -86,33 +95,47 @@ class RMapi {
         throw new RuntimeException("unknown error");
     }
 
-    public function list(string $path="/"): Array {
-        $rmapi = base_path('binaries/rmapi');
-        [$output, $exit_code] = $this->executeRMApiCommand("ls $path");
+    public function list(string $path = "/"): array {
+        [$output, $exit_code] = $this->executeRMApiCommand("ls \"$path\"");
+
+        if ($exit_code !== 0) {
+            throw new RuntimeException("rmapi ls path failed");
+        }
 
         return $output->sort()->map(function ($name) use ($path) {
             preg_match("/\[([df])]\s(.+)/", $name, $matches);
             [, $type, $filepath] = $matches;
-            return [
-                'type' => $type,
-                'name' => $filepath,
-                'path' => "$path$filepath/"
-            ];
+            return ['type' => $type,
+                    'name' => $filepath,
+                    'path' => $type === "d" ? "$path$filepath/" : "$path$filepath"];
         })->all();
     }
 
-    public function get(string $path): bool {
-        $path = Str::replace('"', '\"', $path);
-        [$output, $exit_code] = $this->executeRMApiCommand("get \"$path\"");
-
-        return $exit_code === 0;
+    /**
+     * @throws EmptyPathException
+     */
+    public function get(string $filePath): void {
+        $rmapiDownloadPath = Str::replace('"', '\"', $filePath);
+        [$output, $exit_code] = $this->executeRMApiCommand("get \"$rmapiDownloadPath\"");
+        if ($exit_code !== 0) {
+            throw new RuntimeException("RMapi `get` command failed");
+        }
+        $location = $this->getDownloadedZipLocation($rmapiDownloadPath)->toRelative();
+        ProcessDownloadedZip::dispatch($location->string(), new RemarksConfig(), Auth::user());
     }
 
     /**
      * @return void
      */
     public function configureEnv(): void {
-        putenv('RMAPI_CONFIG=' . $this->storage->path("{$this->userPath}.rmapi-auth"));
-        putenv('XDG_CACHE_HOME=' . $this->storage->path($this->userPath));
+        putenv('RMAPI_CONFIG=' . $this->storage->path(".rmapi-auth"));
+        putenv('XDG_CACHE_HOME=' . $this->storage->path(''));
     }
+
+
+    private function getDownloadedZipLocation(string $rmapiDownloadPath): PathInterface {
+        $filename = Path::fromString($rmapiDownloadPath)->name();
+        return Path::fromString($filename)->joinExtensions("zip");
+    }
+
 }

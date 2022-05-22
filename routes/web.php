@@ -24,7 +24,7 @@ Route::group(['middleware' => ['auth']], static function () {
     Route::get('/dashboard/', [DashboardController::class, "index"])
          ->name('dashboard');
 
-    Route::get('/file/{name}', [FileController::class, "show"])
+    Route::get('/file', [FileController::class, "show"])
         ->name('download');
 
     Route::post(
