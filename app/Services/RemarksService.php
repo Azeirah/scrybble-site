@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\DataClasses\RemarksConfig;
 use Eloquent\Pathogen\AbsolutePathInterface;
-use Eloquent\Pathogen\RelativePathInterface;
+use RuntimeException;
 
 class RemarksService {
 
@@ -14,8 +14,12 @@ class RemarksService {
         $srcDir = $sourceDirectory->string();
         $targetDir = $targetDirectory->string();
         $strCommand = "docker run -v \"$srcDir/\":/in -v \"$targetDir\":/out laauurraaa/remarks-bin /in /out --targets md";
-//        dd($strCommand);
-        exec($strCommand);
+        exec($strCommand, $output, $result_code);
+
+        if ($result_code !== 0) {
+            throw new RuntimeException("remarks-bin docker failed with error_code: `$result_code`: `" . implode
+                ("\n", $output) . "`");
+        }
     }
 
 }
