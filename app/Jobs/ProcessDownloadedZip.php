@@ -66,14 +66,17 @@ class ProcessDownloadedZip implements ShouldQueue {
 
 
         // 4. Run remarks over the extracted files
-        $absJobdir = AbsolutePath::fromString($userStorage->path($jobdir->string()));
+        $absJobdir = AbsolutePath::fromString($userStorage->path($jobdir->joinAtoms("extractedFiles")->string()));
         $absOutdir = AbsolutePath::fromString($userStorage->path($jobdir->joinAtoms('out')));
         try {
-            $remarksService->extractNotesAndHighlights($absJobdir, $absOutdir, $this->remarksConfig);
+            $remarksService->extractNotesAndHighlights(
+                sourceDirectory: $absJobdir,
+                targetDirectory: $absOutdir,
+                config: $this->remarksConfig);
         } catch (RuntimeException $exception) {
-//            if (true || $this->user->config()->telemetryEnabled) {
-                throw $exception;
-//            }
+            //            if (true || $this->user->config()->telemetryEnabled) {
+            throw $exception;
+            //            }
         }
 
         // 5. Zip the out dir
