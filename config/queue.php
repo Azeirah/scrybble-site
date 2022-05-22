@@ -13,7 +13,9 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'sync'),
+    'default' => env('APP_ENV') === "local"
+            ? env('QUEUE_CONNECTION', 'sync')
+            : env('QUEUE_CONNECTION', 'database'),
 
     /*
     |--------------------------------------------------------------------------
