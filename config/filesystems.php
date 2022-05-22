@@ -54,12 +54,12 @@ return [
 
         's3' => [
             'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_BUCKET'),
-            'url' => env('AWS_URL'),
-            'endpoint' => env('AWS_ENDPOINT'),
+            'key' => $_SERVER['AWS_ACCESS_KEY_ID'] ?? env('AWS_ACCESS_KEY_ID'),
+            'secret' => $_SERVER['AWS_SECRET_ACCESS_KEY'] ?? env('AWS_SECRET_ACCESS_KEY'),
+            'region' => $_SERVER['AWS_DEFAULT_REGION'] ?? env('AWS_DEFAULT_REGION'),
+            'bucket' => $_SERVER['AWS_BUCKET'] ?? env('AWS_BUCKET'),
+            'url' => $_SERVER['AWS_URL'] ?? env('AWS_URL'),
+            'endpoint' => $_SERVER['AWS_ENDPOINT'] ?? env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
