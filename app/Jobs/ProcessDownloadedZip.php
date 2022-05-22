@@ -71,9 +71,9 @@ class ProcessDownloadedZip implements ShouldQueue {
         try {
             $remarksService->extractNotesAndHighlights($absJobdir, $absOutdir, $this->remarksConfig);
         } catch (RuntimeException $exception) {
-            //            if ($this->user->config()->telemetryEnabled) {
-            //                throw $exception;
-            //            }
+//            if (true || $this->user->config()->telemetryEnabled) {
+                throw $exception;
+//            }
         }
 
         // 5. Zip the out dir
