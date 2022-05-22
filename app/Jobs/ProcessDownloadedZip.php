@@ -71,17 +71,20 @@ class ProcessDownloadedZip implements ShouldQueue {
         try {
             $remarksService->extractNotesAndHighlights($absJobdir, $absOutdir, $this->remarksConfig);
         } catch (RuntimeException $exception) {
-//            if ($this->user->config()->telemetryEnabled) {
-//                throw $exception;
-//            }
+            //            if ($this->user->config()->telemetryEnabled) {
+            //                throw $exception;
+            //            }
         }
 
         // 5. Zip the out dir
-        $zipLocation = $jobdir->joinAtoms($jobId)->joinExtensions('zip')->toRelative();
-        FileManipulations::zipDirectory($userStorage, from: $zipLocation, to: $jobdir->joinAtoms('out.zip')->toRelative());
+        $from = $jobdir->joinAtoms('out')->toRelative();
+        $to1 = $jobdir->joinAtoms('out.zip')->toRelative();
+        FileManipulations::zipDirectory($userStorage,
+            from: $from,
+            to: $to1);
 
         // 6. Upload zip to S3
-        if (!Storage::disk('s3')->put('userZips', $userStorage->path($zipLocation))) {
+        if (!Storage::disk('s3')->put('userZips', $to1)) {
             throw new RuntimeException("Unable to upload zip to s3");
         }
 
