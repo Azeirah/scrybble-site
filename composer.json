@@ -16,6 +16,7 @@
         "laravel/passport": "^10.4",
         "laravel/sanctum": "^2.14.1",
         "laravel/tinker": "^2.7",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "mschop/pathogen": "^0.7.1"
     },
     "require-dev": {
