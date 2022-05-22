@@ -84,7 +84,7 @@ class ProcessDownloadedZip implements ShouldQueue {
             to: $to1);
 
         // 6. Upload zip to S3
-        if (!Storage::disk('s3')->put('userZips', $to1)) {
+        if (!Storage::disk('s3')->put('userZips/' . $jobId . '.zip', $userStorage->get($to1))) {
             throw new RuntimeException("Unable to upload zip to s3");
         }
 
