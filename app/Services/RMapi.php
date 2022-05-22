@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\DataClasses\RemarksConfig;
 use App\Events\ReMarkableAuthenticatedEvent;
 use App\Helpers\UserStorage;
+use App\Jobs\ProcessDownloadedZip;
 use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Path;
 use Eloquent\Pathogen\PathInterface;
@@ -13,12 +15,13 @@ use Illuminate\Support\Str;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use RuntimeException;
+use Symfony\Component\Process\Process;
 
 class RMapi {
     private Filesystem $storage;
 
     public function __construct() {
-        $this->storage = UserStorage::get(User: Auth::user());
+        $this->storage = UserStorage::get(Auth::user());
     }
 
     public function isAuthenticated(): bool {
@@ -111,15 +114,14 @@ class RMapi {
     /**
      * @throws EmptyPathException
      */
-    public function get(string $filePath): bool {
+    public function get(string $filePath): void {
         $rmapiDownloadPath = Str::replace('"', '\"', $filePath);
         [$output, $exit_code] = $this->executeRMApiCommand("get \"$rmapiDownloadPath\"");
         if ($exit_code !== 0) {
             throw new RuntimeException("RMapi `get` command failed");
         }
         $location = $this->getDownloadedZipLocation($rmapiDownloadPath)->toRelative();
-
-        return $exit_code === 0;
+        ProcessDownloadedZip::dispatch($location->string(), new RemarksConfig(), Auth::user());
     }
 
     /**

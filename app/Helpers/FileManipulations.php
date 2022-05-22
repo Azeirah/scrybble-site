@@ -15,32 +15,16 @@ use ZipArchive;
 
 class FileManipulations {
     /**
-     * Creates all directories under $USERDIR/files/$filepath
-     * Returns path relative to storage (to use in $torage->path($returnValue)
-     *
-     * @param PathInterface $filepath A path including a file at the end.
      * @param Filesystem $storage
+     * @param RelativePathInterface $filepath A path including a file at the end.
      * @return PathInterface Path relative to storage root (includes user-dir),
      *              excludes filename
      * @throws InvalidPathStateException
      */
-    public static function ensureDirectoryTreeExists(PathInterface $filepath, Filesystem $storage):
-    PathInterface {
-        /**
-         * The "files" directory prevents a potential problem
-         * Consider these files existing on your remarkable
-         * ./notes
-         * ./work/notes
-         * rmapi downloads all files to the XDG_CACHE_DIR, so the original
-         * "notes" would be overwritten if ./work/notes got downloaded later
-         * than the ./notes file.
-         * For that reason, I create the "files" dir where the rm directory
-         * structure gets mirrored as files get downloaded
-         */
+    public static function ensureDirectoryTreeExists(Filesystem $storage, RelativePathInterface $filepath): PathInterface {
         $atoms = $filepath->atoms();
 
         // last atom is file
-        unset($atoms[count($atoms) - 1]);
         $tree = Path::fromString("");
         foreach ($atoms as $directory_name) {
             $tree = $tree->joinAtoms($directory_name);
@@ -55,15 +39,15 @@ class FileManipulations {
 
     /**
      * @param Filesystem $storage
+     * @param RelativePathInterface $from
      * @param RelativePathInterface $to
      * @return void
-     * @throws InvalidPathStateException
      */
-    public function extractDownloadedZip(Filesystem $storage, RelativePathInterface $to): void {
+    public static function extractDownloadedZip(Filesystem $storage, RelativePathInterface $from, RelativePathInterface $to): void {
         $zip = new ZipArchive();
-        $result = $zip->open($storage->path($to));
+        $result = $zip->open($storage->path($from));
         if ($result === true) {
-            $extract_result = $zip->extractTo($storage->path(Path::fromString($to)->parent()->normalize()));
+            $extract_result = $zip->extractTo($storage->path($to));
             if ($extract_result !== true) {
                 $zip->close();
                 throw new RuntimeException("Unable to extract zip");

@@ -3,8 +3,13 @@
 namespace App\Jobs;
 
 use App\DataClasses\RemarksConfig;
+use App\Helpers\FileManipulations;
 use App\Helpers\UserStorage;
 use App\Models\User;
+use App\Services\RemarksService;
+use Eloquent\Pathogen\AbsolutePath;
+use Eloquent\Pathogen\Exception\InvalidPathStateException;
+use Eloquent\Pathogen\RelativePath;
 use Eloquent\Pathogen\RelativePathInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -24,20 +29,20 @@ class ProcessDownloadedZip implements ShouldQueue {
      *
      * @return void
      */
-    public function __construct(RelativePathInterface $zipLocation, RemarksConfig $remarksConfig, User $user) {
-        $this->zipLocation = $zipLocation;
+    public function __construct(string $zipLocation, RemarksConfig $remarksConfig, User $user) {
+        $this->zipLocation = new RelativePath([$zipLocation]);
         $this->remarksConfig = $remarksConfig;
         $this->user = $user;
-        $this->userStorage = UserStorage::get($user);
     }
 
     /**
      * Execute the job.
      *
      * @return void
+     * @throws InvalidPathStateException
+     * @throws \Eloquent\Pathogen\Exception\NonAbsolutePathException
      */
-    public function handle() {
-        $jobId = $this->job->getJobId();
+    public function handle(RemarksService $remarksService): void {
         /**
          * Create a temporary folder and move the zip to this location. Might be useful to name this folder as the
          * job's id
@@ -47,5 +52,19 @@ class ProcessDownloadedZip implements ShouldQueue {
          * Run remarks over the extracted files
          * Insert a row in "sync" table
          */
+        $userStorage = UserStorage::get($this->user);
+        $jobId = $this->job->getJobId();
+        $jobdir = new RelativePath(['jobs', $jobId]);
+        $to = $jobdir->joinAtoms('extractedFiles')->toRelative();
+        FileManipulations::ensureDirectoryTreeExists($userStorage, $to);
+        if (!$userStorage->exists($jobId)) {
+            $userStorage->makeDirectory($jobId);
+        }
+
+        FileManipulations::extractDownloadedZip($userStorage, from: $this->zipLocation, to: $to);
+
+        $absJobdir = AbsolutePath::fromString($userStorage->path($jobdir->string()));
+        $absOutdir = AbsolutePath::fromString($userStorage->path($jobdir->joinAtoms('out')));
+        $remarksService->extractNotesAndHighlights($absJobdir, $absOutdir, $this->remarksConfig);
     }
 }
