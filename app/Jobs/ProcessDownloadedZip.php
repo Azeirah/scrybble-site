@@ -18,6 +18,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 
 class ProcessDownloadedZip implements ShouldQueue {
@@ -80,6 +81,10 @@ class ProcessDownloadedZip implements ShouldQueue {
         FileManipulations::zipDirectory($userStorage, from: $jobdir->joinAtoms('out.zip')->toRelative(), to: $zipLocation);
 
         // 6. Upload zip to S3
+        if (!Storage::disk('s3')->put('userZips', $userStorage->path($zipLocation))) {
+            throw new RuntimeException("Unable to upload zip to s3");
+        }
+
         // 7. Unless user has telemetry=on && remarksService exception happened, delete temporary folder
         // 8. Insert a row in "sync" table
     }
