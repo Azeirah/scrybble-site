@@ -13,9 +13,11 @@ class DashboardController extends Controller
             $path = "/";
         }
 
+        $rmApiIsAuthenticated = $rmapi->isAuthenticated();
+
         return view('dashboard', [
-            'isRmApiAuthenticated' => $rmapi->isAuthenticated(),
-            'ls' => $rmapi->list($path),
+            'isRmApiAuthenticated' => $rmApiIsAuthenticated,
+            'ls' => $rmApiIsAuthenticated ? $rmapi->list($path) : [],
             'currentWorkingDirectory' => $path
         ]);
     }
