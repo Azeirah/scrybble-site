@@ -13,7 +13,7 @@ class RemarksService {
         // docker run -v "$PWD/files":/store laauurraaa/remarks-bin /store /store --targets md
         $srcDir = $sourceDirectory->string();
         $targetDir = $targetDirectory->string();
-        $strCommand = "docker run -v \"$srcDir/\":/in -v \"$targetDir\":/out laauurraaa/remarks-bin /in /out --modified_pdf";
+        $strCommand = "docker run -v \"$srcDir/\":/in -v \"$targetDir\":/out laauurraaa/remarks-bin /in /out --targets png pdf --combined_pdf --modified_pdf";
         exec($strCommand, $output, $result_code);
 
         if ($result_code !== 0) {
