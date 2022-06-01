@@ -69,7 +69,7 @@ class FileManipulations {
         $dirIter = new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS);
         $iter = new RecursiveIteratorIterator($dirIter);
 
-        $removeRoot = Path::fromString($storage->path('.'))->normalize()->string();
+        $removeRoot = Path::fromString($storage->path($from))->normalize()->string();
         foreach ($iter as $info) {
             $path = $info->getPathname();
             // name inside zip, otherwise includes whole path like /var/www/html/.....

@@ -22,6 +22,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use JsonException;
 use RuntimeException;
 
 class ProcessDownloadedZip implements ShouldQueue {
@@ -46,9 +47,11 @@ class ProcessDownloadedZip implements ShouldQueue {
      * Execute the job.
      *
      * @param RemarksService $remarksService
+     * @param RemarkableService $remarkableService
      * @return void
      * @throws EmptyPathException
      * @throws InvalidPathStateException
+     * @throws JsonException
      * @throws NonAbsolutePathException
      */
     public function handle(RemarksService $remarksService, RemarkableService $remarkableService): void {
