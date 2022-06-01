@@ -90,7 +90,8 @@ class ProcessDownloadedZip implements ShouldQueue {
             to: $to1);
 
         // 6. Upload zip to S3
-        if (!Storage::disk('s3')->put('userZips/' . $jobId . '.zip', $userStorage->get($to1))) {
+        $s3DownloadPath = 'userZips/' . $jobId . '.zip';
+        if (!Storage::disk('s3')->put($s3DownloadPath, $userStorage->get($to1))) {
             throw new RuntimeException("Unable to upload zip to s3");
         }
 
@@ -100,9 +101,10 @@ class ProcessDownloadedZip implements ShouldQueue {
 
         $user = $this->user;
         $lock = Cache::lock("append-to-sync-table-for-userid-" . $user->id, 10);
-        $lock->get(function () use ($user, $rmFileName) {
+        $lock->get(function () use ($user, $rmFileName, $s3DownloadPath) {
             $syncRow = new Sync();
             $syncRow->filename = $rmFileName;
+            $syncRow->S3_download_path = $s3DownloadPath;
             $syncRow->user()->associate($user);
             $syncRow->save();
         });
