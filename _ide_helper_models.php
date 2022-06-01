@@ -20,6 +20,8 @@ namespace App\Models{
  * @property bool $completed
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string $S3_download_path
+ * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|Sync newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Sync newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Sync query()
@@ -27,9 +29,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Sync whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Sync whereFilename($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Sync whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sync whereS3DownloadPath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Sync whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Sync whereUserId($value)
- * @mixin \Eloquent
  */
 	class IdeHelperSync {}
 }
@@ -64,7 +66,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
- * @mixin \Eloquent
  */
 	class IdeHelperUser {}
 }
