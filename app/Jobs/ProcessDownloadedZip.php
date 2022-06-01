@@ -5,7 +5,9 @@ namespace App\Jobs;
 use App\DataClasses\RemarksConfig;
 use App\Helpers\FileManipulations;
 use App\Helpers\UserStorage;
+use App\Models\Sync;
 use App\Models\User;
+use App\Services\RemarkableService;
 use App\Services\RemarksService;
 use Eloquent\Pathogen\AbsolutePath;
 use Eloquent\Pathogen\Exception\EmptyPathException;
@@ -18,6 +20,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 
@@ -48,7 +51,7 @@ class ProcessDownloadedZip implements ShouldQueue {
      * @throws InvalidPathStateException
      * @throws NonAbsolutePathException
      */
-    public function handle(RemarksService $remarksService): void {
+    public function handle(RemarksService $remarksService, RemarkableService $remarkableService): void {
         $userStorage = UserStorage::get($this->user);
         $jobId = $this->job->getJobId();
 
@@ -93,5 +96,15 @@ class ProcessDownloadedZip implements ShouldQueue {
 
         // 7. Unless user has telemetry=on && remarksService exception happened, delete temporary folder
         // 8. Insert a row in "sync" table
+        $rmFileName = $remarkableService->filename($userStorage, $to);
+
+        $user = $this->user;
+        $lock = Cache::lock("append-to-sync-table-for-userid-" . $user->id, 10);
+        $lock->get(function () use ($user, $rmFileName) {
+            $syncRow = new Sync();
+            $syncRow->filename = $rmFileName;
+            $syncRow->user()->associate($user);
+            $syncRow->save();
+        });
     }
 }
