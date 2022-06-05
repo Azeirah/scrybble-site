@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Services;
 
@@ -7,9 +8,11 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use JsonException;
 use Str;
 
+/**
+ * Functionality directly related to the ReMarkable itself
+ * Primarily deals with extracting information out of rm notebook metadata
+ */
 class RemarkableService {
-
-
     /**
      * The name of the Remarkable file
      * @param Filesystem $userStorage
@@ -32,7 +35,6 @@ class RemarkableService {
             return Str::contains($filename, '.metadata');
         });
 
-        return json_decode($userStorage->get($metadata_filename), JSON_OBJECT_AS_ARRAY, 512, JSON_THROW_ON_ERROR);
+        return json_decode($userStorage->get($metadata_filename), true, 512, JSON_THROW_ON_ERROR);
     }
-
 }

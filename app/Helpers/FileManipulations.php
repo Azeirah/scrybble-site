@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Helpers;
 
@@ -14,6 +15,11 @@ use RecursiveIteratorIterator;
 use RuntimeException;
 use ZipArchive;
 
+/**
+ * A couple of high level file manipulation methods
+ * All methods are written for usage with the Filesystem contract
+ * and RelativePathInterfaces
+ */
 class FileManipulations {
     /**
      * @param Filesystem $storage
@@ -26,7 +32,7 @@ class FileManipulations {
         $atoms = $filepath->atoms();
 
         // last atom is file
-        $tree = Path::fromString("");
+        $tree = Path::fromString('');
         foreach ($atoms as $directory_name) {
             $tree = $tree->joinAtoms($directory_name);
             $dir_path = $tree->toAbsolute();
@@ -51,40 +57,49 @@ class FileManipulations {
             $extract_result = $zip->extractTo($storage->path($to));
             if ($extract_result !== true) {
                 $zip->close();
-                throw new RuntimeException("Unable to extract zip");
+                throw new RuntimeException('Unable to extract zip');
             }
         } else {
-            throw new RuntimeException("Unable to open zip");
+            throw new RuntimeException('Unable to open zip');
         }
     }
 
+    /**
+     * Zips the given directory, starts from $storage.
+     * The files within the zip file start from $from
+     * As if you do `ls $from | zip -` (not sure if that's legit bash)
+     * @param Filesystem $storage
+     * @param RelativePathInterface $from
+     * @param RelativePathInterface $to
+     * @return void
+     */
     public static function zipDirectory(Filesystem $storage, RelativePathInterface $from, RelativePathInterface $to): void {
         $zip = new ZipArchive();
-        $zipLocation = $storage->path($to->string());
-        if ($zip->open($zipLocation, flags: ZipArchive::CREATE) !== true) {
-            throw new RuntimeException("Was unable to open zip at $zipLocation");
+        $zip_location = $storage->path($to->string());
+        if ($zip->open($zip_location, flags: ZipArchive::CREATE) !== true) {
+            throw new RuntimeException("Was unable to open zip at $zip_location");
         }
 
         $root = $storage->path($from);
-        $dirIter = new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS);
-        $iter = new RecursiveIteratorIterator($dirIter);
+        $dir_iter = new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS);
+        $iter = new RecursiveIteratorIterator($dir_iter);
 
-        $removeRoot = Path::fromString($storage->path($from))->normalize()->string();
+        $remove_root = Path::fromString($storage->path($from))->normalize()->string();
         foreach ($iter as $info) {
             $path = $info->getPathname();
             // name inside zip, otherwise includes whole path like /var/www/html/.....
-            $entry = Str::replace(search: $removeRoot, replace: '', subject: $path);
+            $entry = Str::replace(search: $remove_root, replace: '', subject: $path);
             echo $path . PHP_EOL;
 
             if (is_dir($path)) {
                 $zip->addEmptyDir($path, $entry);
-            } else if (is_file($path)) {
+            } elseif (is_file($path)) {
                 $zip->addFile($path, $entry);
             }
         }
 
         if (!$zip->close()) {
-            throw new RuntimeException("Was unable to close zip after creation");
+            throw new RuntimeException('Was unable to close zip after creation');
         }
     }
 

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Jobs;
 
@@ -25,8 +26,14 @@ use Illuminate\Support\Facades\Storage;
 use JsonException;
 use RuntimeException;
 
+/**
+ *
+ */
 class ProcessDownloadedZip implements ShouldQueue {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     private RelativePathInterface $zipLocation;
     private RemarksConfig $remarksConfig;
@@ -55,29 +62,29 @@ class ProcessDownloadedZip implements ShouldQueue {
      * @throws NonAbsolutePathException
      */
     public function handle(RemarksService $remarksService, RemarkableService $remarkableService): void {
-        $userStorage = UserStorage::get($this->user);
-        $jobId = $this->job->getJobId();
+        $user_storage = UserStorage::get($this->user);
+        $job_id = $this->job->getJobId();
 
-        $jobdir = new RelativePath(['jobs', $jobId]);
+        $jobdir = new RelativePath(['jobs', $job_id]);
         $to = $jobdir->joinAtoms('extractedFiles')->toRelative();
 
         // 1. Create a temporary folder and move the zip to this location.
-        FileManipulations::ensureDirectoryTreeExists($userStorage, $to);
+        FileManipulations::ensureDirectoryTreeExists($user_storage, $to);
 
         // 2. Extract the zip
-        FileManipulations::extractZip($userStorage, from: $this->zipLocation, to: $to);
+        FileManipulations::extractZip($user_storage, from: $this->zipLocation, to: $to);
 
         // 3. Delete the zip
         // TODO
 
 
         // 4. Run remarks over the extracted files
-        $absJobdir = AbsolutePath::fromString($userStorage->path($jobdir->joinAtoms("extractedFiles")->string()));
-        $absOutdir = AbsolutePath::fromString($userStorage->path($jobdir->joinAtoms('out')));
+        $absolute_job_dir = AbsolutePath::fromString($user_storage->path($jobdir->joinAtoms('extractedFiles')->string()));
+        $absolute_outdir = AbsolutePath::fromString($user_storage->path($jobdir->joinAtoms('out')));
         try {
             $remarksService->extractNotesAndHighlights(
-                sourceDirectory: $absJobdir,
-                targetDirectory: $absOutdir,
+                sourceDirectory: $absolute_job_dir,
+                targetDirectory: $absolute_outdir,
                 config: $this->remarksConfig);
         } catch (RuntimeException $exception) {
             //            if (true || $this->user->config()->telemetryEnabled) {
@@ -88,28 +95,28 @@ class ProcessDownloadedZip implements ShouldQueue {
         // 5. Zip the out dir
         $from = $jobdir->joinAtoms('out')->toRelative();
         $to1 = $jobdir->joinAtoms('out.zip')->toRelative();
-        FileManipulations::zipDirectory($userStorage,
+        FileManipulations::zipDirectory($user_storage,
             from: $from,
             to: $to1);
 
         // 6. Upload zip to S3
-        $s3DownloadPath = 'userZips/' . $jobId . '.zip';
-        if (!Storage::disk('s3')->put($s3DownloadPath, $userStorage->get($to1))) {
-            throw new RuntimeException("Unable to upload zip to s3");
+        $s3_download_path = 'userZips/' . $job_id . '.zip';
+        if (!Storage::disk('s3')->put($s3_download_path, $user_storage->get($to1))) {
+            throw new RuntimeException('Unable to upload zip to s3');
         }
 
         // 7. Unless user has telemetry=on && remarksService exception happened, delete temporary folder
         // 8. Insert a row in "sync" table
-        $rmFileName = $remarkableService->filename($userStorage, $to);
+        $rm_filename = $remarkableService->filename($user_storage, $to);
 
         $user = $this->user;
-        $lock = Cache::lock("append-to-sync-table-for-userid-" . $user->id, 10);
-        $lock->get(function () use ($user, $rmFileName, $s3DownloadPath) {
-            $syncRow = new Sync();
-            $syncRow->filename = $rmFileName;
-            $syncRow->S3_download_path = $s3DownloadPath;
-            $syncRow->user()->associate($user);
-            $syncRow->save();
+        $lock = Cache::lock('append-to-sync-table-for-userid-' . $user->id, 10);
+        $lock->get(function () use ($user, $rm_filename, $s3_download_path) {
+            $sync = new Sync();
+            $sync->filename = $rm_filename;
+            $sync->S3_download_path = $s3_download_path;
+            $sync->user()->associate($user);
+            $sync->save();
         });
     }
 }
