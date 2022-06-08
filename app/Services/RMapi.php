@@ -10,6 +10,7 @@ use App\Jobs\ProcessDownloadedZip;
 use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Path;
 use Eloquent\Pathogen\PathInterface;
+use Eloquent\Pathogen\RelativePath;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -132,7 +133,9 @@ class RMapi {
             throw new RuntimeException('RMapi `get` command failed');
         }
         $location = $this->getDownloadedZipLocation($rmapi_download_path)->toRelative();
-        ProcessDownloadedZip::dispatch($location->string(), $filePath, new RemarksConfig(), Auth::user());
+
+        $folders = RelativePath::fromString($filePath);
+        ProcessDownloadedZip::dispatch($location->string(), $folders->replaceName('')->string(), new RemarksConfig(), Auth::user());
     }
 
     /**
