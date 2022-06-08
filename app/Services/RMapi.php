@@ -7,7 +7,9 @@ use App\DataClasses\RemarksConfig;
 use App\Events\ReMarkableAuthenticatedEvent;
 use App\Helpers\UserStorage;
 use App\Jobs\ProcessDownloadedZip;
+use Eloquent\Pathogen\AbsolutePath;
 use Eloquent\Pathogen\Exception\EmptyPathException;
+use Eloquent\Pathogen\Exception\NonAbsolutePathException;
 use Eloquent\Pathogen\Path;
 use Eloquent\Pathogen\PathInterface;
 use Eloquent\Pathogen\RelativePath;
@@ -125,6 +127,7 @@ class RMapi {
 
     /**
      * @throws EmptyPathException
+     * @throws NonAbsolutePathException
      */
     public function get(string $filePath): void {
         $rmapi_download_path = Str::replace('"', '\"', $filePath);
@@ -134,7 +137,7 @@ class RMapi {
         }
         $location = $this->getDownloadedZipLocation($rmapi_download_path)->toRelative();
 
-        $folders = RelativePath::fromString($filePath);
+        $folders = AbsolutePath::fromString($filePath);
         ProcessDownloadedZip::dispatch($location->string(), $folders->replaceName('')->string(), new RemarksConfig(), Auth::user());
     }
 
