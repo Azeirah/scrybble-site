@@ -132,7 +132,7 @@ class RMapi {
             throw new RuntimeException('RMapi `get` command failed');
         }
         $location = $this->getDownloadedZipLocation($rmapi_download_path)->toRelative();
-        ProcessDownloadedZip::dispatch($location->string(), new RemarksConfig(), Auth::user());
+        ProcessDownloadedZip::dispatch($location->string(), $filePath, new RemarksConfig(), Auth::user());
     }
 
     /**

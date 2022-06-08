@@ -38,16 +38,21 @@ class ProcessDownloadedZip implements ShouldQueue {
     private RelativePathInterface $zipLocation;
     private RemarksConfig $remarksConfig;
     private User $user;
+    /**
+     * @var string Path of the file in the user-facing RM directory structure
+     */
+    private string $RMFilePath;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(string $zipLocation, RemarksConfig $remarksConfig, User $user) {
+    public function __construct(string $zipLocation, string $RMFilePath, RemarksConfig $remarksConfig, User $user) {
         $this->zipLocation = new RelativePath([$zipLocation]);
         $this->remarksConfig = $remarksConfig;
         $this->user = $user;
+        $this->RMFilePath = $RMFilePath;
     }
 
     /**
@@ -109,11 +114,12 @@ class ProcessDownloadedZip implements ShouldQueue {
         // 8. Insert a row in "sync" table
         $rm_filename = $remarkableService->filename($user_storage, $to);
 
+        $rm_filepath = "$this->RMFilePath/$rm_filename";
         $user = $this->user;
         $lock = Cache::lock('append-to-sync-table-for-userid-' . $user->id, 10);
-        $lock->get(function () use ($user, $rm_filename, $s3_download_path) {
+        $lock->get(function () use ($user, $rm_filepath, $s3_download_path) {
             $sync = new Sync();
-            $sync->filename = $rm_filename;
+            $sync->filename = $rm_filepath;
             $sync->S3_download_path = $s3_download_path;
             $sync->user()->associate($user);
             $sync->save();
