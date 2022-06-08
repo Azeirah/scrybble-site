@@ -20,9 +20,9 @@ class DashboardController extends Controller
      * @return Factory|View|Application
      */
     public function index(Request $request, RMapi $rmapi): Factory|View|Application {
-        $path = urldecode($request->query('path'));
-        if ($path === '') {
-            $path = '/';
+        $path = '/';
+        if ($request->has('path')) {
+            $path = urldecode($request->query('path'));
         }
 
         $rm_api_is_authenticated = $rmapi->isAuthenticated();
