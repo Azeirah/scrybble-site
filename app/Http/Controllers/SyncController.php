@@ -20,6 +20,6 @@ class SyncController extends Controller {
         if ($user === null) {
             throw new UnauthorizedException('You need to be logged in in order to interact with the API');
         }
-        return Sync::forUser($user)->get(['clean_filename', 'S3_download_path', 'updated_at']);
+        return Sync::forUser($user)->get(['filename', 'S3_download_path', 'updated_at']);
     }
 }

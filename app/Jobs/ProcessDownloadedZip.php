@@ -23,6 +23,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use JsonException;
 use RuntimeException;
 
@@ -119,7 +120,7 @@ class ProcessDownloadedZip implements ShouldQueue {
         $lock = Cache::lock('append-to-sync-table-for-userid-' . $user->id, 10);
         $lock->get(function () use ($user, $rm_filepath, $s3_download_path) {
             $sync = new Sync();
-            $sync->filename = $rm_filepath;
+            $sync->filename = Str::replace('\\', '', $rm_filepath);
             $sync->S3_download_path = $s3_download_path;
             $sync->user()->associate($user);
             $sync->save();
