@@ -23,11 +23,17 @@ class SyncController extends Controller {
             throw new UnauthorizedException('You need to be logged in in order to interact with the API');
         }
         $disk = Storage::disk('s3');
-        $results = Sync::forUser($user)
-                       ->get(['filename', 'S3_download_path'])
-                       ->map(fn($sync) => ['download_url' => $disk->temporaryUrl($sync->S3_download_path,
-                           now()->addMinutes(5)),
-                                           'filename' => $sync->filename]);
+        $results =
+            Sync::forUser($user)
+                ->get(['filename', 'S3_download_path', 'id'])
+                ->map(fn($sync) => [
+                    'download_url' => $disk->temporaryUrl(
+                        $sync->S3_download_path,
+                        now()->addMinutes(5)),
+                    'filename' => $sync->filename,
+                    'id' => $sync->id
+                ]);
+
         return response()->json($results);
     }
 }
