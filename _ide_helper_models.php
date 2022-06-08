@@ -14,6 +14,7 @@ namespace App\Models{
 /**
  * App\Models\Sync
  *
+ * @method static forUser(User $user)
  * @property int $id
  * @property int $user_id
  * @property string $filename
