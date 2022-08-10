@@ -6,7 +6,7 @@ job("Deploy") {
                 nvm use 16.14.2
                 composer install --no-interaction --no-dev --ignore-platform-reqs
                 npm ci
-                npm build
+                npm run build
                 rm -rf node_modules
                 zip -r main_release.zip . -x .gitignore -x .space.kts -x .git/\*
                 cp main_release.zip /mnt/space/share
