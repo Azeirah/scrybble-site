@@ -1,5 +1,5 @@
 job("Deploy") {
-    container(displayName="Build", image="laauurraaa/php-composer-node-npm:cli-alpine3.15") {
+    container(displayName="Build", image="laauurraaa/php-composer-node-npm:latest") {
         shellScript {
             content = """
                 composer install --no-interaction --no-dev --ignore-platform-reqs
