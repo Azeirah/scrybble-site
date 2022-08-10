@@ -2,7 +2,7 @@ job("Deploy") {
     container(displayName="Build", image="laauurraaa/php-composer-node-npm:latest") {
         shellScript {
             content = """
-                source ~/.bashrc
+                \. ~/.bashrc
                 nvm use 16.14.2
                 composer install --no-interaction --no-dev --ignore-platform-reqs
                 npm ci
