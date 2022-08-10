@@ -2,9 +2,9 @@ job("Deploy") {
     container(displayName="Build", image="laauurraaa/php-composer-node-npm:cli-alpine3.15") {
         shellScript {
             content = """
-                composer install --no-interaction --no-dev
+                composer install --no-interaction --no-dev --ignore-platform-reqs
                 npm ci
-                npm run prod
+                npm build
                 rm -rf node_modules
                 zip -r main_release.zip . -x .gitignore -x .space.kts -x .git/\*
                 cp main_release.zip /mnt/space/share
