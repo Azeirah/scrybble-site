@@ -14,7 +14,6 @@ namespace App\Models{
 /**
  * App\Models\Sync
  *
- * @method static forUser(User $user)
  * @property int $id
  * @property int $user_id
  * @property string $filename
@@ -23,6 +22,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string $S3_download_path
  * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder|Sync forUser(\App\Models\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Sync newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Sync newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Sync query()
