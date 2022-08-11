@@ -3,7 +3,7 @@
     'ls',
 ])
 
-<h1 {{ $attributes }}>{{$currentWorkingDirectory}}</h1>
+<h1>{{$currentWorkingDirectory}}</h1>
 <ul>
     @foreach($ls as $item)
         <li class="list-unstyled ">
