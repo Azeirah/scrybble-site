@@ -3,6 +3,7 @@
 use App\Http\Controllers\ConnectedGumroadLicenseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\GumroadPurchasedController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OnetimecodeController;
 use App\Http\Controllers\RoadmapController;
@@ -27,6 +28,7 @@ Route::group(['middleware' => ['auth']], static function () {
         ->name('dashboard');
 
     Route::get('/roadmap/', [RoadmapController::class, 'index'])->name('roadmap');
+    Route::get('/purchased', [GumroadPurchasedController::class, 'index'])->name('gumroad-purchased');
 
     Route::get('/file', [FileController::class, 'show'])
         ->name('download');
