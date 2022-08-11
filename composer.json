@@ -10,7 +10,7 @@
     "require": {
         "php": "^8.0.2",
         "ext-zip": "*",
-        "guzzlehttp/guzzle": "^7.2",
+        "guzzlehttp/guzzle": "^7.0",
         "laravel/framework": "^9.2",
         "laravel/horizon": "^5.9",
         "laravel/passport": "^10.4",

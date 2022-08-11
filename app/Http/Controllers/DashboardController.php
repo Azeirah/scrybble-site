@@ -8,6 +8,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /**
  *
@@ -24,13 +25,15 @@ class DashboardController extends Controller
         if ($request->has('path')) {
             $path = $request->query('path');
         }
+        $user = Auth::user();
 
         $rm_api_is_authenticated = $rmapi->isAuthenticated();
 
         return view('dashboard', [
             'isRmApiAuthenticated' => $rm_api_is_authenticated,
             'ls' => $rm_api_is_authenticated ? $rmapi->list($path) : [],
-            'currentWorkingDirectory' => $path
+            'currentWorkingDirectory' => $path,
+            'gumroadLicenseValid' => $user?->gumroadLicense->valid ?? false
         ]);
     }
 }

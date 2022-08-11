@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ConnectedGumroadLicenseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\HomeController;
@@ -30,6 +31,11 @@ Route::group(['middleware' => ['auth']], static function () {
     Route::post(
         '/onetimecode',
         [OnetimecodeController::class, 'create']);
+
+    Route::post(
+        '/connect-license',
+        [ConnectedGumroadLicenseController::class, 'store']
+    )->name('connect-license');
 });
 
 Auth::routes();

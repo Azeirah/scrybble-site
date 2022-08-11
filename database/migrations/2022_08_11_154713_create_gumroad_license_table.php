@@ -9,11 +9,13 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::create('gumroad_license', static function (Blueprint $table) {
+        Schema::create('gumroad_licenses', static function (Blueprint $table) {
             $table->id();
 
-            $table->foreignIdFor(User::class);
             $table->string('license');
+            $table->boolean('valid')->default(false);
+            $table->timestamp('last_validated_at')->nullable();
+            $table->foreignIdFor(User::class);
 
             $table->timestamps();
         });
