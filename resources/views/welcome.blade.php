@@ -75,7 +75,7 @@
         <p class="lead">This is the interface for the RM to Obsidian tool.</p>
         <p class="lead">
             <a href="https://streamsoft.gumroad.com/l/remarkable-to-obsidian" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Learn more</a>
-            <a href="#" class="btn btn-lg btn-outline-secondary fw-bold ">I already have a license</a>
+            <a href="{{url('register')}}" class="btn btn-lg btn-outline-secondary fw-bold ">I have a license</a>
         </p>
     </main>
 
