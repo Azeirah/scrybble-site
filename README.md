@@ -19,3 +19,7 @@ sail npm run dev
 ```
 
 Site is running at [localhost](http://localhost)
+
+## Live env
+
+You can find the real site at [scrybble.ink](https://scrybble.ink)
