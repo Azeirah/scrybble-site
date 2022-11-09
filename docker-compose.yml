@@ -23,27 +23,31 @@ services:
         networks:
             - sail
         depends_on:
-            - pgsql
+            - mariadb
             - redis
             - meilisearch
             - selenium
-    pgsql:
-        image: 'postgres:13'
+    mariadb:
+        image: 'mariadb:10'
         ports:
-            - '${FORWARD_DB_PORT:-5432}:5432'
+            - '${FORWARD_DB_PORT:-3306}:3306'
         environment:
-            PGPASSWORD: '${DB_PASSWORD:-secret}'
-            POSTGRES_DB: '${DB_DATABASE}'
-            POSTGRES_USER: '${DB_USERNAME}'
-            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: "%"
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
         volumes:
-            - 'sail-pgsql:/var/lib/postgresql/data'
+            - 'sail-mariadb:/var/lib/mysql'
+            - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
         networks:
             - sail
         healthcheck:
-            test: ["CMD", "pg_isready", "-q", "-d", "${DB_DATABASE}", "-U", "${DB_USERNAME}"]
+            test: [ "CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}" ]
             retries: 3
-            timeout: 5s
+            timeout:
+                5s
     redis:
         image: 'redis:alpine'
         ports:
@@ -53,7 +57,7 @@ services:
         networks:
             - sail
         healthcheck:
-            test: ["CMD", "redis-cli", "ping"]
+            test: [ "CMD", "redis-cli", "ping" ]
             retries: 3
             timeout: 5s
     meilisearch:
@@ -65,7 +69,7 @@ services:
         networks:
             - sail
         healthcheck:
-            test: ["CMD", "wget", "--no-verbose", "--spider",  "http://localhost:7700/health"]
+            test: [ "CMD", "wget", "--no-verbose", "--spider",  "http://localhost:7700/health" ]
             retries: 3
             timeout: 5s
     mailhog:
@@ -85,7 +89,7 @@ networks:
     sail:
         driver: bridge
 volumes:
-    sail-pgsql:
+    sail-mariadb:
         driver: local
     sail-redis:
         driver: local
