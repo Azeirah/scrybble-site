@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="h-100 container d-flex align-items-center justify-content-center">
+    <div class="page-centering-container">
         <div class="col-md-8">
-            <div class="card text-white bg-dark">
+            <div class="card-dark">
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">

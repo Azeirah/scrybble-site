@@ -51,3 +51,17 @@ body {
     color: #fff;
     border-bottom-color: #fff;
 }
+
+.card-dark {
+    @extend .card;
+    @extend .text-white;
+    @extend .bg-dark;
+}
+
+.page-centering-container {
+    @extend .h-100;
+    @extend .container;
+    @extend .d-flex;
+    @extend .align-items-center;
+    @extend .justify-content-center;
+}
