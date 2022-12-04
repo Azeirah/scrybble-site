@@ -7,11 +7,12 @@
 
     @section('content')
         <div class="container">
-            <table class="table">
+            <h1>Scrybble roadmap</h1>
+            <table class="table table-dark">
                 <thead>
                 <tr>
                     <th>Supported</th>
-                    <th>Short</th>
+                    <th>Feature</th>
                     <th>Description</th>
                 </tr>
                 </thead>
@@ -49,7 +50,9 @@
                 <tr class="table-warning">
                     <td>No</td>
                     <td>Tags</td>
-                    <td>ReMarkable recently released a tags feature, it would be great if the synchronized pages contain these references somehow.</td>
+                    <td>ReMarkable recently released a tags feature, it would be great if the synchronized pages contain
+                        these references somehow.
+                    </td>
                 </tr>
                 <tr class="table-group-divider">
                     <td colspan="3" class="table-dark text-center">
@@ -86,7 +89,9 @@
                 <tr class="table-success">
                     <td>yes</td>
                     <td>Only sync pages with notes</td>
-                    <td>An e-book can have 400 pages, where only 17 of them contain annotations. With this option, only those 17 pages will show up in your vault.</td>
+                    <td>An e-book can have 400 pages, where only 17 of them contain annotations. With this option, only
+                        those 17 pages will show up in your vault.
+                    </td>
                 </tr>
                 <tr class="table-warning">
                     <td>no</td>

@@ -21,13 +21,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [HomeController::class, 'index']);
+Route::get('/roadmap/', [RoadmapController::class, 'index'])->name('roadmap');
 
 
 Route::group(['middleware' => ['auth']], static function () {
     Route::get('/dashboard/', [DashboardController::class, 'index'])
         ->name('dashboard');
 
-    Route::get('/roadmap/', [RoadmapController::class, 'index'])->name('roadmap');
     Route::get('/purchased', [GumroadPurchasedController::class, 'index'])->name('gumroad-purchased');
 
     Route::get('/file', [FileController::class, 'show'])
