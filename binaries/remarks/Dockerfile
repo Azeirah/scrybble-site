@@ -1,9 +1,11 @@
-FROM python:3.8-buster
+FROM python:3.10-buster
+
+RUN curl -sSL https://install.python-poetry.org | python3 -
 
 RUN ["mkdir", "/app"]
 WORKDIR /app
 
 COPY remarks /app
 
-RUN ["pip", "install", "-r", "requirements.txt"]
-ENTRYPOINT ["python", "-m", "remarks"]
+RUN ["/root/.local/bin/poetry", "install"]
+ENTRYPOINT ["/root/.local/bin/poetry", "run", "python", "-m", "remarks"]
