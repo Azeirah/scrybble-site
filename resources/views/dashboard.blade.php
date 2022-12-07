@@ -6,7 +6,7 @@
     </x-slot>
 
     @section('content')
-        <div id="root"></div>
+        <div id="root" class="h-100 w-100"></div>
 {{--        <style>--}}
 {{--            a {--}}
 {{--                text-decoration: none;--}}

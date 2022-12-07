@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OnetimecodeController;
 use App\Http\Controllers\RoadmapController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,15 +24,18 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/roadmap/', [RoadmapController::class, 'index'])->name('roadmap');
 
+Route::middleware(['middleware' => 'auth:sanctum'])->get('/sanctum/user', function (Request $request) {
+    return $request->user();
+});
 
 Route::group(['middleware' => ['auth']], static function () {
-    Route::get('/dashboard/', [DashboardController::class, 'index'])
-        ->name('dashboard');
+    Route::get('/app/', [DashboardController::class, 'index'])
+         ->name('dashboard');
 
     Route::get('/purchased', [GumroadPurchasedController::class, 'index'])->name('gumroad-purchased');
 
     Route::get('/file', [FileController::class, 'show'])
-        ->name('download');
+         ->name('download');
 
     Route::post(
         '/onetimecode',

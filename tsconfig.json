@@ -3,7 +3,14 @@
         "module": "commonjs",
         "target": "es5",
         "sourceMap": true,
-        "jsx": "react"
+        "jsx": "react",
+        "allowSyntheticDefaultImports": true,
+        "lib": [
+            "dom",
+            "es5",
+            "scripthost",
+            "es2015.promise"
+        ]
     },
     "exclude": [
         "node_modules"

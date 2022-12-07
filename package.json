@@ -12,16 +12,17 @@
         "@vitejs/plugin-react-refresh": "^1.3.6",
         "bootstrap": "^5.2.3",
         "laravel-vite-plugin": "^0.7.1",
+        "react-redux": "^8.0.5",
         "sass": "^1.56.1",
         "vite": "^3.2.5"
     },
     "dependencies": {
+        "@reduxjs/toolkit": "^1.9.1",
         "axios": "^0.27.2",
         "bootstrap": "^5.2.0",
         "lodash": "^4.17.21",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-router": "^6.4.4",
-        "@reduxjs/toolkit": "^1.9.1"
+        "react-router-dom": "^6.4.5"
     }
 }
