@@ -14,7 +14,8 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    @viteReactRefresh
+    @vite(['resources/js/app.js', 'resources/sass/app.scss'])
 </head>
 <body class="h-100 text-bg-dark">
 <nav class="navbar navbar-expand-md navbar-dark shadow-sm">
