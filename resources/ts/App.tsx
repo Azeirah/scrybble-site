@@ -58,7 +58,7 @@ function Layout() {
                             :
                             <li className="nav-item dropdown">
                                 <Link id="navbarDropdown" className="nav-link dropdown-toggle" to="#" role="button"
-                                      data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                      data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     {user.name}
                                 </Link>
 
