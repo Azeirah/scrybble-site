@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useEffect} from 'react';
 
 import {createRoot} from 'react-dom/client';
 import {Provider} from "react-redux";
@@ -6,8 +7,7 @@ import {store} from "./store/store";
 import {BrowserRouter, Link, Outlet, Route, Routes, useNavigate} from "react-router-dom";
 import LoginCard from "./components/feature/LoginCard/LoginCard";
 import {useAppDispatch, useAppSelector} from "./store/hooks";
-import {useEffect} from "react";
-import {useGetUserQuery, useLazyGetUserQuery} from "./store/api/apiRoot";
+import {useGetUserQuery, useLogoutMutation} from "./store/api/apiRoot";
 import {setCredentials} from "./store/AuthSlice";
 
 
@@ -19,6 +19,7 @@ function AuthPage() {
 
 function Layout() {
     const user = useAppSelector((state) => state.auth.user);
+    const [logout, {}] = useLogoutMutation();
 
     return <>
         <nav className="navbar navbar-expand-md navbar-dark shadow-sm">
@@ -62,16 +63,13 @@ function Layout() {
                                 </Link>
 
                                 <div className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <Link className="dropdown-item" to="logout"
+                                    <a className="dropdown-item"
                                           onClick={(e) => {
                                               e.preventDefault();
-                                              document.getElementById('logout-form').submit();
+                                              logout()
                                           }}
                                     >Logout
-                                    </Link>
-
-                                    <form id="logout-form" action="/auth/logout" method="POST" className="d-none">
-                                    </form>
+                                    </a>
                                 </div>
                             </li>
                         }
@@ -121,9 +119,6 @@ export default function App() {
             <AppRoutes/>
             <Auth/>
         </BrowserRouter>
-        {/*<div className="page-centering-container">*/}
-        {/*    <LoginCard/>*/}
-        {/*</div>*/}
     </Provider>
 }
 

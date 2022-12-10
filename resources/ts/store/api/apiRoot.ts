@@ -56,6 +56,9 @@ export const apiRoot = createApi({
         }),
         getUser: builder.query<User, void>({
             query: () => "/sanctum/user"
+        }),
+        logout: builder.mutation<void, void>({
+            query: () => ({url: "/logout", method: "POST"})
         })
     })
 });
@@ -63,5 +66,6 @@ export const apiRoot = createApi({
 export const {
     useLoginMutation,
     useLazyGetUserQuery,
-    useGetUserQuery
+    useGetUserQuery,
+    useLogoutMutation
 } = apiRoot;
