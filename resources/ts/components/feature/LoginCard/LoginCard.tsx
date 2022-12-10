@@ -5,10 +5,12 @@ import {setCredentials} from "../../../store/AuthSlice";
 import {useNavigate} from "react-router-dom";
 
 export default function () {
-    const [login, {isSuccess}] = useLoginMutation();
+    const [login, {isSuccess, data: loginData}] = useLoginMutation();
     const [getUser, {data: userData}] = useLazyGetUserQuery();
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+
+    console.log(loginData);
 
     useEffect(() => {
         if (isSuccess) {

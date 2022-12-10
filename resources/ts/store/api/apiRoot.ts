@@ -1,5 +1,6 @@
 import {BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError} from "@reduxjs/toolkit/query/react";
 import {User} from "../AuthSlice";
+import {ErrorResponse} from "../../laravelTypes";
 
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -13,26 +14,13 @@ export type LoginData = {
     remember?: true;
 }
 
-// const baseQuery = fetchBaseQuery({baseUrl: '/'})
-// const scrybbleBaseQuery: BaseQueryFn<string | FetchArgs,
-//     unknown,
-//     FetchBaseQueryError> = async (args, api, extraOptions) => {
-//     console.log("Cookie not available yet")
-//     const response = await fetch("sanctum/csrf-cookie")
-//     await response.text();
-//     console.log("cookie available");
-//     const sendArgs = typeof args === "string" ? {url: args} : args;
-//
-//     return baseQuery(args, api, extraOptions);
-// }
-
-async function sleep(time = 1000) {
-    return new Promise<void>((resolve) => {
-        window.setTimeout(() => {
-            resolve();
-        }, time);
-    });
+export interface RegisterForm {
+    name: string,
+    email: string,
+    password: string
 }
+
+type RegisterResponse = ErrorResponse;
 
 export const apiRoot = createApi({
     reducerPath: 'api',
@@ -54,6 +42,13 @@ export const apiRoot = createApi({
                 });
             }
         }),
+        register: builder.mutation<RegisterResponse, RegisterForm>({
+            query: (registration) => ({
+                url: "/register",
+                method: "POST",
+                body: registration
+            })
+        }),
         getUser: builder.query<User, void>({
             query: () => "/sanctum/user"
         }),
@@ -67,5 +62,6 @@ export const {
     useLoginMutation,
     useLazyGetUserQuery,
     useGetUserQuery,
-    useLogoutMutation
+    useLogoutMutation,
+    useRegisterMutation
 } = apiRoot;
