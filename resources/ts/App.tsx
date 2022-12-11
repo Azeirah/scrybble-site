@@ -7,7 +7,7 @@ import {store} from "./store/store";
 import {BrowserRouter, Route, Routes, useNavigate} from "react-router-dom";
 import LoginCard from "./components/feature/LoginCard/LoginCard";
 import {useAppDispatch} from "./store/hooks";
-import {RegisterForm, useGetUserQuery, useRegisterMutation} from "./store/api/apiRoot";
+import {RegisterForm, useGetUserQuery, useLazyGetUserQuery, useRegisterMutation} from "./store/api/apiRoot";
 import {setCredentials} from "./store/AuthSlice";
 import {AuthPage} from "./layout/AuthLayout";
 import {MainLayout} from "./layout/MainLayout";
@@ -18,8 +18,24 @@ function Dashboard() {
     return null;
 }
 
+function useLogin() {
+    const [getUser, {isSuccess: loggedIn, data: userData}] = useLazyGetUserQuery();
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        if (loggedIn && userData) {
+            dispatch(setCredentials(userData));
+            navigate('/');
+        }
+    }, [loggedIn, userData]);
+
+    return getUser;
+}
+
 function RegisterCard() {
-    const [register, {data, error}] = useRegisterMutation();
+    const [register, {error, isSuccess}] = useRegisterMutation();
+    const login = useLogin();
 
     function hasError(name: string): boolean {
         return error?.data.errors.hasOwnProperty(name) ?? false;
@@ -28,6 +44,12 @@ function RegisterCard() {
     function errMsg(name: string): string {
         return error?.data.errors[name][0] ?? "";
     }
+
+    useEffect(() => {
+       if (isSuccess) {
+           login();
+       }
+    }, [isSuccess]);
 
     return <div className="page-centering-container">
         <div className="col-md-8">
@@ -45,7 +67,8 @@ function RegisterCard() {
                             <label htmlFor="name" className="col-md-4 col-form-label text-md-end">Name</label>
 
                             <div className="col-md-6">
-                                <input id="name" type="text" className={`form-control${hasError('name') ? ' is-invalid' : ''}`}
+                                <input id="name" type="text"
+                                       className={`form-control${hasError('name') ? ' is-invalid' : ''}`}
                                        name="name" required autoComplete="name" autoFocus/>
 
                                 {hasError('name') ?
