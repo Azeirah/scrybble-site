@@ -1,13 +1,9 @@
 import React, {useEffect} from "react";
-import {LoginData, useLoginMutation} from "../../../store/api/apiRoot";
-import {useAppDispatch} from "../../../store/hooks";
-import {useNavigate} from "react-router-dom";
+import {LoginData, useLogin, useLoginMutation} from "../../../store/api/apiRoot";
 
 export default function () {
-    const [login, {isSuccess, data: loginData}] = useLoginMutation();
+    const [login, {isSuccess}] = useLoginMutation();
     const authenticateUser = useLogin();
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (isSuccess) {
