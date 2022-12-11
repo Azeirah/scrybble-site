@@ -34,7 +34,7 @@ export default function () {
                        className="col-md-4 col-form-label text-md-end">Email address</label>
 
                 <div className="col-md-6">
-                    <input id="email" type="email" className={`form-control${hasError('email') ?? ' is-invalid'}`}
+                    <input id="email" type="email" className={`form-control${hasError('email') ? ' is-invalid' : ''}`}
                            name="email" required autoComplete="email" autoFocus/>
 
                     {hasError('email') ?
@@ -51,7 +51,7 @@ export default function () {
 
                 <div className="col-md-6">
                     <input id="password" type="password"
-                           className={`form-control${hasError('password') ?? ' is-invalid'}`} name="password"
+                           className={`form-control${hasError('password') ? ' is-invalid' : ''}`} name="password"
                            required autoComplete="current-password"/>
                     {hasError('password') ?
                         <span className="invalid-feedback" role="alert">

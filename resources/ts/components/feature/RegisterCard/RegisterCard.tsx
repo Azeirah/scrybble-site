@@ -40,7 +40,7 @@ export function RegisterCard() {
 
                             <div className="col-md-6">
                                 <input id="name" type="text"
-                                       className={`form-control${hasError('name') ?? ' is-invalid'}`}
+                                       className={`form-control${hasError('name') ? ' is-invalid' : ''}`}
                                        name="name" required autoComplete="name" autoFocus/>
 
                                 {hasError('name') ?
@@ -56,7 +56,7 @@ export function RegisterCard() {
 
                             <div className="col-md-6">
                                 <input id="email" type="email"
-                                       className={`form-control${hasError('email') ?? ' is-invalid'}`}
+                                       className={`form-control${hasError('email') ? ' is-invalid' : ''}`}
                                        name="email" required autoComplete="email"/>
 
                                 {hasError('email') ?
@@ -72,7 +72,7 @@ export function RegisterCard() {
 
                             <div className="col-md-6">
                                 <input id="password" type="password"
-                                       className={`form-control${hasError('password') ?? ' is-invalid'}`}
+                                       className={`form-control${hasError('password') ? ' is-invalid' : ''}`}
                                        name="password"
                                        required autoComplete="new-password"/>
 
