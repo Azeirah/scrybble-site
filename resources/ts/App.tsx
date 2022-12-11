@@ -13,12 +13,12 @@ import {AuthPage} from "./layout/AuthLayout";
 import {MainLayout} from "./layout/MainLayout";
 import {Roadmap} from "./pages/Roadmap";
 import {RegisterCard} from "./components/feature/RegisterCard/RegisterCard";
+import {LandingPage} from "./pages/LandingPage";
 
 
 function Dashboard() {
     return null;
 }
-
 
 function AppRoutes() {
     return (
@@ -30,6 +30,7 @@ function AppRoutes() {
                 </Route>
                 <Route path="dashboard" element={<Dashboard/>}/>
                 <Route path="roadmap" element={<Roadmap/>}/>
+                <Route index element={<LandingPage/>}/>
             </Route>
         </Routes>
     )
