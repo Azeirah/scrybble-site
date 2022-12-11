@@ -1,9 +1,20 @@
 import React, {useEffect} from "react";
 import {LoginData, useLogin, useLoginMutation} from "../../../store/api/apiRoot";
+import {ErrorResponse} from "../../../laravelTypes";
 
 export default function () {
-    const [login, {isSuccess}] = useLoginMutation();
+    const [login, {isSuccess, error}] = useLoginMutation();
     const authenticateUser = useLogin();
+
+    function hasError(name: string): boolean {
+        let err = error as ErrorResponse;
+        return err?.data.errors.hasOwnProperty(name) ?? false;
+    }
+
+    function errMsg(name: string): string {
+        let err = error as ErrorResponse;
+        return err?.data.errors[name][0] ?? "";
+    }
 
     useEffect(() => {
         if (isSuccess) {
@@ -23,8 +34,14 @@ export default function () {
                        className="col-md-4 col-form-label text-md-end">Email address</label>
 
                 <div className="col-md-6">
-                    <input id="email" type="email" className="form-control"
+                    <input id="email" type="email" className={`form-control${hasError('email') ?? ' is-invalid'}`}
                            name="email" required autoComplete="email" autoFocus/>
+
+                    {hasError('email') ?
+                        <span className="invalid-feedback" role="alert">
+                            <strong>{errMsg('email')}</strong>
+                        </span>
+                        : null}
                 </div>
             </div>
 
@@ -34,8 +51,13 @@ export default function () {
 
                 <div className="col-md-6">
                     <input id="password" type="password"
-                           className="form-control" name="password"
+                           className={`form-control${hasError('password') ?? ' is-invalid'}`} name="password"
                            required autoComplete="current-password"/>
+                    {hasError('password') ?
+                        <span className="invalid-feedback" role="alert">
+                            <strong>{errMsg('password')}</strong>
+                        </span>
+                        : null}
                 </div>
             </div>
 

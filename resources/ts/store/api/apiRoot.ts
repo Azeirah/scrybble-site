@@ -1,6 +1,5 @@
-import {BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError} from "@reduxjs/toolkit/query/react";
+import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {setCredentials, User} from "../AuthSlice";
-import {ErrorResponse} from "../../laravelTypes";
 import {useNavigate} from "react-router-dom";
 import {useAppDispatch} from "../hooks";
 import {useEffect} from "react";
