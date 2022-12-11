@@ -1,6 +1,9 @@
 import {BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError} from "@reduxjs/toolkit/query/react";
-import {User} from "../AuthSlice";
+import {setCredentials, User} from "../AuthSlice";
 import {ErrorResponse} from "../../laravelTypes";
+import {useNavigate} from "react-router-dom";
+import {useAppDispatch} from "../hooks";
+import {useEffect} from "react";
 
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -20,16 +23,15 @@ export interface RegisterForm {
     password: string
 }
 
-type RegisterResponse = ErrorResponse;
-
 export const apiRoot = createApi({
     reducerPath: 'api',
-    baseQuery: fetchBaseQuery({
+    baseQuery: fetchBaseQuery<any>({
         prepareHeaders: async (headers, {getState}) => {
             headers.set("Accept", "application/json");
             headers.set("X-XSRF-TOKEN", decodeURIComponent(getCookie("XSRF-TOKEN")));
             return headers;
-        }
+        },
+
     }),
 
     endpoints: (builder) => ({
@@ -42,7 +44,7 @@ export const apiRoot = createApi({
                 });
             }
         }),
-        register: builder.mutation<RegisterResponse, RegisterForm>({
+        register: builder.mutation<unknown, RegisterForm>({
             query: (registration) => ({
                 url: "/register",
                 method: "POST",
@@ -58,10 +60,27 @@ export const apiRoot = createApi({
     })
 });
 
+function useLogin() {
+    const [getUser, {isSuccess: loggedIn, data: userData}] = useLazyGetUserQuery();
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        if (loggedIn && userData) {
+            dispatch(setCredentials(userData));
+            navigate('/');
+        }
+    }, [loggedIn, userData]);
+
+    return getUser;
+}
+
 export const {
     useLoginMutation,
     useLazyGetUserQuery,
     useGetUserQuery,
     useLogoutMutation,
-    useRegisterMutation
+    useRegisterMutation,
 } = apiRoot;
+
+export {useLogin};

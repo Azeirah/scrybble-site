@@ -1,29 +1,19 @@
-import React, {useEffect, useRef} from "react";
-import {LoginData, useLazyGetUserQuery, useLoginMutation} from "../../../store/api/apiRoot";
+import React, {useEffect} from "react";
+import {LoginData, useLoginMutation} from "../../../store/api/apiRoot";
 import {useAppDispatch} from "../../../store/hooks";
-import {setCredentials} from "../../../store/AuthSlice";
 import {useNavigate} from "react-router-dom";
 
 export default function () {
     const [login, {isSuccess, data: loginData}] = useLoginMutation();
-    const [getUser, {data: userData}] = useLazyGetUserQuery();
+    const authenticateUser = useLogin();
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
-    console.log(loginData);
-
     useEffect(() => {
         if (isSuccess) {
-            getUser();
+            authenticateUser();
         }
     }, [isSuccess]);
-
-    useEffect(() => {
-        if (userData) {
-            dispatch(setCredentials(userData));
-            navigate('/');
-        }
-    }, [userData]);
 
     return <div className="card-dark">
         <div className="card-header">Login</div>
