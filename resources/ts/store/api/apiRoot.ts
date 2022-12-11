@@ -24,7 +24,7 @@ export interface RegisterForm {
 
 export const apiRoot = createApi({
     reducerPath: 'api',
-    baseQuery: fetchBaseQuery<any>({
+    baseQuery: fetchBaseQuery({
         prepareHeaders: async (headers, {getState}) => {
             headers.set("Accept", "application/json");
             headers.set("X-XSRF-TOKEN", decodeURIComponent(getCookie("XSRF-TOKEN")));
