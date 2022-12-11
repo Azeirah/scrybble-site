@@ -22,7 +22,6 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/', [HomeController::class, 'index']);
-Route::get('/roadmap/', [RoadmapController::class, 'index'])->name('roadmap');
 
 Route::middleware(['middleware' => 'auth:sanctum'])->get('/sanctum/user', function (Request $request) {
     return $request->user();
@@ -50,3 +49,5 @@ Route::group(['middleware' => ['auth']], static function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::fallback([HomeController::class, 'index']);
