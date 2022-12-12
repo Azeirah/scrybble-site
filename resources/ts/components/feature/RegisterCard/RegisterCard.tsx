@@ -5,7 +5,7 @@ import {ErrorResponse} from "../../../laravelTypes";
 
 export function RegisterCard() {
     const [register, {error, isSuccess}] = useRegisterMutation();
-    const login = useLogin();
+    const login = useLogin("/dashboard");
 
     function hasError(name: string): boolean {
         let err = error as ErrorResponse;

@@ -59,7 +59,7 @@ export const apiRoot = createApi({
     })
 });
 
-function useLogin() {
+function useLogin(to='/') {
     const [getUser, {isSuccess: loggedIn, data: userData}] = useLazyGetUserQuery();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
@@ -67,7 +67,7 @@ function useLogin() {
     useEffect(() => {
         if (loggedIn && userData) {
             dispatch(setCredentials(userData));
-            navigate('/');
+            navigate(to);
         }
     }, [loggedIn, userData]);
 

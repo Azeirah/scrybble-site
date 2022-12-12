@@ -4,7 +4,7 @@ import {ErrorResponse} from "../../../laravelTypes";
 
 export default function () {
     const [login, {isSuccess, error}] = useLoginMutation();
-    const authenticateUser = useLogin();
+    const authenticateUser = useLogin("/dashboard");
 
     function hasError(name: string): boolean {
         let err = error as ErrorResponse;

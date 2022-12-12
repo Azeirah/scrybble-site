@@ -7,7 +7,7 @@ export function MainLayout() {
     const user = useAppSelector((state) => state.auth.user);
     const [logout, {}] = useLogoutMutation();
 
-    return <>
+    return <div style={{display: "flex", flexDirection: "column", height: "100%"}}>
         <nav className="navbar navbar-expand-md navbar-dark shadow-sm">
             <div className="container">
                 <Link className="navbar-brand" to="/">
@@ -63,6 +63,11 @@ export function MainLayout() {
                 </div>
             </div>
         </nav>
-        <Outlet/>
-    </>
+        <div style={{flexGrow: 1, flexShrink: 0}}>
+            <Outlet/>
+        </div>
+        <footer>
+            <p>© {(new Date()).getFullYear()} Streamsoft. Streamsoft is a sole-proprietorship registered in the Netherlands.</p>
+        </footer>
+    </div>
 }
