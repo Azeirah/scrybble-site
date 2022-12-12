@@ -15,24 +15,23 @@ import {Roadmap} from "./pages/Roadmap";
 import {RegisterCard} from "./components/feature/RegisterCard/RegisterCard";
 import {LandingPage} from "./pages/LandingPage";
 
-
-function Dashboard() {
-    return null;
-}
+let Dashboard = React.lazy(() => import('./pages/Dashboard'));
 
 function AppRoutes() {
     return (
-        <Routes>
-            <Route path="/" element={<MainLayout/>}>
-                <Route path="auth" element={<AuthPage/>}>
-                    <Route path="login" element={<LoginCard/>}/>
-                    <Route path="register" element={<RegisterCard/>}/>
+        <React.Suspense>
+            <Routes>
+                <Route path="/" element={<MainLayout/>}>
+                    <Route path="auth" element={<AuthPage/>}>
+                        <Route path="login" element={<LoginCard/>}/>
+                        <Route path="register" element={<RegisterCard/>}/>
+                    </Route>
+                    <Route path="dashboard" element={<Dashboard/>}/>
+                    <Route path="roadmap" element={<Roadmap/>}/>
+                    <Route index element={<LandingPage/>}/>
                 </Route>
-                <Route path="dashboard" element={<Dashboard/>}/>
-                <Route path="roadmap" element={<Roadmap/>}/>
-                <Route index element={<LandingPage/>}/>
-            </Route>
-        </Routes>
+            </Routes>
+        </React.Suspense>
     )
 }
 
