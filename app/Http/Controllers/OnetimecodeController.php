@@ -4,32 +4,30 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateOnetimecodeRequest;
+use App\Services\OnboardingStateService;
 use App\Services\RMapi;
 use Exception;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use InvalidArgumentException;
 
 /**
  *
  */
-class OnetimecodeController extends Controller
-{
+class OnetimecodeController extends Controller {
     /**
      * @param CreateOnetimecodeRequest $request
      * @param RMapi $RMapi
-     * @return Response|Application|ResponseFactory
+     * @return JsonResponse
      */
-    public function create(CreateOnetimecodeRequest $request, RMapi $RMapi): Response|Application|ResponseFactory {
+    public function create(CreateOnetimecodeRequest $request, RMapi $RMapi, OnboardingStateService $onboarding_state_service): JsonResponse {
         try {
             $RMapi->authenticate($request->get('code'));
         } catch (InvalidArgumentException) {
-            return response('Wrong code');
+            return response()->json(['error' => 'Wrong code'], 422);
         } catch (Exception $err) {
-            return response($err->getMessage());
+            return response()->json(['error' => $err->getMessage()], 422);
         }
 
-        return response('Authenticated');
+        return response()->json(['newState' => $onboarding_state_service->getState()]);
     }
 }

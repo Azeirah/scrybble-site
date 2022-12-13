@@ -12,7 +12,6 @@ use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Exception\NonAbsolutePathException;
 use Eloquent\Pathogen\Path;
 use Eloquent\Pathogen\PathInterface;
-use Eloquent\Pathogen\RelativePath;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -87,7 +86,7 @@ class RMapi {
 
         foreach ($output as $item) {
             $index = Str::lower($item);
-            if (Str::contains($index, 'incorrect')) {
+            if (Str::contains($index, 'incorrect') || Str::contains($index, "Enter one-time code")) {
                 throw new InvalidArgumentException('Invalid code');
             }
             if (Str::contains($index, 'failed to create a new device token')) {
@@ -100,7 +99,7 @@ class RMapi {
         }
         if ($exit_code !== 0) {
             // unknown error for now
-            throw new RuntimeException('exit code: ' . $exit_code);
+            throw new RuntimeException("Unknown error, contact developer");
         }
         throw new RuntimeException('unknown error');
     }
@@ -119,9 +118,10 @@ class RMapi {
         return $output->sort()->map(function ($name) use ($path) {
             preg_match('/\[([df])]\s(.+)/', $name, $matches);
             [, $type, $filepath] = $matches;
-            return ['type' => $type,
-                    'name' => $filepath,
-                    'path' => $type === 'd' ? "$path$filepath/" : "$path$filepath"];
+            return [
+                'type' => $type,
+                'name' => $filepath,
+                'path' => $type === 'd' ? "$path$filepath/" : "$path$filepath"];
         })->all();
     }
 
@@ -138,7 +138,10 @@ class RMapi {
         $location = $this->getDownloadedZipLocation($rmapi_download_path)->toRelative();
 
         $folders = AbsolutePath::fromString($filePath);
-        ProcessDownloadedZip::dispatch($location->string(), $folders->replaceName('')->string(), new RemarksConfig(), Auth::user());
+        ProcessDownloadedZip::dispatch($location->string(),
+            $folders->replaceName('')->string(),
+            new RemarksConfig(),
+            Auth::user());
     }
 
     /**

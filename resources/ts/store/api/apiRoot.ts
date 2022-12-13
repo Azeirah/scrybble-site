@@ -24,6 +24,7 @@ export interface RegisterForm {
 
 export type OnboardingState = "setup-gumroad" | "setup-one-time-code" | "ready";
 
+export type OnetimecodeQuery = { code }
 export const apiRoot = createApi({
     reducerPath: "api",
     baseQuery: fetchBaseQuery({
@@ -72,6 +73,19 @@ export const apiRoot = createApi({
                     return newState
                 }))
             }
+        }),
+        sendOnetimecode: builder.mutation<{ newState: OnboardingState }, OnetimecodeQuery>({
+            query: (body) => ({
+                url: "api/onetimecode",
+                method: "POST",
+                body
+            }),
+            async onQueryStarted(license, {dispatch, queryFulfilled}) {
+                const {data: {newState}} = await queryFulfilled
+                dispatch(apiRoot.util.updateQueryData("onboardingState", undefined, () => {
+                    return newState
+                }))
+            }
         })
     })
 })
@@ -98,7 +112,8 @@ export const {
     useLogoutMutation,
     useRegisterMutation,
     useOnboardingStateQuery,
-    useSendGumroadLicenseMutation
+    useSendGumroadLicenseMutation,
+    useSendOnetimecodeMutation
 } = apiRoot
 
 export {useLogin}
