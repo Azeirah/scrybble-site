@@ -1,45 +1,45 @@
-import React, {useEffect} from "react";
-import {LoginData, useLogin, useLoginMutation} from "../../../store/api/apiRoot";
-import {ErrorResponse} from "../../../laravelTypes";
+import React, {useEffect} from "react"
+import {LoginData, useLogin, useLoginMutation} from "../../../store/api/apiRoot"
+import {ErrorResponse} from "../../../laravelTypes"
 
 export default function () {
-    const [login, {isSuccess, error}] = useLoginMutation();
-    const authenticateUser = useLogin("/dashboard");
+    const [login, {isSuccess, error}] = useLoginMutation()
+    const authenticateUser = useLogin("/dashboard")
 
     function hasError(name: string): boolean {
-        let err = error as ErrorResponse;
-        return err?.data.errors.hasOwnProperty(name) ?? false;
+        let err = error as ErrorResponse
+        return err?.data.errors.hasOwnProperty(name) ?? false
     }
 
     function errMsg(name: string): string {
-        let err = error as ErrorResponse;
-        return err?.data.errors[name][0] ?? "";
+        let err = error as ErrorResponse
+        return err?.data.errors[name][0] ?? ""
     }
 
     useEffect(() => {
         if (isSuccess) {
-            authenticateUser();
+            authenticateUser()
         }
-    }, [isSuccess]);
+    }, [isSuccess])
 
     return <div className="card-dark">
         <div className="card-header">Login</div>
         <form className="card-body" onSubmit={(e) => {
-            e.preventDefault();
-            const formData = new FormData(e.currentTarget) as unknown as LoginData;
-            login(formData);
+            e.preventDefault()
+            const formData = new FormData(e.currentTarget) as unknown as LoginData
+            login(formData)
         }}>
             <div className="row mb-3">
                 <label htmlFor="email"
                        className="col-md-4 col-form-label text-md-end">Email address</label>
 
                 <div className="col-md-6">
-                    <input id="email" type="email" className={`form-control${hasError('email') ? ' is-invalid' : ''}`}
+                    <input id="email" type="email" className={`form-control${hasError("email") ? " is-invalid" : ""}`}
                            name="email" required autoComplete="email" autoFocus/>
 
-                    {hasError('email') ?
+                    {hasError("email") ?
                         <span className="invalid-feedback" role="alert">
-                            <strong>{errMsg('email')}</strong>
+                            <strong>{errMsg("email")}</strong>
                         </span>
                         : null}
                 </div>
@@ -51,11 +51,11 @@ export default function () {
 
                 <div className="col-md-6">
                     <input id="password" type="password"
-                           className={`form-control${hasError('password') ? ' is-invalid' : ''}`} name="password"
+                           className={`form-control${hasError("password") ? " is-invalid" : ""}`} name="password"
                            required autoComplete="current-password"/>
-                    {hasError('password') ?
+                    {hasError("password") ?
                         <span className="invalid-feedback" role="alert">
-                            <strong>{errMsg('password')}</strong>
+                            <strong>{errMsg("password")}</strong>
                         </span>
                         : null}
                 </div>

@@ -1,27 +1,27 @@
-import {RegisterForm, useLogin, useRegisterMutation} from "../../../store/api/apiRoot";
-import * as React from "react";
-import {useEffect} from "react";
-import {ErrorResponse} from "../../../laravelTypes";
+import {RegisterForm, useLogin, useRegisterMutation} from "../../../store/api/apiRoot"
+import * as React from "react"
+import {useEffect} from "react"
+import {ErrorResponse} from "../../../laravelTypes"
 
 export function RegisterCard() {
-    const [register, {error, isSuccess}] = useRegisterMutation();
-    const login = useLogin("/dashboard");
+    const [register, {error, isSuccess}] = useRegisterMutation()
+    const login = useLogin("/dashboard")
 
     function hasError(name: string): boolean {
-        let err = error as ErrorResponse;
-        return err?.data.errors.hasOwnProperty(name) ?? false;
+        let err = error as ErrorResponse
+        return err?.data.errors.hasOwnProperty(name) ?? false
     }
 
     function errMsg(name: string): string {
-        let err = error as ErrorResponse;
-        return err?.data.errors[name][0] ?? "";
+        let err = error as ErrorResponse
+        return err?.data.errors[name][0] ?? ""
     }
 
     useEffect(() => {
         if (isSuccess) {
-            login();
+            login()
         }
-    }, [isSuccess]);
+    }, [isSuccess])
 
     return <div className="page-centering-container">
         <div className="col-md-8">
@@ -30,22 +30,22 @@ export function RegisterCard() {
 
                 <div className="card-body">
                     <form onSubmit={(e) => {
-                        e.preventDefault();
-                        const registration = new FormData(e.currentTarget) as unknown as RegisterForm;
+                        e.preventDefault()
+                        const registration = new FormData(e.currentTarget) as unknown as RegisterForm
 
-                        register(registration);
+                        register(registration)
                     }}>
                         <div className="row mb-3">
                             <label htmlFor="name" className="col-md-4 col-form-label text-md-end">Name</label>
 
                             <div className="col-md-6">
                                 <input id="name" type="text"
-                                       className={`form-control${hasError('name') ? ' is-invalid' : ''}`}
+                                       className={`form-control${hasError("name") ? " is-invalid" : ""}`}
                                        name="name" required autoComplete="name" autoFocus/>
 
-                                {hasError('name') ?
+                                {hasError("name") ?
                                     <span className="invalid-feedback" role="alert">
-                                    <strong>{errMsg('name')}</strong>
+                                    <strong>{errMsg("name")}</strong>
                                 </span> : null}
                             </div>
                         </div>
@@ -56,12 +56,12 @@ export function RegisterCard() {
 
                             <div className="col-md-6">
                                 <input id="email" type="email"
-                                       className={`form-control${hasError('email') ? ' is-invalid' : ''}`}
+                                       className={`form-control${hasError("email") ? " is-invalid" : ""}`}
                                        name="email" required autoComplete="email"/>
 
-                                {hasError('email') ?
+                                {hasError("email") ?
                                     <span className="invalid-feedback" role="alert">
-                                    <strong>{errMsg('email')}</strong>
+                                    <strong>{errMsg("email")}</strong>
                                 </span> : null}
                             </div>
                         </div>
@@ -72,13 +72,13 @@ export function RegisterCard() {
 
                             <div className="col-md-6">
                                 <input id="password" type="password"
-                                       className={`form-control${hasError('password') ? ' is-invalid' : ''}`}
+                                       className={`form-control${hasError("password") ? " is-invalid" : ""}`}
                                        name="password"
                                        required autoComplete="new-password"/>
 
-                                {hasError('password') ?
+                                {hasError("password") ?
                                     <span className="invalid-feedback" role="alert">
-                                    <strong>{errMsg('password')}</strong>
+                                    <strong>{errMsg("password")}</strong>
                                 </span>
                                     : null}
                             </div>

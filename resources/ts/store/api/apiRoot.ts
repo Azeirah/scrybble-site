@@ -1,13 +1,13 @@
-import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-import {setCredentials, User} from "../AuthSlice";
-import {useNavigate} from "react-router-dom";
-import {useAppDispatch} from "../hooks";
-import {useEffect} from "react";
+import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react"
+import {setCredentials, User} from "../AuthSlice"
+import {useNavigate} from "react-router-dom"
+import {useAppDispatch} from "../hooks"
+import {useEffect} from "react"
 
 function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) return parts.pop().split(";").shift()
 }
 
 export type LoginData = {
@@ -25,13 +25,13 @@ export interface RegisterForm {
 export type OnboardingState = "setup-gumroad" | "setup-one-time-code" | "ready";
 
 export const apiRoot = createApi({
-    reducerPath: 'api',
+    reducerPath: "api",
     baseQuery: fetchBaseQuery({
         prepareHeaders: async (headers, {getState}) => {
-            headers.set("Accept", "application/json");
-            headers.set("X-XSRF-TOKEN", decodeURIComponent(getCookie("XSRF-TOKEN")));
-            return headers;
-        },
+            headers.set("Accept", "application/json")
+            headers.set("X-XSRF-TOKEN", decodeURIComponent(getCookie("XSRF-TOKEN")))
+            return headers
+        }
     }),
 
     endpoints: (builder) => ({
@@ -41,7 +41,7 @@ export const apiRoot = createApi({
                     url: "/login",
                     method: "POST",
                     body: user
-                });
+                })
             }
         }),
         register: builder.mutation<unknown, RegisterForm>({
@@ -67,28 +67,28 @@ export const apiRoot = createApi({
                 body: {license}
             }),
             async onQueryStarted(license, {dispatch, queryFulfilled}) {
-                const {data: {newState}} = await queryFulfilled;
-                dispatch(apiRoot.util.updateQueryData('onboardingState', undefined, () => {
+                const {data: {newState}} = await queryFulfilled
+                dispatch(apiRoot.util.updateQueryData("onboardingState", undefined, () => {
                     return newState
                 }))
             }
         })
     })
-});
+})
 
-function useLogin(to = '/') {
-    const [getUser, {isSuccess: loggedIn, data: userData}] = useLazyGetUserQuery();
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
+function useLogin(to = "/") {
+    const [getUser, {isSuccess: loggedIn, data: userData}] = useLazyGetUserQuery()
+    const navigate = useNavigate()
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
         if (loggedIn && userData) {
-            dispatch(setCredentials(userData));
-            navigate(to);
+            dispatch(setCredentials(userData))
+            navigate(to)
         }
-    }, [loggedIn, userData]);
+    }, [loggedIn, userData])
 
-    return getUser;
+    return getUser
 }
 
 export const {
@@ -99,6 +99,6 @@ export const {
     useRegisterMutation,
     useOnboardingStateQuery,
     useSendGumroadLicenseMutation
-} = apiRoot;
+} = apiRoot
 
-export {useLogin};
+export {useLogin}

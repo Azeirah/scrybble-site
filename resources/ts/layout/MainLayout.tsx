@@ -1,11 +1,11 @@
-import {useAppSelector} from "../store/hooks";
-import {useLogoutMutation} from "../store/api/apiRoot";
-import {Link, Outlet} from "react-router-dom";
-import * as React from "react";
+import {useAppSelector} from "../store/hooks"
+import {useLogoutMutation} from "../store/api/apiRoot"
+import {Link, Outlet} from "react-router-dom"
+import * as React from "react"
 
 export function MainLayout() {
-    const user = useAppSelector((state) => state.auth.user);
-    const [logout, {}] = useLogoutMutation();
+    const user = useAppSelector((state) => state.auth.user)
+    const [logout, {}] = useLogoutMutation()
 
     return <div style={{display: "flex", flexDirection: "column", height: "100%"}}>
         <nav className="navbar navbar-expand-md navbar-dark shadow-sm">
@@ -51,7 +51,7 @@ export function MainLayout() {
                                 <div className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     <a className="dropdown-item"
                                        onClick={(e) => {
-                                           e.preventDefault();
+                                           e.preventDefault()
                                            logout()
                                        }}
                                     >Logout
@@ -67,7 +67,8 @@ export function MainLayout() {
             <Outlet/>
         </div>
         <footer>
-            <p>© {(new Date()).getFullYear()} Streamsoft. Streamsoft is a sole-proprietorship registered in the Netherlands.</p>
+            <p>© {(new Date()).getFullYear()} Streamsoft. Streamsoft is a sole-proprietorship registered in the
+                Netherlands.</p>
         </footer>
     </div>
 }

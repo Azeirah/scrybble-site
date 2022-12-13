@@ -1,6 +1,6 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {RootState} from "./store";
-import {apiRoot} from "./api/apiRoot";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit"
+import {RootState} from "./store"
+import {apiRoot} from "./api/apiRoot"
 
 export type User = {
     name: string;
@@ -13,15 +13,15 @@ type AuthState = {
 }
 
 const slice = createSlice({
-    name: 'auth',
+    name: "auth",
     initialState: {user: null, token: null} as AuthState,
     reducers: {
         setCredentials: (
             state,
             {payload: user}: PayloadAction<User>
         ) => {
-            state.user = user;
-        },
+            state.user = user
+        }
     },
     extraReducers: builder => builder.addMatcher(apiRoot.endpoints.logout.matchFulfilled,
         (state) => {
