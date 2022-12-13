@@ -26,7 +26,7 @@ class SyncController extends Controller {
         $results =
             Sync::forUser($user)
                 ->get(['filename', 'S3_download_path', 'id'])
-                ->map(fn($sync) => [
+                ->map(fn(Sync $sync) => [
                     'download_url' => $disk->temporaryUrl(
                         $sync->S3_download_path,
                         now()->addMinutes(5)),
