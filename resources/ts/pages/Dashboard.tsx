@@ -21,11 +21,17 @@ export default function Dashboard() {
 
     useEffect(() => {
         if (isError) {
+            navigate('/auth/login');
+        }
+    }, [isError]);
+
+    useEffect(() => {
+        if (isError) {
             navigate('/')
         }
     }, [isError]);
 
     return <div className="page-centering-container">
-        {isLoading ? "loading" : <div><Component/></div>}
+        {isLoading ? "loading" : isError ? null : <div><Component/></div>}
     </div>
 }
