@@ -5,25 +5,26 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreConnectedGumroadLicenseRequest;
 use App\Models\GumroadLicense;
 use App\Models\User;
+use App\Services\OnboardingStateService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use JsonException;
 use RuntimeException;
 
-class ConnectedGumroadLicenseController extends Controller
-{
+class ConnectedGumroadLicenseController extends Controller {
     /**
      */
-    public function store(StoreConnectedGumroadLicenseRequest $request)
-    {
+    public function store(StoreConnectedGumroadLicenseRequest $request, OnboardingStateService $onboarding_state_service) {
         /** @var User $user */
         $user = Auth::user();
 
         $license = $request->get('license');
 
         if ($user->gumroadLicense !== null && $user->gumroadLicense->valid) {
-            throw new RuntimeException('A license is already connected');
+            return response()
+                ->json(['error' => "A license is already connected"], 422);
         }
 
         $client = new Client();
@@ -34,19 +35,26 @@ class ConnectedGumroadLicenseController extends Controller
                     'license_key' => $license
                 ]
             ])->withHeader('Content-Type', 'application/json');
-        } catch (GuzzleException $e) {
-            return redirect('dashboard')->withErrors(["License \"{$license}\" not found, did you fill it in correctly?"]);
+        } catch (GuzzleException) {
+            return response()
+                ->json(['error' => "License \"$license\" not found, did you fill it in correctly?"], 422);
         }
-        $data = json_decode($res->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        try {
+            $data = json_decode($res->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            return response()
+                ->json(['error' => "Gumroad API error"], 503);
+        }
 
         if ($data['success']) {
             $user->gumroadLicense()->firstOrCreate([
                 'valid' => true,
                 'license' => $license
             ]);
-            return redirect('dashboard');
+
+            return response()->json(['newState' => $onboarding_state_service->getState()]);
         }
 
-        return redirect()->withErrors([$data['message']]);
+        return response()->json();
     }
 }

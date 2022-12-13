@@ -22,6 +22,8 @@ export interface RegisterForm {
     password: string
 }
 
+export type OnboardingState = "setup-gumroad" | "setup-one-time-code" | "ready";
+
 export const apiRoot = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
@@ -30,7 +32,6 @@ export const apiRoot = createApi({
             headers.set("X-XSRF-TOKEN", decodeURIComponent(getCookie("XSRF-TOKEN")));
             return headers;
         },
-
     }),
 
     endpoints: (builder) => ({
@@ -55,11 +56,27 @@ export const apiRoot = createApi({
         }),
         logout: builder.mutation<void, void>({
             query: () => ({url: "/logout", method: "POST"})
+        }),
+        onboardingState: builder.query<OnboardingState, void>({
+            query: () => "/api/onboardingState"
+        }),
+        sendGumroadLicense: builder.mutation<{ newState: OnboardingState }, string>({
+            query: (license) => ({
+                url: "/api/gumroadLicense",
+                method: "POST",
+                body: {license}
+            }),
+            async onQueryStarted(license, {dispatch, queryFulfilled}) {
+                const {data: {newState}} = await queryFulfilled;
+                dispatch(apiRoot.util.updateQueryData('onboardingState', undefined, () => {
+                    return newState
+                }))
+            }
         })
     })
 });
 
-function useLogin(to='/') {
+function useLogin(to = '/') {
     const [getUser, {isSuccess: loggedIn, data: userData}] = useLazyGetUserQuery();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
@@ -80,6 +97,8 @@ export const {
     useGetUserQuery,
     useLogoutMutation,
     useRegisterMutation,
+    useOnboardingStateQuery,
+    useSendGumroadLicenseMutation
 } = apiRoot;
 
 export {useLogin};
