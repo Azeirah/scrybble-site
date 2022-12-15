@@ -107,7 +107,7 @@ class RMapi {
     /**
      *
      */
-    public function list(string $path = '/'): array {
+    public function list(string $path = '/'): Collection {
         [$output, $exit_code] = $this->executeRMApiCommand("ls \"$path\"");
 
         if ($exit_code !== 0) {
@@ -122,7 +122,7 @@ class RMapi {
                 'type' => $type,
                 'name' => $filepath,
                 'path' => $type === 'd' ? "$path$filepath/" : "$path$filepath"];
-        })->all();
+        })->values();
     }
 
     /**

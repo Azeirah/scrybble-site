@@ -22,11 +22,11 @@ function AppRoutes() {
         <React.Suspense>
             <Routes>
                 <Route path="/" element={<MainLayout/>}>
+                    <Route path="dashboard" element={<Dashboard/>}/>
                     <Route path="auth" element={<AuthPage/>}>
                         <Route path="login" element={<LoginCard/>}/>
                         <Route path="register" element={<RegisterCard/>}/>
                     </Route>
-                    <Route path="dashboard" element={<Dashboard/>}/>
                     <Route path="roadmap" element={<Roadmap/>}/>
                     <Route index element={<LandingPage/>}/>
                 </Route>

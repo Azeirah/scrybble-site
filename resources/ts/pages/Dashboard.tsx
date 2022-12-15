@@ -1,10 +1,10 @@
 import React, {useEffect} from "react"
 import {useOnboardingStateQuery} from "../store/api/apiRoot"
 import _ from "lodash"
-import GumroadLicenseCard from "../components/feature/GumroadLicenseCard/GumroadLicenseCard"
-import RMFileTree from "../components/feature/RMFileTree"
+import RMFileTree from "../components/feature/RMFileTree/RMFileTree"
 import RMOneTimeCodeCard from "../components/feature/RMOneTimeCodeCard/RMOneTimeCodeCard"
 import {useNavigate} from "react-router-dom"
+import GumroadLicenseCard from "../components/feature/GumroadLicenseCard/GumroadLicenseCard"
 
 
 export default function Dashboard() {
@@ -12,8 +12,10 @@ export default function Dashboard() {
     const navigate = useNavigate()
 
     const renderState = _.cond([
-        [_.matches("setup-gumroad"), _.constant(GumroadLicenseCard)],
-        [_.matches("setup-one-time-code"), _.constant(RMOneTimeCodeCard)],
+        [_.matches("setup-gumroad"), _.constant(
+            () => <div className="page-centering-container"><GumroadLicenseCard/></div>)],
+        [_.matches("setup-one-time-code"), _.constant(
+            () => <div className="page-centering-container"><RMOneTimeCodeCard/></div>)],
         [_.matches("ready"), _.constant(RMFileTree)]
     ])
 
@@ -31,7 +33,7 @@ export default function Dashboard() {
         }
     }, [isError])
 
-    return <div className="page-centering-container">
-        {isLoading ? "loading" : isError ? null : <div><Component/></div>}
+    return <div>
+        {isLoading ? "loading" : isError ? null : <Component/>}
     </div>
 }

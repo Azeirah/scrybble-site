@@ -7,6 +7,7 @@ use App\Http\Controllers\GumroadPurchasedController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OnboardingStateController;
 use App\Http\Controllers\OnetimecodeController;
+use App\Http\Controllers\RMFiletreeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,7 +37,6 @@ Route::group(['middleware' => ['auth']], static function () {
     Route::get('/file', [FileController::class, 'show'])
          ->name('download');
 
-
     Route::post(
         '/connect-license',
         [ConnectedGumroadLicenseController::class, 'store']
@@ -51,6 +51,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => "api"], static function () {
     Route::post(
         '/onetimecode',
         [OnetimecodeController::class, 'create']);
+
+    Route::post('RMFileTree', [RMFiletreeController::class, 'index']);
 });
 
 Auth::routes();

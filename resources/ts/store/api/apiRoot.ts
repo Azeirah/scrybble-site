@@ -22,6 +22,20 @@ export interface RegisterForm {
     password: string
 }
 
+interface RMTreeItem {
+    type: "f" | "d"
+    name: string,
+    path: string
+}
+
+export interface File extends RMTreeItem {
+    type: "f",
+}
+
+export interface Directory extends RMTreeItem {
+    type: "d",
+}
+
 export type OnboardingState = "setup-gumroad" | "setup-one-time-code" | "ready";
 
 export type OnetimecodeQuery = { code }
@@ -86,6 +100,17 @@ export const apiRoot = createApi({
                     return newState
                 }))
             }
+        }),
+        RMFileTree: builder.query<{ items: ReadonlyArray<RMTreeItem>, cwd: string }, string | void>({
+            query(path = "/") {
+                return {
+                    url: `api/RMFileTree`,
+                    method: "POST",
+                    body: {
+                        path
+                    }
+                }
+            }
         })
     })
 })
@@ -113,7 +138,8 @@ export const {
     useRegisterMutation,
     useOnboardingStateQuery,
     useSendGumroadLicenseMutation,
-    useSendOnetimecodeMutation
+    useSendOnetimecodeMutation,
+    useRMFileTreeQuery
 } = apiRoot
 
 export {useLogin}

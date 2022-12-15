@@ -1,0 +1,13 @@
+#filetree {
+    li {
+        list-style: none;
+    }
+
+    li:hover {
+        cursor: pointer;
+    }
+
+    li > span:hover {
+        text-decoration: underline;
+    }
+}
