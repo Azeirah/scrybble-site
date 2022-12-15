@@ -7,7 +7,11 @@ export default function GumroadLicenseCard() {
     const [sendGumroadLicense, {isSuccess, error}] = useSendGumroadLicenseMutation()
     const [license, setLicense] = useState("")
 
-    const isError = Boolean(error?.data?.error)
+    let errMsg
+    if (error && "data" in error) {
+        // @ts-ignore
+        errMsg = error.data?.error
+    }
 
     return <div id="login-card" className="card-dark">
         <div className="card-header">
@@ -19,11 +23,11 @@ export default function GumroadLicenseCard() {
             sendGumroadLicense(license)
         }}>
             <div className="input-group">
-                <input type="text" className={`form-control input-group-text${isError ? " is-invalid" : ""}`} required
+                <input type="text" className={`form-control input-group-text${errMsg ? " is-invalid" : ""}`} required
                        name="license"
                        placeholder="Your license" value={license} onChange={(e) => setLicense(e.currentTarget.value)}/>
                 <button className="btn btn-primary" type="submit">Submit</button>
-                {isError ? <FormError errorMessage={error.data.error}/> : null}
+                {errMsg ? <FormError errorMessage={errMsg}/> : null}
             </div>
         </form>
     </div>

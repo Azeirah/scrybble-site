@@ -5,7 +5,11 @@ import FormError from "../../reusable/FormError/FormError"
 export default function RMOneTimeCodeCard() {
     const [sendOnetimecode, {error}] = useSendOnetimecodeMutation()
 
-    const isError = Boolean(error?.data?.error)
+    let errMsg
+    if (error && "data" in error) {
+        // @ts-ignore
+        errMsg = error.data?.error
+    }
 
     return <div className="card-dark">
         <div className="card-header">
@@ -22,11 +26,11 @@ export default function RMOneTimeCodeCard() {
                 sendOnetimecode(oneTimeCodeBody)
             }}>
                 <div className="input-group">
-                    <input className={`input-group-text${isError ? " is-invalid" : ""}`} required minLength={8}
+                    <input className={`input-group-text${errMsg ? " is-invalid" : ""}`} required minLength={8}
                            maxLength={8} pattern="[a-z]{8}"
                            placeholder="aabbccdd" name="code" type="text" autoFocus/>
                     <input className="btn btn-primary" type="submit" value="submit"/>
-                    {isError ? <FormError errorMessage={error?.data?.error}/> : null}
+                    {errMsg ? <FormError errorMessage={errMsg}/> : null}
                 </div>
             </form>
         </div>
