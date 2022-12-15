@@ -1,7 +1,9 @@
-import React from "react"
+import React, {useCallback} from "react"
 import "./RMFileTree.scss"
 import {Link, useLocation} from "react-router-dom"
-import {Directory, File, useRMFileTreeQuery} from "../../../store/api/apiRoot"
+import {Directory, File, useRMFileTreeQuery, useSelectFileForSyncMutation} from "../../../store/api/apiRoot"
+import toast from "react-hot-toast"
+import _ from "lodash"
 
 const iconStyle = {width: "24px", height: "24px", display: "inline-block"}
 
@@ -25,7 +27,14 @@ function DirectoryItem({item}: { item: Directory }) {
 }
 
 function FileItem({item}: { item: File }) {
-    return <><FileIcon/><span>{item.name}</span></>
+    const [selectForSync, {}] = useSelectFileForSyncMutation()
+
+    const syncFile = useCallback(_.debounce(() => {
+        toast.success(`File ${item.name} will be synced!`)
+        selectForSync(item.path)
+    }, 1000), [item, selectForSync])
+
+    return <><FileIcon/><span onClick={syncFile}>{item.name}</span></>
 }
 
 export default function RMFileTree() {

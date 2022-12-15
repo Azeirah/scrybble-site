@@ -111,6 +111,17 @@ export const apiRoot = createApi({
                     }
                 }
             }
+        }),
+        selectFileForSync: builder.mutation<unknown, string>({
+            query(file) {
+                return {
+                    url: "api/file",
+                    method: "POST",
+                    body: {
+                        file
+                    }
+                }
+            }
         })
     })
 })
@@ -139,7 +150,8 @@ export const {
     useOnboardingStateQuery,
     useSendGumroadLicenseMutation,
     useSendOnetimecodeMutation,
-    useRMFileTreeQuery
+    useRMFileTreeQuery,
+    useSelectFileForSyncMutation
 } = apiRoot
 
 export {useLogin}

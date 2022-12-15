@@ -10,8 +10,7 @@ use Illuminate\Http\Request;
 /**
  *
  */
-class FileController extends Controller
-{
+class FileController extends Controller {
     /**
      * @param Request $request
      * @param RMapi $RMapi
@@ -19,7 +18,7 @@ class FileController extends Controller
      * @throws EmptyPathException
      */
     public function show(Request $request, RMapi $RMapi): void {
-        $file = $request->query('path');
+        $file = $request->get('file');
 
         $RMapi->get($file);
     }

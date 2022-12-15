@@ -34,8 +34,6 @@ Route::group(['middleware' => ['auth']], static function () {
 
     Route::get('/purchased', [GumroadPurchasedController::class, 'index'])->name('gumroad-purchased');
 
-    Route::get('/file', [FileController::class, 'show'])
-         ->name('download');
 
     Route::post(
         '/connect-license',
@@ -51,6 +49,9 @@ Route::group(['middleware' => ['auth'], 'prefix' => "api"], static function () {
     Route::post(
         '/onetimecode',
         [OnetimecodeController::class, 'create']);
+
+    Route::post('/file', [FileController::class, 'show'])
+         ->name('download');
 
     Route::post('RMFileTree', [RMFiletreeController::class, 'index']);
 });

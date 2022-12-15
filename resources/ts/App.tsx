@@ -14,6 +14,7 @@ import {MainLayout} from "./layout/MainLayout"
 import {Roadmap} from "./pages/Roadmap"
 import {RegisterCard} from "./components/feature/RegisterCard/RegisterCard"
 import {LandingPage} from "./pages/LandingPage"
+import {Toaster} from "react-hot-toast"
 
 let Dashboard = React.lazy(() => import("./pages/Dashboard"))
 
@@ -59,6 +60,7 @@ export default function App() {
         <BrowserRouter>
             <AppRoutes/>
             <Auth/>
+            <Toaster/>
         </BrowserRouter>
     </Provider>
 }
