@@ -56,8 +56,6 @@ Route::group(['middleware' => ['auth'], 'prefix' => "api"], static function () {
     Route::post('RMFileTree', [RMFiletreeController::class, 'index']);
 });
 
-Auth::routes();
-
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::fallback([HomeController::class, 'index']);
