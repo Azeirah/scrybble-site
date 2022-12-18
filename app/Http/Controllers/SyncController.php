@@ -25,6 +25,7 @@ class SyncController extends Controller {
         $disk = Storage::disk('s3');
         $results =
             Sync::forUser($user)
+                ->whereIsCompleted()
                 ->get(['filename', 'S3_download_path', 'id'])
                 ->map(fn(Sync $sync) => [
                     'download_url' => $disk->temporaryUrl(

@@ -34,6 +34,10 @@ class Sync extends Model {
         return $query->where('user_id', $user->id);
     }
 
+    public function scopeWhereIsCompleted(Builder $query) {
+        return $query->where('completed', true);
+    }
+
     public function logs(): HasMany {
         return $this->hasMany(SyncLog::class);
     }
