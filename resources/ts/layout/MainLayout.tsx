@@ -7,7 +7,7 @@ export function MainLayout() {
     const user = useAppSelector((state) => state.auth.user)
     const [logout, {}] = useLogoutMutation()
 
-    return <div style={{display: "flex", flexDirection: "column", height: "100%"}}>
+    return <div style={{display: "flex", flexDirection: "column", minHeight: "100vh"}}>
         <nav className="navbar navbar-expand-md navbar-dark shadow-sm">
             <div className="container">
                 <Link className="navbar-brand" to="/">
@@ -63,7 +63,7 @@ export function MainLayout() {
                 </div>
             </div>
         </nav>
-        <div style={{flexGrow: 1, flexShrink: 0}}>
+        <div style={{flexGrow: 1, flexShrink: 0, display: "flex", justifyContent: "center"}}>
             <Outlet/>
         </div>
         <footer>

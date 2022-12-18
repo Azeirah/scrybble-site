@@ -17,7 +17,7 @@
     @viteReactRefresh
     @vite(['resources/js/app.js', 'resources/sass/app.scss'])
 </head>
-<body class="h-100 text-bg-dark">
+<body class="min-vh-100 text-bg-dark">
 
 @yield('content')
 </body>
