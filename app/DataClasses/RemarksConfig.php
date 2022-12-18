@@ -2,7 +2,6 @@
 
 namespace App\DataClasses;
 
-use JsonException;
 use JsonSerializable;
 
 /**
@@ -12,13 +11,10 @@ class RemarksConfig implements JsonSerializable {
 
     public function __construct(public bool $modified_only = false) {}
 
-    /**
-     * @throws JsonException
-     */
     public function jsonSerialize() {
-        return json_encode([
+        return [
             'modified_only' => $this->modified_only
-        ], JSON_THROW_ON_ERROR);
+        ];
     }
 
     public function toRemarksParams() {
