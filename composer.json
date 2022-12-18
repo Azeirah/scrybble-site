@@ -11,6 +11,7 @@
         "php": "^8.0.2",
         "ext-xdebug": "*",
         "ext-zip": "*",
+        "doctrine/dbal": "^3.5",
         "guzzlehttp/guzzle": "^7.0",
         "laravel/fortify": "^1.14",
         "laravel/framework": "^9.2",
