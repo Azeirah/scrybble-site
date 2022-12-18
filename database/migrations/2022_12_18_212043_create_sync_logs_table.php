@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
 
             $table->string('message');
-            $table->enum('severity', ['debug', 'info', 'warning', 'error']);
+            $table->string('severity');
             $table->foreignIdFor(Sync::class);
 
             $table->timestamps();
