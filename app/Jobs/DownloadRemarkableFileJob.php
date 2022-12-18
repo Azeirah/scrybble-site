@@ -26,7 +26,8 @@ class DownloadRemarkableFileJob implements ShouldQueue {
      * @throws NonAbsolutePathException
      * @throws EmptyPathException
      */
-    public function handle(RMapi $RMapi) {
+    public function handle() {
+        $RMapi = new RMapi($this->sync_context->user);
         $this->sync_context->logStep("Downloading file");
         $results = $RMapi->get($this->sync_context->input_filename);
         $output = $results['output'];

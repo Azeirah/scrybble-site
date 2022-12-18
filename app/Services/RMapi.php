@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Events\ReMarkableAuthenticatedEvent;
 use App\Helpers\UserStorage;
+use App\Models\User;
 use Eloquent\Pathogen\AbsolutePath;
 use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Exception\NonAbsolutePathException;
@@ -24,8 +25,8 @@ use RuntimeException;
 class RMapi {
     private Filesystem $storage;
 
-    public function __construct() {
-        $this->storage = UserStorage::get(Auth::user());
+    public function __construct(User $user = null) {
+        $this->storage = UserStorage::get($user ?? Auth::user());
     }
 
     /**
