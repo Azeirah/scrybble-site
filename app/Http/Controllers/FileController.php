@@ -10,6 +10,7 @@ use App\Services\RMapi;
 use Eloquent\Pathogen\Exception\EmptyPathException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 /**
  *
@@ -22,7 +23,10 @@ class FileController extends Controller {
      * @throws EmptyPathException
      */
     public function show(Request $request): void {
-        $sync_context = new SyncContext($request->get('file'), Auth::user(), new RemarksConfig());
+        $user = Auth::user();
+        $input_filename = $request->get('file');
+        $sync_context = new SyncContext($input_filename, $user, new RemarksConfig());
+        Log::info("user=`$user` requested file file=`input_filename`; Dispatching `DownloadRemarkableFileJob`");
         DownloadRemarkableFileJob::dispatch($sync_context);
     }
 }
