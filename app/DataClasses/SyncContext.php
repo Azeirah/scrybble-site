@@ -24,10 +24,18 @@ class SyncContext {
         $this->sync = $sync;
     }
 
-    public function logStep(string $string) {
+    public function logStep(string $string): void {
         $log = new SyncLog;
         $log->message = $string;
         $log->severity = "info";
+        $log->belongsToSync()->associate($this->sync);
+        $log->save();
+    }
+
+    public function logError(string $message): void {
+        $log = new SyncLog;
+        $log->message = $message;
+        $log->severity = "error";
         $log->belongsToSync()->associate($this->sync);
         $log->save();
     }

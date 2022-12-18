@@ -39,6 +39,7 @@ export interface Directory extends RMTreeItem {
 export type OnboardingState = "setup-gumroad" | "setup-one-time-code" | "ready";
 
 export type OnetimecodeQuery = { code }
+export type SyncStatus = { filename: string, created_at: string, completed: boolean, error: boolean }
 export const apiRoot = createApi({
     reducerPath: "api",
     baseQuery: fetchBaseQuery({
@@ -122,6 +123,14 @@ export const apiRoot = createApi({
                     }
                 }
             }
+        }),
+        syncStatus: builder.query<SyncStatus[], void>({
+            query() {
+                return {
+                    url: "api/inspect-sync",
+                    method: "GET"
+                }
+            }
         })
     })
 })
@@ -151,7 +160,8 @@ export const {
     useSendGumroadLicenseMutation,
     useSendOnetimecodeMutation,
     useRMFileTreeQuery,
-    useSelectFileForSyncMutation
+    useSelectFileForSyncMutation,
+    useSyncStatusQuery
 } = apiRoot
 
 export {useLogin}

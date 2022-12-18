@@ -2,7 +2,7 @@ import React from "react"
 import {Link} from "react-router-dom"
 
 export function LandingPage() {
-    return <div id="landing-page" style={{height: "100%"}}
+    return <div id="landing-page"
                 className="container d-flex align-items-center justify-content-center text-center">
         <main>
             <h1>ReMarkable to Obsidian sync</h1>

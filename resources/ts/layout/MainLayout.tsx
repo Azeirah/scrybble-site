@@ -23,11 +23,19 @@ export function MainLayout() {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav me-auto">
                         <li className="nav-item">
-                            <Link to="/dashboard" className="nav-link">Dashboard</Link>
-                        </li>
-                        <li className="nav-item">
                             <Link to="/roadmap" className="nav-link">Roadmap</Link>
                         </li>
+                        <li className="nav-item border-right border-dark border"></li>
+                        {user ?
+                            <>
+                                <li className="nav-item">
+                                    <Link to="/dashboard" className="nav-link">Dashboard</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/inspect-sync" className="nav-link">Sync status</Link>
+                                </li>
+                            </> : null
+                        }
                     </ul>
 
                     <ul className="navbar-nav ms-auto">
@@ -63,7 +71,7 @@ export function MainLayout() {
                 </div>
             </div>
         </nav>
-        <div style={{flexGrow: 1, flexShrink: 0, display: "flex", justifyContent: "center"}}>
+        <div style={{flexGrow: 1, flexShrink: 0, display: "flex", justifyContent: "center", alignItems: "center"}}>
             <Outlet/>
         </div>
         <footer>

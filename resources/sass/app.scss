@@ -64,4 +64,5 @@ body {
     @extend .d-flex;
     @extend .align-items-center;
     @extend .justify-content-center;
+    flex-direction: column;
 }

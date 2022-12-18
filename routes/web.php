@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\GumroadPurchasedController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InspectSyncController;
 use App\Http\Controllers\OnboardingStateController;
 use App\Http\Controllers\OnetimecodeController;
 use App\Http\Controllers\RMFiletreeController;
@@ -52,6 +53,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => "api"], static function () {
 
     Route::post('/file', [FileController::class, 'show'])
          ->name('download');
+
+    Route::get('inspect-sync', [InspectSyncController::class, "index"]);
 
     Route::post('RMFileTree', [RMFiletreeController::class, 'index']);
 });
