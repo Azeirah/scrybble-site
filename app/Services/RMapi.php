@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\DataClasses\RemarksConfig;
 use App\Events\ReMarkableAuthenticatedEvent;
 use App\Helpers\UserStorage;
-use App\Jobs\ProcessDownloadedZip;
 use Eloquent\Pathogen\AbsolutePath;
 use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Exception\NonAbsolutePathException;
@@ -129,19 +127,21 @@ class RMapi {
      * @throws EmptyPathException
      * @throws NonAbsolutePathException
      */
-    public function get(string $filePath): void {
+    public function get(string $filePath): array {
         $rmapi_download_path = Str::replace('"', '\"', $filePath);
-        [, $exit_code] = $this->executeRMApiCommand("get \"$rmapi_download_path\"");
+        [$output, $exit_code] = $this->executeRMApiCommand("get \"$rmapi_download_path\"");
         if ($exit_code !== 0) {
             throw new RuntimeException('RMapi `get` command failed');
         }
         $location = $this->getDownloadedZipLocation($rmapi_download_path)->toRelative();
 
         $folders = AbsolutePath::fromString($filePath);
-        ProcessDownloadedZip::dispatch($location->string(),
-            $folders->replaceName('')->string(),
-            new RemarksConfig(),
-            Auth::user());
+
+        return [
+            'output' => $output,
+            'downloaded_zip_location' => $location->string(),
+            'folder' => $folders->replaceName("")->string()
+        ];
     }
 
     /**
