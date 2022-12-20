@@ -27,6 +27,11 @@ export function Roadmap() {
                 <td>Support .epub format</td>
                 <td>Allow synchronization of .epub files from ReMarkable to Obsidian</td>
             </tr>
+            <tr className="table-success">
+                <td>Yes (beta)</td>
+                <td>Support notebooks</td>
+                <td>Allows synchronizing ReMarkable notebooks to Obsidian</td>
+            </tr>
             <tr className="table-warning">
                 <td>Maybe</td>
                 <td>Quick sheets</td>
