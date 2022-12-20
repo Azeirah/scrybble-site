@@ -21,7 +21,7 @@ class InspectSyncController extends Controller {
                                   && (Carbon
                                           ::now()
                                           ->addMinutes($grace_period_in_minutes)
-                                          ->greaterThan($syncItem->created_at) ||
+                                          ->lessThan($syncItem->created_at) ||
                                       $syncItem->logs()->where('severity', 'error')->count() > 0)
                           ]);
         return response()->json(
