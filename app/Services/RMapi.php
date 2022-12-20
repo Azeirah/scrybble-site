@@ -14,6 +14,7 @@ use Eloquent\Pathogen\PathInterface;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
@@ -81,7 +82,8 @@ class RMapi {
     public function authenticate(string $code): bool {
         $rmapi = base_path('binaries/rmapi');
         $this->configureEnv();
-        exec("echo $code | $rmapi", $output, $exit_code);
+        $command = "echo $code | $rmapi";
+        exec($command, $output, $exit_code);
 
         foreach ($output as $item) {
             $index = Str::lower($item);
@@ -91,13 +93,16 @@ class RMapi {
             if (Str::contains($index, 'failed to create a new device token')) {
                 throw new RuntimeException('Failed to create token');
             }
-            if (Str::contains($index, 'refresh')) {
+            if (Str::contains($index, 'refresh') || Str::contains($index, "syncversion: 1.5")) {
                 event(new ReMarkableAuthenticatedEvent());
                 return true;
             }
         }
         if ($exit_code !== 0) {
             // unknown error for now
+            $user = Auth::user()->id;
+            $all_output = implode("\n", $output);
+            Log::error("RMApi onetimecode failed for User#$user, exit_code=`$exit_code`, output=`$all_output`");
             throw new RuntimeException("Unknown error, contact developer");
         }
         throw new RuntimeException('unknown error');
