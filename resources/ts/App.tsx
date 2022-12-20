@@ -18,6 +18,7 @@ import {Toaster} from "react-hot-toast"
 
 let Dashboard = React.lazy(() => import("./pages/Dashboard"))
 let InspectSync = React.lazy(() => import("./pages/InspectSync/InspectSync"))
+let PurchasedPage = React.lazy(() => import("./pages/PurchasedPage"))
 
 
 function AppRoutes() {
@@ -25,6 +26,7 @@ function AppRoutes() {
         <React.Suspense>
             <Routes>
                 <Route path="/" element={<MainLayout/>}>
+                    <Route path="purchased" element={<PurchasedPage/>}/>
                     <Route path="dashboard" element={<Dashboard/>}/>
                     <Route path="inspect-sync" element={<InspectSync/>}/>
                     <Route path="auth" element={<AuthPage/>}>

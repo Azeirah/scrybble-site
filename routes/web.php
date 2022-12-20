@@ -3,7 +3,6 @@
 use App\Http\Controllers\ConnectedGumroadLicenseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileController;
-use App\Http\Controllers\GumroadPurchasedController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InspectSyncController;
 use App\Http\Controllers\OnboardingStateController;
@@ -32,9 +31,6 @@ Route::middleware(['middleware' => 'auth:sanctum'])->get('/sanctum/user', functi
 Route::group(['middleware' => ['auth']], static function () {
     Route::get('/app/', [DashboardController::class, 'index'])
          ->name('dashboard');
-
-    Route::get('/purchased', [GumroadPurchasedController::class, 'index'])->name('gumroad-purchased');
-
 
     Route::post(
         '/connect-license',
