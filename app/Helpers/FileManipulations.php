@@ -53,9 +53,9 @@ class FileManipulations {
     public static function extractZip(Filesystem $storage, RelativePathInterface $from, RelativePathInterface $to): void {
         $zip = new ZipArchive();
         $result = $zip->open($storage->path($from));
-        if ($result === true) {
+        if ($result) {
             $extract_result = $zip->extractTo($storage->path($to));
-            if ($extract_result !== true) {
+            if (!$extract_result) {
                 $zip->close();
                 throw new RuntimeException('Unable to extract zip');
             }
@@ -93,7 +93,7 @@ class FileManipulations {
 
             if (is_dir($path)) {
                 $zip->addEmptyDir($path, $entry);
-            } elseif (is_file($path)) {
+            } else if (is_file($path)) {
                 $zip->addFile($path, $entry);
             }
         }
