@@ -51,7 +51,7 @@ class RMapi {
             throw new RuntimeException('Could not cd into userdir');
         }
         try {
-            exec("$rmapi -ni $command", $output, $exit_code);
+            exec("$rmapi -ni $command 2>&1", $output, $exit_code);
         } finally {
             chdir($cwd_before);
         }
