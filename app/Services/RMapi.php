@@ -11,6 +11,7 @@ use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Exception\NonAbsolutePathException;
 use Eloquent\Pathogen\Path;
 use Eloquent\Pathogen\PathInterface;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -132,12 +133,17 @@ class RMapi {
     /**
      * @throws EmptyPathException
      * @throws NonAbsolutePathException
+     * @throws RuntimeException
+     * @throws FileNotFoundException
      */
     public function get(string $filePath): array {
         $rmapi_download_path = Str::replace('"', '\"', $filePath);
         [$output, $exit_code] = $this->executeRMApiCommand("get \"$rmapi_download_path\"");
         if ($exit_code !== 0) {
-            throw new RuntimeException('RMapi `get` command failed');
+            if ($output && Str::contains($output->implode(""), "file doesn't exist")) {
+                throw new FileNotFoundException("Failed downloading file, it doesn't seem to exist (have you deleted the file? Otherwise try resyncing the file on your device)");
+            }
+            throw new RuntimeException('RMapi `get` command failed for an unknown reason');
         }
         $location = $this->getDownloadedZipLocation($rmapi_download_path)->toRelative();
 
