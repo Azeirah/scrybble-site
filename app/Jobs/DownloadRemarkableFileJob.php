@@ -26,6 +26,7 @@ class DownloadRemarkableFileJob implements ShouldQueue {
 
     public function handle() {
         $RMapi = new RMapi($this->sync_context->user);
+        $RMapi->refresh();
         $this->sync_context->logStep("Downloading file");
         try {
             $results = $RMapi->get($this->sync_context->input_filename);

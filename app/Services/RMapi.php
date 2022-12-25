@@ -16,6 +16,7 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
@@ -26,9 +27,12 @@ use RuntimeException;
  */
 class RMapi {
     private Filesystem $storage;
+    private int $userId;
 
     public function __construct(User $user = null) {
-        $this->storage = UserStorage::get($user ?? Auth::user());
+        $user1 = $user ?? Auth::user();
+        $this->storage = UserStorage::get($user1);
+        $this->userId = $user->id;
     }
 
     /**
@@ -128,6 +132,27 @@ class RMapi {
                 'name' => $filepath,
                 'path' => $type === 'd' ? "$path$filepath/" : "$path$filepath"];
         })->values();
+    }
+
+    public function refresh(): bool {
+        $redis = Redis::client();
+        $key = "rmapi:lastRefreshed:$this->userId";
+        $ttl = $redis->ttl($key);
+
+        if ($ttl === -1 || $ttl === -2) {
+            [$refresh_output, $refresh_exit_code] = $this->executeRMApiCommand("refresh");
+            if ($refresh_exit_code !== 0) {
+                $all_refresh_output = implode("\n", $refresh_output);
+                throw new RuntimeException("Failed to refresh: `$all_refresh_output`");
+            }
+            $redis->set($key, "", [
+                // 120 seconds
+                "EX" => 120
+            ]);
+            return true;
+        }
+
+        return false;
     }
 
     /**
