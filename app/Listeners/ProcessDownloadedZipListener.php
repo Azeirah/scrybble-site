@@ -46,31 +46,50 @@ class ProcessDownloadedZipListener implements ShouldQueue {
         // TODO
 
 
-        // 4. Run remarks over the extracted files
-        $absolute_job_dir =
-            AbsolutePath::fromString($user_storage->path($jobdir->joinAtoms('extractedFiles')->string()));
-        $absolute_outdir = AbsolutePath::fromString($user_storage->path($jobdir->joinAtoms('out')));
-        try {
-            $sync_context->logStep("Processing ReMarkable file");
-            $this->remarks_service->extractNotesAndHighlights(
-                sourceDirectory: $absolute_job_dir,
-                targetDirectory: $absolute_outdir,
-                config: $sync_context->remarks_config);
-            $sync_context->logStep("Processed ReMarkable file");
-        } catch (RuntimeException $exception) {
-            $sync_context->logError("Extraction failed. Error: `{$exception->getMessage()}`");
-            //            if (true || $this->user->config()->telemetryEnabled) {
-            throw $exception;
-            //            }
+        switch ($version) {
+            // ReMarkable software V2
+            case 1:
+            {
+                // 4. Run remarks over the extracted files
+                $absolute_job_dir =
+                    AbsolutePath::fromString($user_storage->path($jobdir->joinAtoms('extractedFiles')->string()));
+                $absolute_outdir = AbsolutePath::fromString($user_storage->path($jobdir->joinAtoms('out')));
+                try {
+                    $sync_context->logStep("Processing ReMarkable file");
+                    $this->remarks_service->extractNotesAndHighlights(
+                        sourceDirectory: $absolute_job_dir,
+                        targetDirectory: $absolute_outdir,
+                        config: $sync_context->remarks_config);
+                    $sync_context->logStep("Processed ReMarkable file");
+                } catch (RuntimeException $exception) {
+                    $sync_context->logError("Extraction failed. Error: `{$exception->getMessage()}`");
+                    //            if (true || $this->user->config()->telemetryEnabled) {
+                    throw $exception;
+                    //            }
+                }
+                break;
+            }
+            // ReMarkable software V3+
+            case 2:
+            {
+                $sync_context->logError("Cannot process ReMarkable version 3 files yet :(");
+            }
         }
 
         // 5. Zip the out dir
         $sync_context->logStep("Zipping results");
         $from = $jobdir->joinAtoms('out')->toRelative();
         $to1 = $jobdir->joinAtoms('out.zip')->toRelative();
-        FileManipulations::zipDirectory($user_storage,
-            from: $from,
-            to: $to1);
+        try {
+            FileManipulations::zipDirectory($user_storage,
+                from: $from,
+                to: $to1);
+        } catch (RuntimeException $e) {
+            $sync_context->logError("Failed to zip", [
+                "error" => $e->getMessage()
+            ]);
+            throw $e;
+        }
         $sync_context->logStep("Zipped results");
 
         // 6. Upload zip to S3

@@ -89,7 +89,6 @@ class FileManipulations {
             $path = $info->getPathname();
             // name inside zip, otherwise includes whole path like /var/www/html/.....
             $entry = Str::replace(search: $remove_root, replace: '', subject: $path);
-            echo $path . PHP_EOL;
 
             if (is_dir($path)) {
                 $zip->addEmptyDir($path, $entry);

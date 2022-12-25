@@ -7,6 +7,7 @@ use App\Models\SyncLog;
 use App\Models\User;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use JsonException;
 
@@ -26,24 +27,32 @@ class SyncContext implements Arrayable {
         $this->sync = $sync;
     }
 
-    /**
-     * @throws JsonException
-     */
     public function logStep(string $string, array $context = []): void {
         $log = new SyncLog;
         $log->message = $string;
         $log->severity = "info";
         if (count($context)) {
-            $log->context = json_encode($context, JSON_THROW_ON_ERROR);
+            try {
+                $log->context = json_encode($context, JSON_THROW_ON_ERROR);
+            } catch (JsonException $e) {
+                Log::error("Failed to json encode a context in logStep", ["error" => $e]);
+            }
         }
         $log->belongsToSync()->associate($this->sync);
         $log->save();
     }
 
-    public function logError(string $message): void {
+    public function logError(string $message, array $context = []): void {
         $log = new SyncLog;
         $log->message = $message;
         $log->severity = "error";
+        if (count($context)) {
+            try {
+                $log->context = json_encode($context, JSON_THROW_ON_ERROR);
+            } catch (JsonException $e) {
+                Log::error("Failed to json encode a context in logError", ["error" => $e]);
+            }
+        }
         $log->belongsToSync()->associate($this->sync);
         $log->save();
     }
