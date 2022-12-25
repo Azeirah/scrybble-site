@@ -37,6 +37,9 @@ class ProcessDownloadedZipListener implements ShouldQueue {
         FileManipulations::extractZip($user_storage, from: $zipLocation, to: $to);
         $sync_context->logStep("Extracted zip");
 
+        $version = $this->remarkable_service->determineVersion($user_storage, $to);
+        $sync_context->logStep("formatVersion is $version");
+
         // 3. Delete the zip
         // TODO
 

@@ -13,6 +13,17 @@ use Str;
  * Primarily deals with extracting information out of rm notebook metadata
  */
 class RemarkableService {
+
+    /**
+     * @throws JsonException
+     */
+    private function parseRMFile(string $type, Filesystem $userStorage, RelativePathInterface $to) {
+        $filename = collect($userStorage->files($to))
+            ->first(fn(string $filename) => Str::contains($filename, $type));
+
+        return json_decode($userStorage->get($filename), true, 512, JSON_THROW_ON_ERROR);
+    }
+
     /**
      * The name of the Remarkable file
      * @param Filesystem $userStorage
@@ -31,10 +42,12 @@ class RemarkableService {
      * @throws JsonException
      */
     public function metadata(Filesystem $userStorage, RelativePathInterface $to): array {
-        $metadata_filename = collect($userStorage->files($to))->first(static function (string $filename) {
-            return Str::contains($filename, '.metadata');
-        });
+        return $this->parseRMFile('.metadata', $userStorage, $to);
+    }
 
-        return json_decode($userStorage->get($metadata_filename), true, 512, JSON_THROW_ON_ERROR);
+    public function determineVersion(Filesystem $userStorage, RelativePathInterface $to): int {
+        $content = $this->parseRMFile(".content", $userStorage, $to);
+
+        return $content['formatVersion'] ?? 1;
     }
 }
