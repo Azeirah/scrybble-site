@@ -23,7 +23,8 @@ class RemarksService {
         $source_dir = $sourceDirectory->string();
         $target_dir = $targetDirectory->string();
         $params = $config->toRemarksParams();
-        $command = "docker run -v \"$source_dir/\":/in -v \"$target_dir\":/out laauurraaa/remarks-bin /in /out $params";
+        $command =
+            "docker run -v \"$source_dir/\":/in -v \"$target_dir\":/out laauurraaa/remarks-bin /in /out $params 2>&1";
         exec($command, $output, $result_code);
 
         if ($result_code !== 0) {
