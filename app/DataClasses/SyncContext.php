@@ -5,10 +5,12 @@ namespace App\DataClasses;
 use App\Models\Sync;
 use App\Models\SyncLog;
 use App\Models\User;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use JsonException;
 
-class SyncContext {
+class SyncContext implements Arrayable {
     public string $sync_id;
     public Sync $sync;
     public mixed $folder;
@@ -24,10 +26,16 @@ class SyncContext {
         $this->sync = $sync;
     }
 
-    public function logStep(string $string): void {
+    /**
+     * @throws JsonException
+     */
+    public function logStep(string $string, array $context = []): void {
         $log = new SyncLog;
         $log->message = $string;
         $log->severity = "info";
+        if (count($context)) {
+            $log->context = json_encode($context, JSON_THROW_ON_ERROR);
+        }
         $log->belongsToSync()->associate($this->sync);
         $log->save();
     }
@@ -40,4 +48,11 @@ class SyncContext {
         $log->save();
     }
 
+    public function toArray() {
+        return [
+            "user" => $this->user,
+            "sync_id" => $this->sync_id,
+            "input_filename" => $this->input_filename
+        ];
+    }
 }

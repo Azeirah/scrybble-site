@@ -20,7 +20,7 @@ class ProcessDownloadedZipListener implements ShouldQueue {
 
     public function handle(RemarkableFileDownloadedEvent $evt) {
         $sync_context = $evt->sync_context;
-        $sync_context->logStep("Start processing downloaded files");
+        $sync_context->logStep("Start processing downloaded files", $sync_context->toArray());
         $sync_context->logStep("Creating folder for processing");
         $zipLocation = new RelativePath([$sync_context->downloaded_zip_location]);
         $user_storage = UserStorage::get($sync_context->user);
@@ -38,7 +38,9 @@ class ProcessDownloadedZipListener implements ShouldQueue {
         $sync_context->logStep("Extracted zip");
 
         $version = $this->remarkable_service->determineVersion($user_storage, $to);
-        $sync_context->logStep("formatVersion is $version");
+        $sync_context->logStep("formatVersion is $version", [
+            "version" => $version
+        ]);
 
         // 3. Delete the zip
         // TODO
