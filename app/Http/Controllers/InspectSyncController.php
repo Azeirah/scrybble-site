@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class InspectSyncController extends Controller {
     public function index() {
-        $collection = Sync::select(['filename', 'created_at', 'completed'])
+        $collection = Sync::select(['filename', 'created_at', 'completed', 'id'])
                           ->forUser(Auth::user())
                           ->orderByDesc("created_at")
                           ->limit(10)
