@@ -62,7 +62,9 @@ class ProcessDownloadedZipListener implements ShouldQueue {
                         config: $sync_context->remarks_config);
                     $sync_context->logStep("Processed ReMarkable file");
                 } catch (RuntimeException $exception) {
-                    $sync_context->logError("Extraction failed. Error: `{$exception->getMessage()}`");
+                    $sync_context->logError("Extraction failed. Error", [
+                        "error" => $exception->getMessage()
+                    ]);
                     //            if (true || $this->user->config()->telemetryEnabled) {
                     throw $exception;
                     //            }
