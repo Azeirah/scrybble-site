@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sync;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class InspectSyncController extends Controller {
     public function index() {
-        $grace_period_in_minutes = 5;
         $collection = Sync::select(['filename', 'created_at', 'completed'])
                           ->forUser(Auth::user())
                           ->orderByDesc("created_at")
@@ -19,11 +17,7 @@ class InspectSyncController extends Controller {
                               'created_at' => $syncItem->created_at->diffForHumans(),
                               'completed' => $syncItem->completed,
                               'error' => !$syncItem->completed
-                                  && (Carbon
-                                          ::now()
-                                          ->addMinutes($grace_period_in_minutes)
-                                          ->lessThan($syncItem->created_at) ||
-                                      $syncItem->logs()->where('severity', 'error')->count() > 0)
+                                  && ($syncItem->isOld() || $syncItem->hasError())
                           ]);
         return response()->json(
             $collection

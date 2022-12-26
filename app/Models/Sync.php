@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @mixin IdeHelperSync
@@ -40,5 +41,14 @@ class Sync extends Model {
 
     public function logs(): HasMany {
         return $this->hasMany(SyncLog::class);
+    }
+
+    public function isOld(): bool {
+        $minutes = 5;
+        return Carbon::now()->addMinutes($minutes)->lessThan($this->created_at);
+    }
+
+    public function hasError() {
+        return $this->logs()->where('severity', 'error')->count() > 0;
     }
 }
