@@ -1,0 +1,3 @@
+[submodule "binaries/remarks"]
+	path = binaries/remarks
+	url = git@github.com:Azeirah/remarks.git
