@@ -11,6 +11,7 @@ class InspectSyncController extends Controller {
         $grace_period_in_minutes = 5;
         $collection = Sync::select(['filename', 'created_at', 'completed'])
                           ->forUser(Auth::user())
+                          ->orderByDesc("created_at")
                           ->limit(10)
                           ->get()
                           ->map(fn(Sync $syncItem) => [
