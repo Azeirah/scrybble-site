@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 class OnboardingStateService {
     public function __construct(public RMapi $rmapi) {}
 
-    public function getState() {
+    public function getState(): string {
         $user = Auth::user();
 
         if (!$user) {
