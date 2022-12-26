@@ -7,9 +7,7 @@ use App\Models\SyncLog;
 use App\Models\User;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use JsonException;
 
 class SyncContext implements Arrayable {
     public string $sync_id;
@@ -32,11 +30,7 @@ class SyncContext implements Arrayable {
         $log->message = $string;
         $log->severity = "info";
         if (count($context)) {
-            try {
-                $log->context = json_encode($context, JSON_THROW_ON_ERROR);
-            } catch (JsonException $e) {
-                Log::error("Failed to json encode a context in logStep", ["error" => $e]);
-            }
+            $log->context = $context;
         }
         $log->belongsToSync()->associate($this->sync);
         $log->save();
@@ -47,11 +41,7 @@ class SyncContext implements Arrayable {
         $log->message = $message;
         $log->severity = "error";
         if (count($context)) {
-            try {
-                $log->context = json_encode($context, JSON_THROW_ON_ERROR);
-            } catch (JsonException $e) {
-                Log::error("Failed to json encode a context in logError", ["error" => $e]);
-            }
+            $log->context = $context;
         }
         $log->belongsToSync()->associate($this->sync);
         $log->save();
