@@ -1,4 +1,0 @@
-[submodule "binaries/remarks"]
-	path = binaries/remarks
-	url = git@github.com:lucasrla/remarks.git
-	branch = master
