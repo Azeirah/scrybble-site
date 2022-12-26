@@ -41,3 +41,20 @@ CGO_ENABLED=0 go install
 ```
 
 The binary can then be found at `$HOME/go/rmapi`, you can copy it over to `binaries/rmapi` to update it.
+
+## Remarks
+
+Remarks is the library we use to stitch together pdfs and .rm files. It's what turns a downloaded zip from the RMapi
+into an annotated pdf, or a bunch of markdown.
+
+I host a dockerfile at hub.docker.com, tagged `laauurraaa/remarks-bin:latest`.
+
+The Dockerfile is present in `binaries/remarks.Dockerfile`.
+
+To build and push the Dockerfile to docker hub, you can use the Makefile in the root.
+
+`make build-remarks` builds the docker image
+
+`make push-remarks` pushes the image to docker hub
+
+`make update-remarks` does both in succession
