@@ -16,7 +16,9 @@ class OnboardingStateService {
 
         if (!$user->gumroadLicense()->exists()) {
             return "setup-gumroad";
-        } else if (!$this->rmapi->isAuthenticated()) {
+        }
+
+        if (!$this->rmapi->isAuthenticated()) {
             return "setup-one-time-code";
         }
 

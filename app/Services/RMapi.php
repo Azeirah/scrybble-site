@@ -32,7 +32,7 @@ class RMapi {
     public function __construct(User $user = null) {
         $user1 = $user ?? Auth::user();
         $this->storage = UserStorage::get($user1);
-        $this->userId = $user->id;
+        $this->userId = $user1->id;
     }
 
     /**
