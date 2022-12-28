@@ -23,16 +23,16 @@
 
     @media only screen and (min-width: 320px) {
         .block {
-            grid-template-columns: 1fr !important;
+            grid-template-columns: 1fr;
         }
 
         .remarkable-to-obsidian {
             .images h2 {
-                font-size: 2em !important;
+                font-size: 2em;
             }
 
             img {
-                height: 2em !important;
+                height: 2em;
             }
         }
 
@@ -43,9 +43,30 @@
         }
     }
 
+    @media only screen and (min-width: 960px) {
+        .block {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .remarkable-to-obsidian {
+            .images h2 {
+                font-size: 4em;
+            }
+
+            img {
+                height: 2em;
+            }
+        }
+
+        .faq {
+            .images {
+                display: initial;
+            }
+        }
+    }
+
     .block {
         display: grid;
-        grid-template-columns: 1fr 1fr;
 
         > div {
             padding: 16px 16px 16px 16px;
@@ -71,10 +92,6 @@
     }
 
     .remarkable-to-obsidian {
-        .images h2 {
-            font-size: 4em;
-        }
-
         & .images {
             text-align: center;
             display: flex;
@@ -90,7 +107,6 @@
             }
 
             img {
-                height: 8rem;
                 border-radius: 50%;
                 border: 5px solid;
                 margin: 0 16px;
