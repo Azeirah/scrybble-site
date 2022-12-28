@@ -72,9 +72,6 @@ export function MainLayout() {
                 </div>
             </div>
         </nav>
-        <div className="alert alert-warning w-50 m-auto mt-4">
-            ReMarkable 3.0 software is not yet supported.
-        </div>
         <div style={{flexGrow: 1, flexShrink: 0, display: "flex", justifyContent: "center", alignItems: "center"}}>
             <Outlet/>
         </div>
