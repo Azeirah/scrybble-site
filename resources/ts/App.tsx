@@ -13,7 +13,7 @@ import {AuthPage} from "./layout/AuthLayout"
 import {MainLayout} from "./layout/MainLayout/MainLayout"
 import {Roadmap} from "./pages/Roadmap"
 import {RegisterCard} from "./components/feature/RegisterCard/RegisterCard"
-import {LandingPage} from "./pages/LandingPage"
+import {LandingPage} from "./pages/LandingPage/LandingPage"
 import {Toaster} from "react-hot-toast"
 
 let Dashboard = React.lazy(() => import("./pages/Dashboard"))

@@ -9,7 +9,7 @@ export function MainLayout() {
     const [logout, {}] = useLogoutMutation()
 
     return <div id="mainLayout">
-        <nav className="navbar navbar-expand-md navbar-dark shadow-sm">
+        <nav className="navbar navbar-expand-md navbar-dark shadow-sm mb-4">
             <div className="container">
                 <Link className="navbar-brand" to="/">
                     Scrybble
@@ -72,7 +72,8 @@ export function MainLayout() {
                 </div>
             </div>
         </nav>
-        <div style={{flexGrow: 1, flexShrink: 0, display: "flex", justifyContent: "center", alignItems: "center"}}>
+        <div className="container d-flex flex-column"
+             style={{flexGrow: 1, flexShrink: 0}}>
             <Outlet/>
         </div>
         <footer className="border-top border-2 border-dark">
