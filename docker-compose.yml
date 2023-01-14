@@ -85,6 +85,17 @@ services:
             - '/dev/shm:/dev/shm'
         networks:
             - sail
+    mail:
+        image: juanluisbaptiste/postfix:latest
+        restart: always
+        environment:
+            - SMTP_SERVER=vps.transip.email
+            - SMTP_PORT=587
+            - SMTP_USERNAME=azeirah@vps.transip.email
+            - SMTP_PASSWORD=EEMThbGxesNtFRsf
+            - SERVER_HOSTNAME=smgmusicdisplay.com
+        networks:
+            - sail
 networks:
     sail:
         driver: bridge

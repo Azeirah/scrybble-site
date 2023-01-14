@@ -38,6 +38,9 @@ Route::group(['middleware' => ['auth']], static function () {
     )->name('connect-license');
 });
 
+// required by Fortify: https://github.com/laravel/fortify/issues/155#issuecomment-732531717
+Route::get('/base/reset-password/{token}', [HomeController::class, 'index'])->name('password.reset');
+
 Route::group(['middleware' => ['auth'], 'prefix' => "api"], static function () {
     Route::get('onboardingState', OnboardingStateController::class);
 
@@ -55,6 +58,6 @@ Route::group(['middleware' => ['auth'], 'prefix' => "api"], static function () {
     Route::post('RMFileTree', [RMFiletreeController::class, 'index']);
 });
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::fallback([HomeController::class, 'index']);

@@ -35,9 +35,8 @@ export function LandingPage() {
                     </ul>
                     <p className="lead">
                         <a href="https://streamsoft.gumroad.com/l/remarkable-to-obsidian"
-                           className="btn btn-lg btn-secondary fw-bold border-white bg-white mr-4">I want my notes on my
-                            ReMarkable!
-                        </a>
+                           className="btn btn-lg btn-secondary fw-bold border-white bg-white mr-4">I want my ReMarkable
+                            notes in Obsidian!</a>
                     </p>
                 </div>
             </div>

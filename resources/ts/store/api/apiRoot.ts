@@ -16,6 +16,17 @@ export type LoginData = {
     remember?: true;
 }
 
+export type RequestPasswordResetData = {
+    email: string;
+}
+
+export type ResetPasswordData = {
+    email: string;
+    password: string;
+    password_confirmation: string;
+    token: string;
+}
+
 export interface RegisterForm {
     name: string,
     email: string,
@@ -58,6 +69,24 @@ export const apiRoot = createApi({
                     method: "POST",
                     body: user
                 })
+            }
+        }),
+        requestPasswordReset: builder.mutation<void, RequestPasswordResetData>({
+            query: (email) => {
+                return {
+                    url: "/forgot-password",
+                    method: "POST",
+                    body: email
+                }
+            }
+        }),
+        resetPassword: builder.mutation<void, ResetPasswordData>({
+            query: (body) => {
+                return {
+                    url: "/reset-password",
+                    method: "POST",
+                    body
+                }
             }
         }),
         register: builder.mutation<unknown, RegisterForm>({
@@ -161,7 +190,9 @@ export const {
     useSendOnetimecodeMutation,
     useRMFileTreeQuery,
     useSelectFileForSyncMutation,
-    useSyncStatusQuery
+    useSyncStatusQuery,
+    useRequestPasswordResetMutation,
+    useResetPasswordMutation
 } = apiRoot
 
 export {useLogin}

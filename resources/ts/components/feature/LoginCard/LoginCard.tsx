@@ -1,6 +1,7 @@
 import React, {useEffect} from "react"
 import {LoginData, useLogin, useLoginMutation} from "../../../store/api/apiRoot"
 import {ErrorResponse} from "../../../laravelTypes"
+import {Link} from "react-router-dom"
 
 export default function () {
     const [login, {isSuccess, error}] = useLoginMutation()
@@ -77,7 +78,12 @@ export default function () {
             <div className="row mb-0">
                 <div className="col-md-8 offset-md-4">
                     <button type="submit" className="btn btn-primary">Login</button>
-                    {/*<a className="btn btn-link" href="{{ route('password.request') }}">Forgot your password?</a>*/}
+                </div>
+            </div>
+
+            <div className="row mb-3">
+                <div className="col-md-6 offset-md-4">
+                    <Link to="/auth/reset-password">Forgot your password?</Link>
                 </div>
             </div>
         </form>
