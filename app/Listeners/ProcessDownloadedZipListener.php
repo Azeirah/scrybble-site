@@ -12,7 +12,6 @@ use Eloquent\Pathogen\RelativePath;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use RuntimeException;
 
 class ProcessDownloadedZipListener implements ShouldQueue {
@@ -112,7 +111,7 @@ class ProcessDownloadedZipListener implements ShouldQueue {
         $lock = Cache::lock('append-to-sync-table-for-userid-' . $user->id, 10);
         $lock->get(function () use ($sync_context, $s3_download_path, $rm_filename) {
             $sync = $sync_context->sync;
-            $sync->filename = Str::replace('\\', '', "$sync_context->folder$rm_filename");
+            $sync->filename = "$sync_context->folder/$rm_filename";
             $sync->S3_download_path = $s3_download_path;
             $sync->completed = true;
             $sync->save();
