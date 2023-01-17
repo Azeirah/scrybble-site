@@ -105,16 +105,9 @@ class ProcessDownloadedZipListener implements ShouldQueue {
         // 7. Unless user has telemetry=on && remarksService exception happened, delete temporary folder
         // 8. Insert a row in "sync" table
         $sync_context->logStep("Wrapping up sync, making available to user");
-        $rm_filename = $this->remarkable_service->filename($user_storage, $to);
 
         $user = $sync_context->user;
         $lock = Cache::lock('append-to-sync-table-for-userid-' . $user->id, 10);
-        $lock->get(function () use ($sync_context, $s3_download_path, $rm_filename) {
-            $sync = $sync_context->sync;
-            $sync->filename = "$sync_context->folder/$rm_filename";
-            $sync->S3_download_path = $s3_download_path;
-            $sync->completed = true;
-            $sync->save();
-        });
+        $lock->get(fn() => $sync_context->sync->complete($s3_download_path));
     }
 }

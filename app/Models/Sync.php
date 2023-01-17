@@ -51,4 +51,10 @@ class Sync extends Model {
     public function hasError() {
         return $this->logs()->where('severity', 'error')->count() > 0;
     }
+
+    public function complete(string $s3_download_path) {
+        $this->completed = true;
+        $this->S3_download_path = $s3_download_path;
+        $this->save();
+    }
 }
