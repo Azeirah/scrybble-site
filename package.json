@@ -18,6 +18,8 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "^1.9.1",
+        "@sentry/react": "^7.31.1",
+        "@sentry/tracing": "^7.31.1",
         "axios": "^0.27.2",
         "bootstrap": "^5.2.0",
         "lodash": "^4.17.21",

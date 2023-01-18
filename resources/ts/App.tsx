@@ -17,11 +17,22 @@ import {LandingPage} from "./pages/LandingPage/LandingPage"
 import {Toaster} from "react-hot-toast"
 import ResetPasswordCard from "./components/feature/ResetPasswordCard/ResetPasswordCard"
 import {ErrorResponse} from "./laravelTypes"
+import {BrowserTracing} from "@sentry/tracing"
+import * as Sentry from "@sentry/react"
 
 let Dashboard = React.lazy(() => import("./pages/Dashboard"))
 let InspectSync = React.lazy(() => import("./pages/InspectSync/InspectSync"))
 let PurchasedPage = React.lazy(() => import("./pages/PurchasedPage"))
 
+Sentry.init({
+    dsn: "https://4201915825194ef6ab9263518b836ee4@o199243.ingest.sentry.io/4504527483305984",
+    integrations: [new BrowserTracing()],
+
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    tracesSampleRate: 1.0
+})
 
 function ResetPasswordTokenCard() {
     const [resetPassword, {isSuccess, error, data}] = useResetPasswordMutation()
