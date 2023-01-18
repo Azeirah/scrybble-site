@@ -80,7 +80,7 @@ export const apiRoot = createApi({
                 }
             }
         }),
-        resetPassword: builder.mutation<void, ResetPasswordData>({
+        resetPassword: builder.mutation<{ message: string }, ResetPasswordData>({
             query: (body) => {
                 return {
                     url: "/reset-password",
