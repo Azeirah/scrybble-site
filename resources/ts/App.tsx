@@ -4,7 +4,16 @@ import {useEffect} from "react"
 import {createRoot} from "react-dom/client"
 import {Provider} from "react-redux"
 import {store} from "./store/store"
-import {BrowserRouter, Route, Routes, useNavigate} from "react-router-dom"
+import {
+    BrowserRouter,
+    createRoutesFromChildren,
+    matchRoutes,
+    Route,
+    Routes,
+    useLocation,
+    useNavigate,
+    useNavigationType
+} from "react-router-dom"
 import LoginCard from "./components/feature/LoginCard/LoginCard"
 import {useAppDispatch} from "./store/hooks"
 import {useGetUserQuery} from "./store/api/apiRoot"
@@ -26,7 +35,16 @@ let PurchasedPage = React.lazy(() => import("./pages/PurchasedPage"))
 
 Sentry.init({
     dsn: "https://4201915825194ef6ab9263518b836ee4@o199243.ingest.sentry.io/4504527483305984",
-    integrations: [new BrowserTracing()],
+    integrations: [new BrowserTracing({
+        routingInstrumentation: Sentry.reactRouterV6Instrumentation(
+            React.useEffect,
+            useLocation,
+            useNavigationType,
+            createRoutesFromChildren,
+            matchRoutes
+        )
+    })],
+    tunnel: "/tunnel",
 
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.
@@ -34,10 +52,12 @@ Sentry.init({
     tracesSampleRate: 1.0
 })
 
+const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes)
+
 function AppRoutes() {
     return (
         <React.Suspense>
-            <Routes>
+            <SentryRoutes>
                 <Route path="/" element={<MainLayout/>}>
                     <Route path="purchased" element={<PurchasedPage/>}/>
                     <Route path="dashboard" element={<Dashboard/>}/>
@@ -53,7 +73,7 @@ function AppRoutes() {
                     <Route path="roadmap" element={<Roadmap/>}/>
                     <Route index element={<LandingPage/>}/>
                 </Route>
-            </Routes>
+            </SentryRoutes>
         </React.Suspense>
     )
 }
