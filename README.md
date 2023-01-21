@@ -52,9 +52,16 @@ I host a dockerfile at hub.docker.com, tagged `laauurraaa/remarks-bin:latest`.
 The Dockerfile is present in `binaries/remarks.Dockerfile`.
 
 To build and push the Dockerfile to docker hub, you can use the Makefile in the root.
+The version is defined in `remarks.version`
 
 `make build-remarks` builds the docker image
 
 `make push-remarks` pushes the image to docker hub
 
 `make update-remarks` does both in succession
+
+You can run remarks through a container with the following command
+
+`docker run -v "$PWD/binaries/remarks/tests/":/store laauurraaa/remarks-bin:0.2.1 /store/in/v3_coords_notebook /store/out`
+
+This command runs remarks over a test file in the remarks project from the root of rm-notesync.

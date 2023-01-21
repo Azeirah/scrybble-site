@@ -44,37 +44,24 @@ class ProcessDownloadedZipListener implements ShouldQueue {
         // 3. Delete the zip
         // TODO
 
-
-        switch ($version) {
-            // ReMarkable software V2
-            case 1:
-            {
-                // 4. Run remarks over the extracted files
-                $absolute_job_dir =
-                    AbsolutePath::fromString($user_storage->path($jobdir->joinAtoms('extractedFiles')->string()));
-                $absolute_outdir = AbsolutePath::fromString($user_storage->path($jobdir->joinAtoms('out')));
-                try {
-                    $sync_context->logStep("Processing ReMarkable file");
-                    $this->remarks_service->extractNotesAndHighlights(
-                        sourceDirectory: $absolute_job_dir,
-                        targetDirectory: $absolute_outdir,
-                        config: $sync_context->remarks_config);
-                    $sync_context->logStep("Processed ReMarkable file");
-                } catch (RuntimeException $exception) {
-                    $sync_context->logError("Extraction failed. Error", [
-                        "error" => $exception->getMessage()
-                    ]);
-                    //            if (true || $this->user->config()->telemetryEnabled) {
-                    throw $exception;
-                    //            }
-                }
-                break;
-            }
-            // ReMarkable software V3+
-            case 2:
-            {
-                $sync_context->logError("Cannot process ReMarkable version 3 files yet :(");
-            }
+        // 4. Run remarks over the extracted files
+        $absolute_job_dir =
+            AbsolutePath::fromString($user_storage->path($jobdir->joinAtoms('extractedFiles')->string()));
+        $absolute_outdir = AbsolutePath::fromString($user_storage->path($jobdir->joinAtoms('out')));
+        try {
+            $sync_context->logStep("Processing ReMarkable file");
+            $this->remarks_service->extractNotesAndHighlights(
+                sourceDirectory: $absolute_job_dir,
+                targetDirectory: $absolute_outdir,
+                config: $sync_context->remarks_config);
+            $sync_context->logStep("Processed ReMarkable file");
+        } catch (RuntimeException $exception) {
+            $sync_context->logError("Extraction failed. Error", [
+                "error" => $exception->getMessage()
+            ]);
+            //            if (true || $this->user->config()->telemetryEnabled) {
+            throw $exception;
+            //            }
         }
 
         // 5. Zip the out dir
