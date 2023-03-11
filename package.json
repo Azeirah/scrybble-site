@@ -19,6 +19,9 @@
         "vite": "^3.2.5"
     },
     "dependencies": {
+        "@fortawesome/fontawesome-svg-core": "^6.3.0",
+        "@fortawesome/free-solid-svg-icons": "^6.3.0",
+        "@fortawesome/react-fontawesome": "^0.2.0",
         "@reduxjs/toolkit": "^1.9.1",
         "@sentry/react": "^7.31.1",
         "@sentry/tracing": "^7.31.1",
