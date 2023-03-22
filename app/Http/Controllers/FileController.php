@@ -35,7 +35,8 @@ class FileController extends Controller {
             ->where('filename', $input_filename)
             ->firstOrCreate([
                 'filename' => $input_filename,
-                'user_id' => $user->id
+                'user_id' => $user->id,
+                'highlightsToText' => false
             ]);
         $sync_context = new SyncContext($input_filename, $user, new RemarksConfig());
         Log::info("user=`$user` requested file file=`$input_filename`; Dispatching `DownloadRemarkableFileJob`");

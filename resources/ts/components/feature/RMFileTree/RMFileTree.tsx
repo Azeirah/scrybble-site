@@ -62,14 +62,14 @@ export default function RMFileTree() {
                 <tbody>
                 {filetree.items.map((item) => {
                     if (item.type === "d") {
-                        return <tr className="directory" role="link"
+                        return <tr key={item.path} className="directory" role="link"
                                    onClick={() => navigate(`/dashboard?path=${item.path}`)}>
                             <td></td>
                             <td><DirectoryItem item={item as Directory}/></td>
                             <td></td>
                         </tr>
                     }
-                    return <tr>
+                    return <tr key={item.path}>
                         <td style={{width: "fit-content", padding: "8px"}}>
                             <button className="btn btn-success btn-sm" onClick={() => {
                                 syncFile(item as File)

@@ -54,7 +54,7 @@ export type SyncStatus = { filename: string, created_at: string, completed: bool
 export const apiRoot = createApi({
     reducerPath: "api",
     baseQuery: fetchBaseQuery({
-        prepareHeaders: async (headers, {getState}) => {
+        prepareHeaders: async (headers) => {
             headers.set("Accept", "application/json")
             headers.set("X-XSRF-TOKEN", decodeURIComponent(getCookie("XSRF-TOKEN")))
             return headers
