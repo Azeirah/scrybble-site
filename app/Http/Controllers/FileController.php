@@ -17,25 +17,24 @@ use Illuminate\Validation\UnauthorizedException;
 /**
  *
  */
-class FileController extends Controller {
+class FileController extends Controller
+{
     /**
      * @param Request $request
-     * @param RMapi $RMapi
      * @return void
-     * @throws EmptyPathException
      */
-    public function show(Request $request): void {
+    public function show(Request $request): void
+    {
         $user = Auth::user();
         if (!$user) {
             throw new UnauthorizedException();
         }
         $input_filename = $request->get('file');
-        $settings = SyncSetting
-            ::where('user_id', $user?->id ?? -1)
+        $settings = $user
+            ->syncSetting()
             ->where('filename', $input_filename)
             ->firstOrCreate([
                 'filename' => $input_filename,
-                'user_id' => $user->id,
                 'highlightsToText' => false
             ]);
         $sync_context = new SyncContext($input_filename, $user, new RemarksConfig());
