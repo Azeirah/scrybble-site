@@ -23,7 +23,7 @@ class RemarksConfig implements JsonSerializable {
             $params->add("--modified_pdf");
         }
         if (!$this->export_highlights_to_md) {
-            $params->add("--skip-combined-md");
+            $params->add("--skip_combined_md");
         }
         return $params->implode(' ');
     }
