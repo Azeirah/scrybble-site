@@ -7,6 +7,8 @@ import _ from "lodash"
 import {faFile, faFolder, faHighlighter} from "@fortawesome/free-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 
+const syncSettingsEnabled = false;
+
 const DirectoryIcon = () => <FontAwesomeIcon icon={faFolder}/>
 
 const FileIcon = () => <FontAwesomeIcon icon={faFile}/>
@@ -54,7 +56,7 @@ export default function RMFileTree() {
                 <tr>
                     <th></th>
                     <th>File or directory</th>
-                    <th>Sync settings</th>
+                    {syncSettingsEnabled ? <th>Sync settings</th> : <></>}
                 </tr>
                 </thead>
                 <tbody>
@@ -75,7 +77,7 @@ export default function RMFileTree() {
                             </button>
                         </td>
                         <td className="file"><FileItem item={item as File}/></td>
-                        <td style={{textAlign: "right", padding: "0 8px"}}><SyncSettings/></td>
+                        {syncSettingsEnabled ? <td style={{textAlign: "right", padding: "0 8px"}}><SyncSettings/></td> : <></>}
                     </tr>
                 })}
                 </tbody>
