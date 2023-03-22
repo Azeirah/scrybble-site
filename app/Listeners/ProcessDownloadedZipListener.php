@@ -10,14 +10,20 @@ use App\Services\RemarksService;
 use Eloquent\Pathogen\AbsolutePath;
 use Eloquent\Pathogen\RelativePath;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\MaxAttemptsExceededException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
+use Throwable;
 
-class ProcessDownloadedZipListener implements ShouldQueue {
-    public function __construct(private RemarksService $remarks_service, private RemarkableService $remarkable_service) {}
+class ProcessDownloadedZipListener implements ShouldQueue
+{
+    public function __construct(private RemarksService $remarks_service, private RemarkableService $remarkable_service, private RemarkableFileDownloadedEvent $event)
+    {
+    }
 
-    public function handle(RemarkableFileDownloadedEvent $evt) {
+    public function handle(RemarkableFileDownloadedEvent $evt): void
+    {
         $sync_context = $evt->sync_context;
         $sync_context->logStep("Start processing downloaded files", $sync_context->toArray());
         $sync_context->logStep("Creating folder for processing");
@@ -96,5 +102,14 @@ class ProcessDownloadedZipListener implements ShouldQueue {
         $user = $sync_context->user;
         $lock = Cache::lock('append-to-sync-table-for-userid-' . $user->id, 10);
         $lock->get(fn() => $sync_context->sync->complete($s3_download_path));
+    }
+
+    public function failed(Throwable $exception): void
+    {
+        if ($exception instanceof MaxAttemptsExceededException) {
+            $this->event->sync_context->logError("Failed after retrying too many times");
+        } else {
+            $this->event->sync_context->logError("Job failed due to an unhandled exception: ", ['exception_message' => $exception->getMessage(), 'exception_trace' => $exception->getTraceAsString()]);
+        }
     }
 }

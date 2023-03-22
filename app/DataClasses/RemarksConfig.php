@@ -17,7 +17,8 @@ class RemarksConfig implements JsonSerializable {
         ];
     }
 
-    public function toRemarksParams() {
+    public function toRemarksParams(): string
+    {
         $params = collect();
         if ($this->modified_only) {
             $params->add("--modified_pdf");
