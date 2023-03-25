@@ -20,11 +20,12 @@ class DownloadRemarkableFileJob implements ShouldQueue {
 
     private SyncContext $sync_context;
 
-    public function __construct($sync_context) {
+    public function __construct(SyncContext $sync_context) {
         $this->sync_context = $sync_context;
     }
 
-    public function handle() {
+    public function handle(): void
+    {
         $RMapi = new RMapi($this->sync_context->user);
         $RMapi->refresh();
         $this->sync_context->logStep("Downloading file");
