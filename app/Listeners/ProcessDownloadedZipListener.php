@@ -5,8 +5,6 @@ namespace App\Listeners;
 use App\Events\RemarkableFileDownloadedEvent;
 use App\Helpers\FileManipulations;
 use App\Helpers\UserStorage;
-use App\Services\RemarkableService;
-use App\Services\RemarksService;
 use Eloquent\Pathogen\AbsolutePath;
 use Eloquent\Pathogen\RelativePath;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,9 +16,9 @@ use Throwable;
 
 class ProcessDownloadedZipListener implements ShouldQueue
 {
-    public function __construct(private RemarksService $remarks_service, private RemarkableService $remarkable_service, private RemarkableFileDownloadedEvent $event)
-    {
-    }
+//    public function __construct(private RemarksService $remarks_service, private RemarkableService $remarkable_service, public RemarkableFileDownloadedEvent $event)
+//    {
+//    }
 
     public function handle(RemarkableFileDownloadedEvent $evt): void
     {
@@ -107,9 +105,9 @@ class ProcessDownloadedZipListener implements ShouldQueue
     public function failed(Throwable $exception): void
     {
         if ($exception instanceof MaxAttemptsExceededException) {
-            $this->event->sync_context->logError("Failed after retrying too many times");
+//            $this->event->sync_context->logError("Failed after retrying too many times");
         } else {
-            $this->event->sync_context->logError("Job failed due to an unhandled exception: ", ['exception_message' => $exception->getMessage(), 'exception_trace' => $exception->getTraceAsString()]);
+//            $this->event->sync_context->logError("Job failed due to an unhandled exception: ", ['exception_message' => $exception->getMessage(), 'exception_trace' => $exception->getTraceAsString()]);
         }
     }
 }
