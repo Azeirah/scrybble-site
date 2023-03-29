@@ -18,11 +18,7 @@ use Throwable;
 
 class ProcessDownloadedZipListener implements ShouldQueue
 {
-    public function __construct(private RemarksService $remarks_service, private RemarkableService $remarkable_service, public RemarkableFileDownloadedEvent $event)
-    {
-    }
-
-    public function handle(RemarkableFileDownloadedEvent $evt): void
+    public function handle(RemarkableFileDownloadedEvent $evt, RemarksService $remarks_service, RemarkableService $remarkable_service): void
     {
         $sync_context = $evt->sync_context;
         $sync_context->logStep("Start processing downloaded files", $sync_context->toArray());
@@ -42,7 +38,7 @@ class ProcessDownloadedZipListener implements ShouldQueue
         FileManipulations::extractZip($user_storage, from: $zipLocation, to: $to);
         $sync_context->logStep("Extracted zip");
 
-        $version = $this->remarkable_service->determineVersion($user_storage, $to);
+        $version = $remarkable_service->determineVersion($user_storage, $to);
         $sync_context->logStep("formatVersion is $version", [
             "version" => $version
         ]);
@@ -56,7 +52,7 @@ class ProcessDownloadedZipListener implements ShouldQueue
         $absolute_outdir = AbsolutePath::fromString($user_storage->path($jobdir->joinAtoms('out')));
         try {
             $sync_context->logStep("Processing ReMarkable file");
-            $this->remarks_service->extractNotesAndHighlights(
+            $remarks_service->extractNotesAndHighlights(
                 sourceDirectory: $absolute_job_dir,
                 targetDirectory: $absolute_outdir,
                 config: $sync_context->remarks_config);
