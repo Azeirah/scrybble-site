@@ -5,6 +5,8 @@ namespace App\Listeners;
 use App\Events\RemarkableFileDownloadedEvent;
 use App\Helpers\FileManipulations;
 use App\Helpers\UserStorage;
+use App\Services\RemarkableService;
+use App\Services\RemarksService;
 use Eloquent\Pathogen\AbsolutePath;
 use Eloquent\Pathogen\RelativePath;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,9 +18,9 @@ use Throwable;
 
 class ProcessDownloadedZipListener implements ShouldQueue
 {
-//    public function __construct(private RemarksService $remarks_service, private RemarkableService $remarkable_service, public RemarkableFileDownloadedEvent $event)
-//    {
-//    }
+    public function __construct(private RemarksService $remarks_service, private RemarkableService $remarkable_service, public RemarkableFileDownloadedEvent $event)
+    {
+    }
 
     public function handle(RemarkableFileDownloadedEvent $evt): void
     {
