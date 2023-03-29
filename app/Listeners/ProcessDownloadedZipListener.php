@@ -102,12 +102,12 @@ class ProcessDownloadedZipListener implements ShouldQueue
         $lock->get(fn() => $sync_context->sync->complete($s3_download_path));
     }
 
-    public function failed(Throwable $exception): void
+    public function failed(RemarkableFileDownloadedEvent $evt, Throwable $exception): void
     {
         if ($exception instanceof MaxAttemptsExceededException) {
-//            $this->event->sync_context->logError("Failed after retrying too many times");
+            $evt->sync_context->logError("Failed after retrying too many times");
         } else {
-//            $this->event->sync_context->logError("Job failed due to an unhandled exception: ", ['exception_message' => $exception->getMessage(), 'exception_trace' => $exception->getTraceAsString()]);
+            $evt->sync_context->logError("Job failed due to an unhandled exception: ", ['exception_message' => $exception->getMessage(), 'exception_trace' => $exception->getTraceAsString()]);
         }
     }
 }
