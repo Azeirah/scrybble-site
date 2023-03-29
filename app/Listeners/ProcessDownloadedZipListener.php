@@ -18,8 +18,11 @@ use Throwable;
 
 class ProcessDownloadedZipListener implements ShouldQueue
 {
-    public function handle(RemarkableFileDownloadedEvent $evt, RemarksService $remarks_service, RemarkableService $remarkable_service): void
+    public function handle(RemarkableFileDownloadedEvent $evt): void
     {
+        $remarks_service = app(RemarksService::class);
+        $remarkable_service = app(RemarkableService::class);
+
         $sync_context = $evt->sync_context;
         $sync_context->logStep("Start processing downloaded files", $sync_context->toArray());
         $sync_context->logStep("Creating folder for processing");
