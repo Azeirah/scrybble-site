@@ -38,9 +38,10 @@ with compatibility for our dev docker image as well as our host environment.
 git clone https://github.com/juruen/rmapi
 cd rmapi
 CGO_ENABLED=0 go install
-```
 
-The binary can then be found at `$HOME/go/rmapi`, you can copy it over to `binaries/rmapi` to update it.
+# The binary can then be found at `$HOME/go/bin/rmapi`
+# you can copy it over to `binaries/rmapi` to update it.
+```
 
 ## Remarks
 
