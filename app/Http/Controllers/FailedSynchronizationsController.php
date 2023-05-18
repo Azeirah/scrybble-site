@@ -42,8 +42,10 @@ class FailedSynchronizationsController extends Controller
 
         $storage = Storage::disk('s3');
         $file = $userStorage->get($path);
-        $s3_path = "failed_sync/$path";
-        $storage->put($s3_path, $file);
+        $s3_path = urlencode("failed_sync/$path");
+        if (!$storage->put($s3_path, $file)) {
+            abort(500, "Failed to upload the file");
+        }
 
         return redirect($storage->temporaryUrl($s3_path, now()->addMinutes(1)));
     }
