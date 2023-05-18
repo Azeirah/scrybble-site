@@ -19,6 +19,7 @@ class FailedSynchronizationsController extends Controller
             ->get(['sync.id', 'sync.filename', 'severity', 'context->user->id as user_id', 'context'])
             ->groupBy('id')
             ->filter(fn($fs) => is_numeric($fs[0]['user_id']))
+            ->filter(fn($fs) => sizeof($fs) > 1)
             ->map(fn($fs) => [
                 'id' => $fs[0]['id'],
                 'filename' => $fs[0]['filename'],
