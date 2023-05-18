@@ -1,5 +1,12 @@
 @extends('layouts.app')
 
+<style>
+    thead th {
+        position: sticky;
+        top: 0;
+    }
+</style>
+
 @section('content')
     <div class="m-4">
         <h1>Failed Syncs</h1>
@@ -7,15 +14,15 @@
             <thead>
             <tr>
                 <th>User</th>
-                <th>Severity</th>
+                <th>When</th>
                 <th>Filename</th>
             </tr>
             </thead>
             <tbody>
             @foreach ($failed_syncs as $failed_sync)
                 <tr>
-                    <td>{{ $failed_sync['user_id'] }}</td>
-                    <td>hoi</td>
+                    <td>{{ $failed_sync['user'] }}</td>
+                    <td>{{$failed_sync['created_at']}}</td>
                     <td>
                         <a href="/admin/failed_syncs/dl?user={{$failed_sync['user_id']}}&path={{urlencode($failed_sync['filename'])}}" download>
                             {{ $failed_sync['filename'] }}
