@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ConnectedGumroadLicenseController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FailedSynchronizationsController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InspectSyncController;
@@ -26,17 +27,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index']);
 
 Route::middleware(['middleware' => 'auth:sanctum'])->get('/sanctum/user', function (Request $request) {
-	return $request->user();
+    return $request->user();
 });
 
 Route::group(['middleware' => ['auth']], static function () {
-	Route::get('/app/', [DashboardController::class, 'index'])
-	     ->name('dashboard');
+    Route::get('/app/', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
-	Route::post(
-		'/connect-license',
-		[ConnectedGumroadLicenseController::class, 'store']
-	)->name('connect-license');
+    Route::post(
+        '/connect-license',
+        [ConnectedGumroadLicenseController::class, 'store']
+    )->name('connect-license');
 });
 
 // required by Fortify: https://github.com/laravel/fortify/issues/155#issuecomment-732531717
@@ -47,22 +48,27 @@ Route::get('/base/reset-password/{token}', [HomeController::class, 'index'])->na
 Route::post("/tunnel", [SentryTunnelController::class, "index"]);
 
 Route::group(['middleware' => ['auth'], 'prefix' => "api"], static function () {
-	Route::get('onboardingState', OnboardingStateController::class);
+    Route::get('onboardingState', OnboardingStateController::class);
 
-	Route::post('gumroadLicense', [ConnectedGumroadLicenseController::class, "store"]);
+    Route::post('gumroadLicense', [ConnectedGumroadLicenseController::class, "store"]);
 
-	Route::post(
-		'/onetimecode',
-		[OnetimecodeController::class, 'create']);
+    Route::post(
+        '/onetimecode',
+        [OnetimecodeController::class, 'create']);
 
-	Route::post('/file', [FileController::class, 'show'])
-	     ->name('download');
+    Route::post('/file', [FileController::class, 'show'])
+        ->name('download');
 
-	Route::get('inspect-sync', [InspectSyncController::class, "index"]);
+    Route::get('inspect-sync', [InspectSyncController::class, "index"]);
 
-	Route::post('RMFileTree', [RMFiletreeController::class, 'index']);
+    Route::post('RMFileTree', [RMFiletreeController::class, 'index']);
+
 });
 
+Route::group(['middleware' => ['auth.is-admin'], 'prefix' => 'admin'], function () {
+    Route::get('failed_syncs', [FailedSynchronizationsController::class, 'index']);
+    Route::get('failed_syncs/dl', [FailedSynchronizationsController::class, 'download']);
+});
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::fallback([HomeController::class, 'index']);
