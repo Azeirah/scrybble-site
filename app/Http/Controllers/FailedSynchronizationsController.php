@@ -41,7 +41,7 @@ class FailedSynchronizationsController extends Controller
         $file = $userStorage->get($path);
         $storage->put("failed_sync/$path", $file);
 
-        return $storage->temporaryUrl($path, now()->addMinutes(1));
+        return redirect($storage->temporaryUrl($path, now()->addMinutes(1)));
     }
 
 
