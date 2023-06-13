@@ -11,7 +11,7 @@ use RuntimeException;
  *
  */
 class RemarksService {
-    private string $remarks_version = "0.3.3";
+    private string $remarks_version = "0.3.4";
 
      /**
      * @param AbsolutePathInterface $sourceDirectory
