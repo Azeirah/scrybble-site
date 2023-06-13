@@ -66,3 +66,14 @@ You can run remarks through a container with the following command
 `docker run -v "$PWD/binaries/remarks/tests/":/store laauurraaa/remarks-bin:0.2.1 /store/in/v3_coords_notebook /store/out`
 
 This command runs remarks over a test file in the remarks project from the root of rm-notesync.
+
+### Updating remarks
+
+Remarks is a git-submodule of this git repository. It is found in `binaries/remarks`.
+The docker container is built from the files in the `binaries/remarks` folder and does not utilize git whatsoever.
+
+To release a new version of the docker container, follow these steps:
+
+- [ ] Update the version in [`remarks.version` file](./remarks.version)
+- [ ] Run `make update-remarks`
+- [ ] Modify the `$remarks_version` field in [the php remarks service](./app/Services/RemarksService.php)
