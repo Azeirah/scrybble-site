@@ -72,6 +72,8 @@ This command runs remarks over a test file in the remarks project from the root 
 Remarks is a git-submodule of this git repository. It is found in `binaries/remarks`.
 The docker container is built from the files in the `binaries/remarks` folder and does not utilize git whatsoever.
 
+**The version in remarks.version does not correspond with the remarks package version**
+
 To release a new version of the docker container, follow these steps:
 
 - [ ] Update the version in [`remarks.version` file](./remarks.version)
