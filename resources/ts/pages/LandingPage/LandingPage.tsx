@@ -47,7 +47,7 @@ export function LandingPage() {
                     <ul>
                         <li>Does this work with ReMarkable version 3.0?</li>
                         <ul>
-                            <li>Not yet, we're working hard to make it happen</li>
+                            <li>Yes! Scrybble works with ReMarkable version 3.0.</li>
                         </ul>
                         <li>How does this work?</li>
                         <ul>

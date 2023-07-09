@@ -23,19 +23,19 @@ export function Roadmap() {
                 <td>Allow synchronization of PDF files from ReMarkable to Obsidian</td>
             </tr>
             <tr className="table-success">
-                <td>Yes (beta)</td>
+                <td>Yes</td>
                 <td>Support .epub format</td>
                 <td>Allow synchronization of .epub files from ReMarkable to Obsidian</td>
             </tr>
             <tr className="table-success">
-                <td>Yes (beta)</td>
+                <td>Yes</td>
                 <td>Support notebooks</td>
                 <td>Allows synchronizing ReMarkable notebooks to Obsidian</td>
             </tr>
-            <tr className="table-warning">
-                <td>Maybe</td>
+            <tr className="table-success">
+                <td>Yes</td>
                 <td>Quick sheets</td>
-                <td>Quick sheets are currently not supported, but support is likely to be added soon.</td>
+                <td>Allow ssynchronizing quick sheets to Obsidian</td>
             </tr>
             <tr className="table-group-divider">
                 <td colSpan={3} className="table-dark text-center">
@@ -57,7 +57,8 @@ export function Roadmap() {
             <tr className="table-success">
                 <td>Yes (beta)</td>
                 <td>Show synchronization status</td>
-                <td>There are multiple steps to synchronize a file from RM to Obsidian, since mid-December, we have a
+                <td>There are multiple steps to synchronize a file from RM to Obsidian, since mid-December 2022, we have
+                    a
                     "Sync status" page to inspect what does and doesn't sync as expected.
                 </td>
             </tr>
@@ -69,7 +70,8 @@ export function Roadmap() {
             <tr className="table-info">
                 <td>-</td>
                 <td>Stability</td>
-                <td>As we learn more about, we will improve stability.</td>
+                <td>Scrybble has become more stable since it's initial release. Over 50 customers depend on scrybble!
+                </td>
             </tr>
             <tr className="table-group-divider">
                 <td colSpan={3} className="table-dark text-center">
