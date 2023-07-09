@@ -15,8 +15,8 @@ export default function GumroadLicenseCard() {
 
     return <div id="login-card" className="card-dark">
         <div className="card-header">
-            <span className="fs-4">Connect your gumroad license<span
-                className="fs-5 text-muted"> (step 1/2)</span></span>
+            <h1 className="fs-4">Connect your gumroad license<span
+                className="fs-5 text-muted"> (step 1/2)</span></h1>
         </div>
         <form className="card-body" onSubmit={(e) => {
             e.preventDefault()
@@ -28,6 +28,13 @@ export default function GumroadLicenseCard() {
                        placeholder="Your license" value={license} onChange={(e) => setLicense(e.currentTarget.value)}/>
                 <button className="btn btn-primary" type="submit">Submit</button>
                 {errMsg ? <FormError errorMessage={errMsg}/> : null}
+            </div>
+            <hr/>
+            <div className="no-license">
+                <a href="https://streamsoft.gumroad.com/l/remarkable-to-obsidian" className="fs-5 link-info"
+                   target="_blank">Don't
+                    have a license? Try scrybble for free</a>
+                <p>The first month is on us. You can cancel at any time.</p>
             </div>
         </form>
     </div>
