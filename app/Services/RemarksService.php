@@ -10,16 +10,18 @@ use RuntimeException;
 /**
  *
  */
-class RemarksService {
-    private string $remarks_version = "0.3.6";
+class RemarksService
+{
+    private string $remarks_version = "0.3.7";
 
-     /**
+    /**
      * @param AbsolutePathInterface $sourceDirectory
      * @param AbsolutePathInterface $targetDirectory
      * @param RemarksConfig $config
      * @return void
      */
-    public function extractNotesAndHighlights(AbsolutePathInterface $sourceDirectory, AbsolutePathInterface $targetDirectory, RemarksConfig $config): void {
+    public function extractNotesAndHighlights(AbsolutePathInterface $sourceDirectory, AbsolutePathInterface $targetDirectory, RemarksConfig $config): void
+    {
         // docker run -v "$PWD/files":/store laauurraaa/remarks-bin /store /store --targets md
         $source_dir = $sourceDirectory->string();
         $target_dir = $targetDirectory->string();
