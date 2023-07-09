@@ -160,6 +160,14 @@ export const apiRoot = createApi({
                     method: "GET"
                 }
             }
+        }),
+        gumroadSaleInfo: builder.query<{ email: string, license_key: string }, string>({
+            query(sale_id) {
+                return {
+                    url: `/api/gumroadSale/${sale_id}`,
+                    method: "GET"
+                }
+            }
         })
     })
 })
@@ -192,7 +200,8 @@ export const {
     useSelectFileForSyncMutation,
     useSyncStatusQuery,
     useRequestPasswordResetMutation,
-    useResetPasswordMutation
+    useResetPasswordMutation,
+    useGumroadSaleInfoQuery
 } = apiRoot
 
 export {useLogin}

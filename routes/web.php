@@ -4,6 +4,7 @@ use App\Http\Controllers\ConnectedGumroadLicenseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FailedSynchronizationsController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\GumroadSaleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InspectSyncController;
 use App\Http\Controllers\OnboardingStateController;
@@ -63,7 +64,13 @@ Route::group(['middleware' => ['auth'], 'prefix' => "api"], static function () {
 
     Route::post('RMFileTree', [RMFiletreeController::class, 'index']);
 
+
 });
+
+Route::group(['prefix' => 'api'], static function () {
+    Route::get('gumroadSale/{sale_id}', [GumroadSaleController::class, "show"]);
+});
+
 
 Route::group(['middleware' => ['auth.is-admin'], 'prefix' => 'admin'], function () {
     Route::get('failed_syncs', [FailedSynchronizationsController::class, 'index']);

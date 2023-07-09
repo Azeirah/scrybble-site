@@ -1,11 +1,32 @@
-import {RegisterForm, useLogin, useRegisterMutation} from "../../../store/api/apiRoot"
+import {RegisterForm, useGumroadSaleInfoQuery, useLogin, useRegisterMutation} from "../../../store/api/apiRoot"
 import * as React from "react"
-import {useEffect} from "react"
+import {useEffect, useState} from "react"
 import {ErrorResponse} from "../../../laravelTypes"
+import {useSearchParams} from "react-router-dom";
+
+function usePrefillEmailField() {
+    const [emailField, setEmailField] = useState<HTMLInputElement | null>(null);
+    const [params] = useSearchParams()
+    const sale_id: string | undefined = params.get('sale_id');
+    const {
+        data: userPrefill,
+        isSuccess: prefillSuccess
+    } = useGumroadSaleInfoQuery(sale_id, {skip: sale_id === undefined});
+
+    useEffect(() => {
+        if (emailField && prefillSuccess && userPrefill) {
+            emailField.value = userPrefill.email;
+        }
+    }, [userPrefill, prefillSuccess, emailField]);
+
+    return setEmailField;
+}
 
 export function RegisterCard() {
     const [register, {error, isSuccess}] = useRegisterMutation()
     const login = useLogin("/dashboard")
+
+    const emailRef = usePrefillEmailField();
 
     function hasError(name: string): boolean {
         let err = error as ErrorResponse
@@ -56,6 +77,7 @@ export function RegisterCard() {
 
                             <div className="col-md-6">
                                 <input id="email" type="email"
+                                       ref={emailRef}
                                        className={`form-control${hasError("email") ? " is-invalid" : ""}`}
                                        name="email" required autoComplete="email"/>
 
