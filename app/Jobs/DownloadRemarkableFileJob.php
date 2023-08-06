@@ -15,12 +15,14 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use RuntimeException;
 
-class DownloadRemarkableFileJob implements ShouldQueue {
+class DownloadRemarkableFileJob implements ShouldQueue
+{
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private SyncContext $sync_context;
 
-    public function __construct(SyncContext $sync_context) {
+    public function __construct(SyncContext $sync_context)
+    {
         $this->sync_context = $sync_context;
     }
 
@@ -42,9 +44,9 @@ class DownloadRemarkableFileJob implements ShouldQueue {
             return;
         }
         $output = $results['output'];
-        $this->sync_context->logStep("Remarks API finished: `$output`");
         $this->sync_context->downloaded_zip_location = $results['downloaded_zip_location'];
         $this->sync_context->folder = $results['folder'];
+        $this->sync_context->logStep("Remarks API finished: `$output`", $this->sync_context->toArray());
 
         event(new RemarkableFileDownloadedEvent($this->sync_context));
     }

@@ -13,6 +13,7 @@
         <table class="table table-dark table-bordered table-striped">
             <thead>
             <tr>
+                <th>#</th>
                 <th>User</th>
                 <th>When</th>
                 <th>Filename</th>
@@ -21,10 +22,12 @@
             <tbody>
             @foreach ($failed_syncs as $failed_sync)
                 <tr>
-                    <td>{{ $failed_sync['user'] }}</td>
+                    <td>{{$failed_sync['id']}}</td>
+                    <td>{{$failed_sync['user']}}</td>
                     <td>{{$failed_sync['created_at']}}</td>
                     <td>
-                        <a href="/admin/failed_syncs/dl?user={{$failed_sync['user_id']}}&path={{urlencode($failed_sync['filename'])}}" download>
+                        <a href="/admin/failed_syncs/dl?user={{$failed_sync['user_id']}}&path={{urlencode($failed_sync['filename'])}}"
+                           download>
                             {{ $failed_sync['filename'] }}
                         </a>
                         {{--                        @else--}}
@@ -34,6 +37,6 @@
                 </tr>
             @endforeach
             </tbody>
+        </table>
     </div>
-    </table>
 @endsection

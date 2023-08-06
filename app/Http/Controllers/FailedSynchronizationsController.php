@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\UserStorage;
 use App\Models\Sync;
 use App\Models\User;
+use App\Services\RMapi;
 use Illuminate\Support\Facades\Storage;
 
 class FailedSynchronizationsController extends Controller
@@ -37,11 +38,12 @@ class FailedSynchronizationsController extends Controller
     public function download()
     {
         $user = User::find(request()->query('user'));
-        $path = request()->query('path') . ".zip";
+        $path = request()->query('path');
+        $hashedPath = RMapi::hashedFilepath($path);
         $userStorage = UserStorage::get($user);
 
         $storage = Storage::disk('s3');
-        $file = $userStorage->get($path);
+        $file = $userStorage->get($hashedPath);
         $s3_path = urlencode("failed_sync/$path");
         if (!$storage->put($s3_path, $file)) {
             abort(500, "Failed to upload the file");

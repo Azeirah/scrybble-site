@@ -25,11 +25,13 @@ use RuntimeException;
 /**
  *
  */
-class RMapi {
+class RMapi
+{
     private Filesystem $storage;
     private int $userId;
 
-    public function __construct(User $user = null) {
+    public function __construct(User $user = null)
+    {
         $user1 = $user ?? Auth::user();
         $this->storage = UserStorage::get($user1);
         $this->userId = $user1->id;
@@ -38,7 +40,8 @@ class RMapi {
     /**
      * @return bool
      */
-    public function isAuthenticated(): bool {
+    public function isAuthenticated(): bool
+    {
         return $this->storage->exists('.rmapi-auth');
     }
 
@@ -47,7 +50,8 @@ class RMapi {
      * @return array
      */
     #[ArrayShape([Collection::class, 'int'])]
-    public function executeRMApiCommand(string $command): array {
+    public function executeRMApiCommand(string $command): array
+    {
         $this->configureEnv();
 
         $rmapi = base_path('binaries/rmapi');
@@ -84,7 +88,8 @@ class RMapi {
      * @param string $code
      * @return bool
      */
-    public function authenticate(string $code): bool {
+    public function authenticate(string $code): bool
+    {
         $rmapi = base_path('binaries/rmapi');
         $this->configureEnv();
         $command = "echo $code | $rmapi";
@@ -116,7 +121,8 @@ class RMapi {
     /**
      *
      */
-    public function list(string $path = '/'): Collection {
+    public function list(string $path = '/'): Collection
+    {
         [$output, $exit_code] = $this->executeRMApiCommand("ls \"$path\"");
 
         if ($exit_code !== 0) {
@@ -134,7 +140,8 @@ class RMapi {
         })->values();
     }
 
-    public function refresh(): bool {
+    public function refresh(): bool
+    {
         $redis = Redis::client();
         $key = "rmapi:lastRefreshed:$this->userId";
         $ttl = $redis->ttl($key);
@@ -155,13 +162,19 @@ class RMapi {
         return false;
     }
 
+    public static function hashedFilepath(string $filePath): string
+    {
+        return hash('sha1', $filePath) . ".zip";
+    }
+
     /**
      * @throws EmptyPathException
      * @throws NonAbsolutePathException
      * @throws RuntimeException
      * @throws FileNotFoundException
      */
-    public function get(string $filePath): array {
+    public function get(string $filePath): array
+    {
         $rmapi_download_path = Str::replace('"', '\"', $filePath);
         [$output, $exit_code] = $this->executeRMApiCommand("get \"$rmapi_download_path\"");
         if ($exit_code !== 0) {
@@ -174,9 +187,14 @@ class RMapi {
 
         $folders = AbsolutePath::fromString($filePath);
 
+        $newLocation = static::hashedFilepath($filePath);
+        if (!$this->storage->move($location, $newLocation)) {
+            throw new RuntimeException("Unable to rename downloaded RMZip to hashed filePath " . $location . " to " . $newLocation);
+        }
+
         return [
             'output' => $output,
-            'downloaded_zip_location' => $location->string(),
+            'downloaded_zip_location' => $newLocation,
             'folder' => $folders->replaceName("")->string()
         ];
     }
@@ -184,7 +202,8 @@ class RMapi {
     /**
      * @return void
      */
-    public function configureEnv(): void {
+    public function configureEnv(): void
+    {
         putenv('RMAPI_CONFIG=' . $this->storage->path('.rmapi-auth'));
         putenv('XDG_CACHE_HOME=' . $this->storage->path(''));
     }
@@ -194,7 +213,8 @@ class RMapi {
      * @param string $rmapiDownloadPath
      * @return PathInterface
      */
-    private function getDownloadedZipLocation(string $rmapiDownloadPath): PathInterface {
+    private function getDownloadedZipLocation(string $rmapiDownloadPath): PathInterface
+    {
         $filename = Path::fromString($rmapiDownloadPath)->name();
         return Path::fromString($filename)->joinExtensions('zip');
     }
