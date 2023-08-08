@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react"
+import React, {useCallback, useState} from "react"
 import "./RMFileTree.scss"
 import {Link, useLocation, useNavigate} from "react-router-dom"
 import {
@@ -38,9 +38,8 @@ function SyncSettings() {
 }
 
 function useHasNoSyncs() {
-    const [hasSync, setHasSync] = useState<null | boolean>(null);
     const {isSuccess: userLoaded} = useGetUserQuery()
-    const {firstTime, isSuccess} = useSyncStatusQuery(undefined, {
+    const {firstTime} = useSyncStatusQuery(undefined, {
         selectFromResult: ({data, isSuccess}) => {
             return {
                 firstTime: data ? data.length === 0 : false,
@@ -49,13 +48,6 @@ function useHasNoSyncs() {
         },
         skip: !userLoaded
     })
-
-    useEffect(() => {
-        if (isSuccess) {
-            setHasSync(firstTime)
-        }
-    }, [isSuccess])
-
     return firstTime
 }
 
