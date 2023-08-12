@@ -12,7 +12,7 @@ use RuntimeException;
  */
 class RemarksService
 {
-    private string $remarks_version = "0.3.7";
+    private string $remarks_version = "0.3.8";
 
     /**
      * @param AbsolutePathInterface $sourceDirectory
