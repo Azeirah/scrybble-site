@@ -1,5 +1,6 @@
 import {SyncStatus, useSyncStatusQuery} from "../../store/api/apiRoot"
 import * as React from "react"
+import {useEffect, useState} from "react"
 import "./InspectSync.scss"
 
 function SyncItem({created_at, filename, completed, error}: SyncStatus) {
@@ -10,7 +11,19 @@ function SyncItem({created_at, filename, completed, error}: SyncStatus) {
 }
 
 export default function InspectSync() {
-    const {data: syncStatus, isSuccess} = useSyncStatusQuery()
+    const [shouldPoll, setShouldPoll] = useState(false);
+    const {data: syncStatus, isSuccess} = useSyncStatusQuery(undefined, {
+        refetchOnMountOrArgChange: true,
+        pollingInterval: shouldPoll ? 1000 : 0
+    })
+
+    useEffect(() => {
+        if (isSuccess && syncStatus && syncStatus.find((status) => !status.completed && !status.error)) {
+            setShouldPoll(true)
+        } else {
+            setShouldPoll(false)
+        }
+    }, [])
 
     return <div className="page-centering-container" id="inspect-sync">
         <div className="w-75">

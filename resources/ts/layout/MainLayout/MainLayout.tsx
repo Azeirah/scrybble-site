@@ -1,5 +1,5 @@
 import {useAppSelector} from "../../store/hooks"
-import {useLogoutMutation} from "../../store/api/apiRoot"
+import {apiRoot, useLogoutMutation} from "../../store/api/apiRoot"
 import {Link, Outlet} from "react-router-dom"
 import * as React from "react"
 import "./MainLayout.scss"
@@ -7,6 +7,8 @@ import "./MainLayout.scss"
 export function MainLayout() {
     const user = useAppSelector((state) => state.auth.user)
     const [logout, {}] = useLogoutMutation()
+
+    const prefetchSyncStatus = apiRoot.usePrefetch('syncStatus')
 
     return <div id="mainLayout">
         <nav className="navbar navbar-expand-md navbar-dark shadow-sm mb-4">
@@ -33,7 +35,10 @@ export function MainLayout() {
                                     <Link to="/dashboard" className="nav-link">Dashboard</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link to="/inspect-sync" className="nav-link">Sync status</Link>
+                                    <Link to="/inspect-sync" className="nav-link" onMouseEnter={() => {
+                                        console.log("mouse enter")
+                                        prefetchSyncStatus()
+                                    }}>Sync status</Link>
                                 </li>
                             </> : null
                         }

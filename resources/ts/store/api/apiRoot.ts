@@ -60,6 +60,7 @@ export const apiRoot = createApi({
             return headers
         }
     }),
+    tagTypes: ["sync-status"],
 
     endpoints: (builder) => ({
         login: builder.mutation<void, LoginData>({
@@ -151,7 +152,8 @@ export const apiRoot = createApi({
                         file
                     }
                 }
-            }
+            },
+            invalidatesTags: ["sync-status"]
         }),
         syncStatus: builder.query<SyncStatus[], void>({
             query() {
@@ -159,7 +161,8 @@ export const apiRoot = createApi({
                     url: "api/inspect-sync",
                     method: "GET"
                 }
-            }
+            },
+            providesTags: ["sync-status"]
         }),
         gumroadSaleInfo: builder.query<{ email: string, license_key: string }, string>({
             query(sale_id) {
