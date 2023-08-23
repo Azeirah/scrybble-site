@@ -12,7 +12,7 @@ use RuntimeException;
  */
 class RemarksService
 {
-    private string $remarks_version = "0.3.12";
+    private string $remarks_version = "0.3.14";
 
     /**
      * @param AbsolutePathInterface $sourceDirectory
@@ -27,7 +27,7 @@ class RemarksService
         $target_dir = $targetDirectory->string();
         $params = $config->toRemarksParams();
         $command =
-            
+
             "docker run -v \"$source_dir/\":/in -v \"$target_dir\":/out laauurraaa/remarks-bin:{$this->remarks_version} /in /out $params 2>&1";
         exec($command, $output, $result_code);
 
