@@ -4,8 +4,10 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Events\ReMarkableAuthenticatedEvent;
+use App\Exceptions\MissingRMApiAuthenticationTokenException;
 use App\Helpers\UserStorage;
 use App\Models\User;
+use App\Support\RmAuthenticationFile;
 use Eloquent\Pathogen\AbsolutePath;
 use Eloquent\Pathogen\Exception\EmptyPathException;
 use Eloquent\Pathogen\Exception\NonAbsolutePathException;
@@ -39,10 +41,20 @@ class RMapi
 
     /**
      * @return bool
+     * @throws MissingRMApiAuthenticationTokenException
      */
     public function isAuthenticated(): bool
     {
-        return $this->storage->exists('.rmapi-auth');
+        $authFile = new RmAuthenticationFile($this->storage);
+        if (!$authFile->exists()) {
+            return false;
+        }
+
+        if ($authFile->hasValidAuthenticationValues()) {
+            return true;
+        } else {
+            throw new MissingRMApiAuthenticationTokenException();
+        }
     }
 
     /**
@@ -126,8 +138,13 @@ class RMapi
         [$output, $exit_code] = $this->executeRMApiCommand("ls \"$path\"");
 
         if ($exit_code !== 0) {
-            throw new RuntimeException("rmapi ls path failed with exit code `$exit_code`: " . implode("\n",
-                    $output->toArray()));
+            $error = implode("\n", $output->toArray());
+
+            if (Str::contains($error, "missing token")) {
+
+            }
+
+            throw new RuntimeException("rmapi ls path failed with exit code `$exit_code`: " . $error);
         }
 
         return $output->sort()->map(function ($name) use ($path) {

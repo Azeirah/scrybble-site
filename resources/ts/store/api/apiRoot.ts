@@ -47,7 +47,7 @@ export interface Directory extends RMTreeItem {
     type: "d",
 }
 
-export type OnboardingState = "setup-gumroad" | "setup-one-time-code" | "ready";
+export type OnboardingState = "setup-gumroad" | "setup-one-time-code" | "setup-one-time-code-again" | "ready";
 
 export type OnetimecodeQuery = { code }
 export type SyncStatus = { filename: string, created_at: string, completed: boolean, error: boolean }

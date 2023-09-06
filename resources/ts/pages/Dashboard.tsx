@@ -12,11 +12,13 @@ export default function Dashboard() {
     const navigate = useNavigate()
 
     const renderState = _.cond([
-        [_.matches("setup-gumroad"), _.constant(
+        [(state: string) => _.isEqual("setup-gumroad", state), _.constant(
             () => <div className="page-centering-container"><GumroadLicenseCard/></div>)],
-        [_.matches("setup-one-time-code"), _.constant(
-            () => <div className="page-centering-container"><RMOneTimeCodeCard/></div>)],
-        [_.matches("ready"), _.constant(RMFileTree)]
+        [(state: string) => _.isEqual('setup-one-time-code', state), _.constant(
+            () => <div className="page-centering-container"><RMOneTimeCodeCard firstTime/></div>)],
+        [(state: string) => _.isEqual("setup-one-time-code-again", state), _.constant(
+            () => <div className="page-centering-container"><RMOneTimeCodeCard firstTime={false}/></div>)],
+        [(state: string) => _.isEqual("ready", state), _.constant(RMFileTree)]
     ])
 
     const Component = renderState(onboardingState)
