@@ -75,7 +75,7 @@ export function Roadmap() {
             </tr>
             <tr className="table-group-divider">
                 <td colSpan={3} className="table-dark text-center">
-                    <h4 style={{marginBottom: 0}}>Synchronization options</h4>
+                    <h4 style={{marginBottom: 0}}>Synchronization</h4>
                 </td>
             </tr>
             <tr className="table-warning">
@@ -94,7 +94,7 @@ export function Roadmap() {
                 </td>
             </tr>
             <tr className="table-warning">
-                <td>No</td>
+                <td>Yes</td>
                 <td>Export highlights to markdown</td>
                 <td>Obsidian is best for working with text, with this option you will be able to choose if you want to
                     export your highlights to a plain-text markdown file alongside the pdf.
