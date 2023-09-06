@@ -123,7 +123,8 @@ class RMapi
             // unknown error for now
             $user = Auth::user()->id;
             Log::error("RMApi onetimecode failed for User#$user, exit_code=`$exit_code`, output=`$command_output`");
-            throw new RuntimeException("Unknown error, contact developer: smg@smgmusicdisplay.com");
+            $support_email = config('app.support_email');
+            throw new RuntimeException("Unknown error, contact developer: $support_email");
         }
         throw new RuntimeException('unknown error');
     }
