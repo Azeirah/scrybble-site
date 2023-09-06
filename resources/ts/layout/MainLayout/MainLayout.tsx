@@ -36,7 +36,6 @@ export function MainLayout() {
                                 </li>
                                 <li className="nav-item">
                                     <Link to="/inspect-sync" className="nav-link" onMouseEnter={() => {
-                                        console.log("mouse enter")
                                         prefetchSyncStatus()
                                     }}>Sync status</Link>
                                 </li>
