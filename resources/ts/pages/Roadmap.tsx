@@ -93,11 +93,12 @@ export function Roadmap() {
                     those 17 pages will show up in your vault.
                 </td>
             </tr>
-            <tr className="table-warning">
+            <tr className="table-success">
                 <td>Yes</td>
                 <td>Export highlights to markdown</td>
-                <td>Obsidian is best for working with text, with this option you will be able to choose if you want to
-                    export your highlights to a plain-text markdown file alongside the pdf.
+                <td>This has been added in August 2023, any highlights in your documents will appear in a markdown file
+                    next to your exported PDF. The markdown file is populated with per-page tags, document tags and
+                    per-page highlights. All tags are in the Obsidian format, highlights are deep-linked as well.
                 </td>
             </tr>
             </tbody>
