@@ -13,19 +13,20 @@ use InvalidArgumentException;
 /**
  *
  */
-class OnetimecodeController extends Controller {
+class OnetimecodeController extends Controller
+{
     /**
      * @param CreateOnetimecodeRequest $request
      * @param RMapi $RMapi
+     * @param OnboardingStateService $onboarding_state_service
      * @return JsonResponse
      */
-    public function create(CreateOnetimecodeRequest $request, RMapi $RMapi, OnboardingStateService $onboarding_state_service): JsonResponse {
+    public function create(CreateOnetimecodeRequest $request, RMapi $RMapi, OnboardingStateService $onboarding_state_service): JsonResponse
+    {
         try {
             $RMapi->authenticate($request->get('code'));
-        } catch (InvalidArgumentException) {
-            return response()->json(['error' => 'Wrong code'], 422);
-        } catch (Exception $err) {
-            return response()->json(['error' => $err->getMessage()], 422);
+        } catch (InvalidArgumentException|Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
         }
 
         return response()->json(['newState' => $onboarding_state_service->getState()]);

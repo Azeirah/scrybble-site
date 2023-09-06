@@ -106,26 +106,24 @@ class RMapi
         $this->configureEnv();
         $command = "echo $code | $rmapi";
         exec($command, $output, $exit_code);
+        $command_output = implode("\n", $output);
 
-        foreach ($output as $item) {
-            $index = Str::lower($item);
-            if (Str::contains($index, 'incorrect') || Str::contains($index, "Enter one-time code")) {
-                throw new InvalidArgumentException('Invalid code');
-            }
-            if (Str::contains($index, 'failed to create a new device token')) {
-                throw new RuntimeException('Failed to create token');
-            }
-            if (Str::contains($index, 'refresh') || Str::contains($index, "syncversion: 1.5")) {
-                event(new ReMarkableAuthenticatedEvent());
-                return true;
-            }
+        $index = Str::lower($command_output);
+        if (Str::contains($index, 'refresh') || Str::contains($index, "syncversion: 1.5")) {
+            event(new ReMarkableAuthenticatedEvent());
+            return true;
+        }
+        if (Str::contains($index, 'incorrect') || Str::contains($index, "enter one-time code")) {
+            throw new InvalidArgumentException('Invalid code');
+        }
+        if (Str::contains($index, 'failed to create a new device token')) {
+            throw new RuntimeException('Failed to create token');
         }
         if ($exit_code !== 0) {
             // unknown error for now
             $user = Auth::user()->id;
-            $all_output = implode("\n", $output);
-            Log::error("RMApi onetimecode failed for User#$user, exit_code=`$exit_code`, output=`$all_output`");
-            throw new RuntimeException("Unknown error, contact developer");
+            Log::error("RMApi onetimecode failed for User#$user, exit_code=`$exit_code`, output=`$command_output`");
+            throw new RuntimeException("Unknown error, contact developer: smg@smgmusicdisplay.com");
         }
         throw new RuntimeException('unknown error');
     }

@@ -3,7 +3,7 @@ import {OnetimecodeQuery, useSendOnetimecodeMutation} from "../../../store/api/a
 import FormError from "../../reusable/FormError/FormError"
 
 export default function RMOneTimeCodeCard({firstTime}: { firstTime: boolean }) {
-    const [sendOnetimecode, {error}] = useSendOnetimecodeMutation()
+    const [sendOnetimecode, {error, isLoading}] = useSendOnetimecodeMutation()
 
     let errMsg
     if (error && "data" in error) {
@@ -37,7 +37,14 @@ export default function RMOneTimeCodeCard({firstTime}: { firstTime: boolean }) {
                     <input className={`input-group-text${errMsg ? " is-invalid" : ""}`} required minLength={8}
                            maxLength={8} pattern="[a-z]{8}"
                            placeholder="aabbccdd" name="code" type="text" autoFocus/>
-                    <input className="btn btn-primary" type="submit" value="submit"/>
+                    <button className="btn btn-primary" type="submit" disabled={isLoading}>
+                        {isLoading ?
+                            <>
+                                <div className="spinner-border spinner-border-sm"/>
+                                &nbsp;Checking code...
+                            </>
+                            : `submit`}
+                    </button>
                     {errMsg ? <FormError errorMessage={errMsg}/> : null}
                 </div>
             </form>
