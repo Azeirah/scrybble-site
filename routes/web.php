@@ -4,6 +4,7 @@ use App\Http\Controllers\ConnectedGumroadLicenseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FailedSynchronizationsController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\GumroadLicenseInformationController;
 use App\Http\Controllers\GumroadSaleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InspectSyncController;
@@ -50,6 +51,7 @@ Route::post("/tunnel", [SentryTunnelController::class, "index"]);
 
 Route::group(['middleware' => ['auth'], 'prefix' => "api"], static function () {
     Route::get('onboardingState', OnboardingStateController::class);
+    Route::get('licenseInformation', GumroadLicenseInformationController::class);
 
     Route::post('gumroadLicense', [ConnectedGumroadLicenseController::class, "store"]);
 

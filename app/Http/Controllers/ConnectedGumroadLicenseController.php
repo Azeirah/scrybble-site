@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreConnectedGumroadLicenseRequest;
 use App\Models\GumroadLicense;
 use App\Models\User;
+use App\Services\GumroadApi;
 use App\Services\OnboardingStateService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -14,9 +15,7 @@ use JsonException;
 use RuntimeException;
 
 class ConnectedGumroadLicenseController extends Controller {
-    /**
-     */
-    public function store(StoreConnectedGumroadLicenseRequest $request, OnboardingStateService $onboarding_state_service) {
+    public function store(StoreConnectedGumroadLicenseRequest $request, OnboardingStateService $onboarding_state_service, GumroadApi $gumroadApi) {
         /** @var User $user */
         $user = Auth::user();
 
@@ -27,14 +26,8 @@ class ConnectedGumroadLicenseController extends Controller {
                 ->json(['error' => "A license is already connected"], 422);
         }
 
-        $client = new Client();
         try {
-            $res = $client->post('https://api.gumroad.com/v2/licenses/verify', [
-                'json' => [
-                    'product_permalink' => 'remarkable-to-obsidian',
-                    'license_key' => $license
-                ]
-            ])->withHeader('Content-Type', 'application/json');
+            $res = $gumroadApi->verifyLicense($license);
         } catch (GuzzleException) {
             return response()
                 ->json(['error' => "License \"$license\" not found, did you fill it in correctly?"], 422);

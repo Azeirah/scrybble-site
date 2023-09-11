@@ -47,6 +47,21 @@ export interface Directory extends RMTreeItem {
     type: "d",
 }
 
+export type LicenseInformation = {
+    license: string;
+} & {
+    exists: false;
+} | {
+    exists: true;
+    licenseInformation: {
+        active: boolean;
+        uses: number;
+        order_number: number;
+        sale_id: string;
+        subscription_id: string;
+    }
+}
+
 export type OnboardingState = "setup-gumroad" | "setup-one-time-code" | "setup-one-time-code-again" | "ready";
 
 export type OnetimecodeQuery = { code }
@@ -118,6 +133,12 @@ export const apiRoot = createApi({
                     return newState
                 }))
             }
+        }),
+        licenseInformation: builder.query<LicenseInformation, void>({
+            query: () => ({
+                url: "/api/licenseInformation",
+                method: "GET"
+            })
         }),
         sendOnetimecode: builder.mutation<{ newState: OnboardingState }, OnetimecodeQuery>({
             query: (body) => ({
@@ -204,7 +225,8 @@ export const {
     useSyncStatusQuery,
     useRequestPasswordResetMutation,
     useResetPasswordMutation,
-    useGumroadSaleInfoQuery
+    useGumroadSaleInfoQuery,
+    useLicenseInformationQuery
 } = apiRoot
 
 export {useLogin}

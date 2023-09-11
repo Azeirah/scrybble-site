@@ -28,6 +28,7 @@ import ResetPasswordCard from "./components/feature/ResetPasswordCard/ResetPassw
 import {BrowserTracing} from "@sentry/tracing"
 import * as Sentry from "@sentry/react"
 import {ResetPasswordTokenCard} from "./components/feature/ResetPasswordTokenCard"
+import UserProfile from "./pages/UserProfile/UserProfile";
 
 let Dashboard = React.lazy(() => import("./pages/Dashboard"))
 let InspectSync = React.lazy(() => import("./pages/InspectSync/InspectSync"))
@@ -62,6 +63,8 @@ function AppRoutes() {
                     <Route path="purchased" element={<PurchasedPage/>}/>
                     <Route path="dashboard" element={<Dashboard/>}/>
                     <Route path="inspect-sync" element={<InspectSync/>}/>
+
+                    <Route path="profile" element={<UserProfile/>}></Route>
                     <Route path="auth" element={<AuthPage/>}>
                         <Route path="login" element={<LoginCard/>}/>
                         <Route path="register" element={<RegisterCard/>}/>

@@ -3,6 +3,10 @@ import {apiRoot, useLogoutMutation} from "../../store/api/apiRoot"
 import {Link, Outlet} from "react-router-dom"
 import * as React from "react"
 import "./MainLayout.scss"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faBook} from "@fortawesome/free-solid-svg-icons"
+
+const knowledgeBaseVisible = false;
 
 export function MainLayout() {
     const user = useAppSelector((state) => state.auth.user)
@@ -28,6 +32,13 @@ export function MainLayout() {
                         <li className="nav-item">
                             <Link to="/roadmap" className="nav-link">Roadmap</Link>
                         </li>
+                        {knowledgeBaseVisible ?
+                            <li className="nav-item">
+                                <Link to="/learn" className="nav-link text-info">
+                                    <FontAwesomeIcon icon={faBook} style={{marginRight: "4px"}}/>Learn scrybble</Link>
+                            </li>
+                            : null
+                        }
                         <li className="nav-item border-right border-dark border"></li>
                         {user ?
                             <>
@@ -62,6 +73,9 @@ export function MainLayout() {
                                 </Link>
 
                                 <div className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <Link to="profile" className="dropdown-item">
+                                        Profile
+                                    </Link>
                                     <a className="dropdown-item"
                                        onClick={(e) => {
                                            e.preventDefault()
