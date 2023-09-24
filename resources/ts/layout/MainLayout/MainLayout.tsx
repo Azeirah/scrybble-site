@@ -7,6 +7,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBook} from "@fortawesome/free-solid-svg-icons"
 
 const knowledgeBaseVisible = false;
+const obsidianPostsVisible = true;
 
 export function MainLayout() {
     const user = useAppSelector((state) => state.auth.user)
@@ -36,6 +37,13 @@ export function MainLayout() {
                             <li className="nav-item">
                                 <Link to="/learn" className="nav-link text-info">
                                     <FontAwesomeIcon icon={faBook} style={{marginRight: "4px"}}/>Learn scrybble</Link>
+                            </li>
+                            : null
+                        }
+                        {obsidianPostsVisible ?
+                            <li className="nav-item">
+                                <Link to="/learn/obsidian" className="nav-link text-obsidian">
+                                    <FontAwesomeIcon icon={faBook} style={{marginRight: "4px"}}/>Learn Obsidian</Link>
                             </li>
                             : null
                         }
@@ -90,10 +98,10 @@ export function MainLayout() {
                 </div>
             </div>
         </nav>
-        <div className="container d-flex flex-column"
+        <main className="container d-flex flex-column"
              style={{flexGrow: 1, flexShrink: 0}}>
             <Outlet/>
-        </div>
+        </main>
         <footer className="border-top border-2 border-dark">
             <span>© {(new Date()).getFullYear()} Streamsoft. Streamsoft is a sole-proprietorship registered in the
                 Netherlands.</span>

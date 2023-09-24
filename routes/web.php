@@ -10,6 +10,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InspectSyncController;
 use App\Http\Controllers\OnboardingStateController;
 use App\Http\Controllers\OnetimecodeController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\RMFiletreeController;
 use App\Http\Controllers\SentryTunnelController;
 use Illuminate\Http\Request;
@@ -65,12 +66,13 @@ Route::group(['middleware' => ['auth'], 'prefix' => "api"], static function () {
     Route::get('inspect-sync', [InspectSyncController::class, "index"]);
 
     Route::post('RMFileTree', [RMFiletreeController::class, 'index']);
-
-
 });
 
 Route::group(['prefix' => 'api'], static function () {
     Route::get('gumroadSale/{sale_id}', [GumroadSaleController::class, "show"]);
+
+    Route::get("posts", [PostController::class, "list"]);
+    Route::get("posts/{slug}", [PostController::class, "show"]);
 });
 
 

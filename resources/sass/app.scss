@@ -6,6 +6,11 @@
 
 // Bootstrap
 @import 'bootstrap/scss/bootstrap';
+$obsidian: #6C31E3;
+
+.text-obsidian {
+    color: rgb(167 139 250);
+}
 
 /* Custom default button */
 .btn-secondary,

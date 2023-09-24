@@ -192,6 +192,22 @@ export const apiRoot = createApi({
                     method: "GET"
                 }
             }
+        }),
+        posts: builder.query<{title: string, slug: string}[], void>({
+            query() {
+                return {
+                    url: `/api/posts`,
+                    method: "GET"
+                }
+            }
+        }),
+        post: builder.query<{title: string; content: string; created_at: string}, string>({
+            query(slug) {
+                return {
+                    url: `/api/posts/${slug}`,
+                    method: "GET"
+                }
+            }
         })
     })
 })
@@ -226,7 +242,9 @@ export const {
     useRequestPasswordResetMutation,
     useResetPasswordMutation,
     useGumroadSaleInfoQuery,
-    useLicenseInformationQuery
+    useLicenseInformationQuery,
+    usePostsQuery,
+    usePostQuery
 } = apiRoot
 
 export {useLogin}

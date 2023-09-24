@@ -6,17 +6,17 @@ import {Provider} from "react-redux"
 import {store} from "./store/store"
 import {
     BrowserRouter,
-    createRoutesFromChildren,
+    createRoutesFromChildren, Link,
     matchRoutes,
     Route,
     Routes,
     useLocation,
     useNavigate,
-    useNavigationType
+    useNavigationType, useParams
 } from "react-router-dom"
 import LoginCard from "./components/feature/LoginCard/LoginCard"
 import {useAppDispatch} from "./store/hooks"
-import {useGetUserQuery} from "./store/api/apiRoot"
+import {useGetUserQuery, usePostQuery, usePostsQuery} from "./store/api/apiRoot"
 import {setCredentials} from "./store/AuthSlice"
 import {AuthPage} from "./layout/AuthLayout"
 import {MainLayout} from "./layout/MainLayout/MainLayout"
@@ -29,6 +29,8 @@ import {BrowserTracing} from "@sentry/tracing"
 import * as Sentry from "@sentry/react"
 import {ResetPasswordTokenCard} from "./components/feature/ResetPasswordTokenCard"
 import UserProfile from "./pages/UserProfile/UserProfile";
+import {composeWithDevTools} from "@reduxjs/toolkit/dist/devtoolsExtension";
+import ReactMarkdown from "react-markdown";
 
 let Dashboard = React.lazy(() => import("./pages/Dashboard"))
 let InspectSync = React.lazy(() => import("./pages/InspectSync/InspectSync"))
@@ -55,6 +57,44 @@ Sentry.init({
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes)
 
+function ObsidianPosts() {
+    const {data, isLoading} = usePostsQuery();
+
+    console.log(data);
+
+    return <div style={{width: "640px"}}>
+        <h1>Learning Obsidian</h1>
+        <p>Obsidian is an incredibly powerful and open-ended tool for personal knowledge management. Learning to use
+            Obsidian for your goals isn't a straight-forward task.</p>
+        <p>Our guides are meant to be <b>practical</b> and easy to follow for any audience with a focus on optimizing
+            your Obsidian vault for your goals.</p>
+
+        <h2>Guides</h2>
+        {isLoading ? "Loading..." :
+            data.map((post) =>
+                <Link to={`/learn/obsidian/${post.slug}`}>{post.title}</Link>
+            )
+        }
+    </div>;
+}
+
+function ObsidianPost() {
+    const {slug} = useParams();
+    const {data: post, isLoading} = usePostQuery(slug);
+
+    return <>
+        {isLoading ?
+            "Loading..." :
+            <div style={{width: "640px"}}>
+                <h1>{post.title}</h1>
+                <ReactMarkdown>
+                    {post.content}
+                </ReactMarkdown>
+            </div>
+        }
+    </>;
+}
+
 function AppRoutes() {
     return (
         <React.Suspense>
@@ -72,6 +112,10 @@ function AppRoutes() {
                     </Route>
                     <Route path="base" element={<AuthPage/>}>
                         <Route path="reset-password/:token" element={<ResetPasswordTokenCard/>}/>
+                    </Route>
+                    <Route path="learn">
+                        <Route path="obsidian" element={<ObsidianPosts/>}/>
+                        <Route path="obsidian/:slug" element={<ObsidianPost/>}/>
                     </Route>
                     <Route path="roadmap" element={<Roadmap/>}/>
                     <Route index element={<LandingPage/>}/>

@@ -58,18 +58,12 @@ class PostsCrudController extends CrudController {
         $this->crud->addField(['name' => 'content', 'type' => 'textarea',
                                   'label' => 'Content']);
 
-        $this->crud->addField(['name' => 'published', 'type' => 'boolean',
-                                   'label' => 'published']);
-        $this->crud->addColumn(['name' => 'published', 'type' => 'boolean', 'label' => 'published']);
-
         $this->crud->addButtonFromView('line', 'Publish', 'publish');
     }
 
-    public function publish($id) {
+    public function publish() {
         $this->crud->hasAccessOrFail('create');
         $this->crud->setOperation('Publish');
-
-        $this->crud->model->findOrFail($id)->update(['published' => 1]);
     }
 
 }
