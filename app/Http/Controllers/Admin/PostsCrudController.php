@@ -6,8 +6,6 @@ use App\Models\Post;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
 // VALIDATION: change the requests to match your own file names if you need form validation
-use App\Http\Requests\GuideRequest as StoreRequest;
-use App\Http\Requests\GuideRequest as UpdateRequest;
 use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
@@ -42,7 +40,6 @@ class PostsCrudController extends CrudController {
         */
         $this->crud->allowAccess('show');
 
-        // TODO: remove setFromDb() and manually define Fields and Columns
         $this->crud->addColumn(['name' => 'title', 'type' => 'text', 'label'
         => 'Title']);
         $this->crud->addField(['name' => 'title', 'type' => 'text', 'label'
@@ -53,12 +50,8 @@ class PostsCrudController extends CrudController {
         $this->crud->addField(['name' => 'slug', 'type' => 'text', 'label'
         => "Slug"]);
 
-//        $this->crud->addColumn(['name' => 'content', 'type' => 'markdown',
-//                                   'label' => 'Content']);
         $this->crud->addField(['name' => 'content', 'type' => 'textarea',
                                   'label' => 'Content']);
-
-        $this->crud->addButtonFromView('line', 'Publish', 'publish');
     }
 
     public function publish() {

@@ -71,3 +71,8 @@ body {
     @extend .justify-content-center;
     flex-direction: column;
 }
+
+blockquote {
+    @extend .blockquote;
+    margin-left: 32px;
+}
