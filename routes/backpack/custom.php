@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PostsCrudController;
 use Illuminate\Support\Facades\Route;
 
 // --------------------------
@@ -16,4 +17,6 @@ Route::group([
     ),
     'namespace'  => 'App\Http\Controllers\Admin',
 ], function () { // custom admin routes
+    Route::crud('posts', 'PostsCrudController');
+    Route::post('posts/{id}/publish', [PostsCrudController::class, 'publish']);
 }); // this should be the absolute last line of this file
