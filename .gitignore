@@ -16,6 +16,6 @@ yarn-error.log
 
 storage/efs/
 xochitl-binaries/
-.ebextension/
+.ebextensions/
 .platform/
 .pytest_cache/

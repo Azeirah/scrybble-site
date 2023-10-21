@@ -1,0 +1,19 @@
+
+#inspect-sync {
+    list-style: none;
+    text-align: left !important;
+
+    .legend {
+        > div {
+            display: flex;
+            align-items: center;
+        }
+
+        > div div {
+            display: inline-block;
+            width: 3rem;
+            height: 1rem;
+            margin-right: 8px;
+        }
+    }
+}
