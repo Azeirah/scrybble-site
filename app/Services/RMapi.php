@@ -146,7 +146,14 @@ class RMapi
             throw new RuntimeException("rmapi ls path failed with exit code `$exit_code`: " . $error);
         }
 
-        return $output->sort()->map(function ($name) use ($path) {
+        return $output->reduce(function (Collection $joinedLines, string $line) {
+            if (Str::startsWith($line, ["[d]", "[f]"])) {
+                $joinedLines->push($line);
+            } else {
+                $joinedLines[count($joinedLines) - 1] .= $line;
+            }
+            return $joinedLines;
+        }, collect())->sort()->map(function ($name) use ($path) {
             preg_match('/\[([df])]\s(.+)/', $name, $matches);
             [, $type, $filepath] = $matches;
             return [
