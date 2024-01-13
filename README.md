@@ -13,6 +13,20 @@ The problem is that the remarks package is used as a docker-container on live. I
 
 I'm not going to focus on making this possible myself. The code is mostly here for inspection or tinkering.
 
+## Pre-requisites
+
+To install and use the scrybble site, make sure you have the following installed on your system before starting with the set-up section.
+
+1. Everything assumes you're running on a Linux OS. Windows and MacOS are not officially supported.
+2. [Docker and docker compose](https://docs.docker.com/engine/install/ubuntu/)
+3. Git - `sudo apt install git`
+4. [Composer](https://getcomposer.org/download/)
+
+Optional:
+
+1. Python3 if you want to run remarks as a standalone script
+2. Go if you want to compile rmapi from scratch to use a customized build
+
 ## Set-up local dev environment
 
 We use Laravel sail for development.
@@ -22,20 +36,21 @@ We use Laravel sail for development.
 composer install --ignore-platform-reqs
 
 alias sail="./vendor/bin/sail"
+cp .env.example .env
+
 sail up -d
 sail composer install
 
-cp .env.example .env
 sail artisan migrate
 sail npm install
 sail npm run dev
 ```
 
-Site is running at [localhost](http://localhost)
+After running the last step, the site will be accessible on your [localhost](http://localhost)
 
 ## Live env
 
-You can find the real site at [scrybble.ink](https://scrybble.ink)
+You can find a hosted version of scrybble at [scrybble.ink](https://scrybble.ink)
 
 ## RMapi
 
