@@ -83,3 +83,13 @@ I host a dockerfile at hub.docker.com, tagged `laauurraaa/remarks-bin:latest`.
 See the file `remarks.version` in the root directory for the most recent remarkable version.
 
 This command runs remarks over a test file in the remarks project from the root of rm-notesync.
+
+## Licences  
+
+- remarks : https://github.com/lucasrla/remarks
+- rmscene : https://github.com/ricklupton/rmscene
+- rmapi : https://github.com/juruen/rmapi
+- laravel : https://github.com/laravel/laravel
+- mariadb : https://github.com/MariaDB/server
+- postgres : https://github.com/postgres/postgres
+- redis : https://github.com/redis/redis
