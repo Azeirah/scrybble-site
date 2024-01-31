@@ -31,7 +31,7 @@ export function LandingPage() {
                     <ul>
                         <li>The highlights in your textbooks and documents</li>
                         <li>Your annotations in the margins</li>
-                        <li>Your notebooks and quicksheet with containing your ideas and sketches</li>
+                        <li>Your notebooks and quicksheets containing your ideas and sketches</li>
                     </ul>
                     <p className="lead">
                         <a href="https://streamsoft.gumroad.com/l/remarkable-to-obsidian"
