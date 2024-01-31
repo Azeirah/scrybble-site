@@ -29,7 +29,7 @@ class CheckIfAdmin
     private function checkIfUserIsAdmin(User $user)
     {
         // return ($user->is_admin == 1);
-        return config('app.env') === "local" || $user->email === "mail@laura.fm";
+        return config('app.env') === "local" || $user->id === 1;
     }
 
     /**
