@@ -4,13 +4,14 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\DataClasses\RemarksConfig;
+use App\Services\interfaces\RemarksService;
 use Eloquent\Pathogen\AbsolutePathInterface;
 use RuntimeException;
 
 /**
  *
  */
-class RemarksService
+class RemarksRunDockerContainer implements RemarksService
 {
     private string $remarks_version = "0.3.16";
 
