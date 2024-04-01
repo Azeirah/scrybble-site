@@ -10,7 +10,7 @@ import {
     useSyncStatusQuery
 } from "../../../store/api/apiRoot"
 import toast from "react-hot-toast"
-import _ from "lodash"
+import {debounce} from "lodash-es"
 import {faFile, faFolder, faHighlighter} from "@fortawesome/free-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {Dialog} from "../../reusable/Dialog/Dialog";
@@ -62,7 +62,7 @@ export default function RMFileTree() {
 
     const [selectForSync, {}] = useSelectFileForSyncMutation()
 
-    const syncFile = useCallback(_.debounce((item: File) => {
+    const syncFile = useCallback(debounce((item: File) => {
         toast.success(`File ${item.name} will be synced!`)
         selectForSync(item.path)
     }, 1000), [selectForSync])

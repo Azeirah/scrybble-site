@@ -7,7 +7,7 @@
     "devDependencies": {
         "@popperjs/core": "^2.10.2",
         "@sentry/vite-plugin": "^0.3.0",
-        "@types/lodash": "^4.14.191",
+        "@types/lodash-es": "^4.17.12",
         "@types/react": "^18.0.26",
         "@types/react-dom": "^18.0.9",
         "@vitejs/plugin-react": "^2.2.0",
@@ -27,7 +27,7 @@
         "@sentry/tracing": "^7.31.1",
         "axios": "^0.27.2",
         "bootstrap": "^5.2.0",
-        "lodash": "^4.17.21",
+        "lodash-es": "^4.17.21",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-hot-toast": "^2.4.0",
