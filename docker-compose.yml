@@ -25,8 +25,6 @@ services:
         depends_on:
             - mariadb
             - redis
-            - meilisearch
-            - selenium
     mariadb:
         image: 'mariadb:10'
         ports:
