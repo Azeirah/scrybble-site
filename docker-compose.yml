@@ -25,6 +25,7 @@ services:
         depends_on:
             - mariadb
             - redis
+            - remarks
     mariadb:
         image: 'mariadb:10'
         ports:
@@ -58,25 +59,12 @@ services:
             test: [ "CMD", "redis-cli", "ping" ]
             retries: 3
             timeout: 5s
-    mailhog:
-        image: 'mailhog/mailhog:latest'
-        ports:
-            - '${FORWARD_MAILHOG_PORT:-1025}:1025'
-            - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
-        networks:
-            - sail
     remarks:
-        image: laauurraaa/remarks-bin:latest
-
-    mail:
-        image: juanluisbaptiste/postfix:latest
-        restart: always
-        environment:
-            - SMTP_SERVER=vps.transip.email
-            - SMTP_PORT=587
-            - SMTP_USERNAME=azeirah@vps.transip.email
-            - SMTP_PASSWORD=EEMThbGxesNtFRsf
-            - SERVER_HOSTNAME=smgmusicdisplay.com
+        volumes:
+            - ./storage/efs:/efs
+        build:
+            context: ./docker/remarks-server
+            dockerfile: Dockerfile
         networks:
             - sail
 networks:

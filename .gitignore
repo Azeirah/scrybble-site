@@ -15,3 +15,7 @@ yarn-error.log
 /.vscode
 
 storage/efs/
+xochitl-binaries/
+.ebextensions/
+.platform/
+.pytest_cache/

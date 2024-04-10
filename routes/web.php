@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClientSecretController;
 use App\Http\Controllers\ConnectedGumroadLicenseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FailedSynchronizationsController;
@@ -28,6 +29,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [HomeController::class, 'index']);
+
+Route::middleware(['middleware' => 'deployment.self-hosted'])->get('/client-secret', [ClientSecretController::class, "show"]);
 
 Route::middleware(['middleware' => 'auth:sanctum'])->get('/sanctum/user', function (Request $request) {
     return $request->user();

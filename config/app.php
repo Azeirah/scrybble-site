@@ -25,7 +25,7 @@ return [
     | This value is the e-mail address that users should contact for support
     |
      */
-    'support_email' => 'smg@smgmusicdisplay.com',
+    'support_email' => env('SUPPORT_EMAIL', 'No support email configured'),
 
     /*
     |--------------------------------------------------------------------------
