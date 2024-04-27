@@ -9,5 +9,6 @@ use App\DataClasses\SyncContext;
  */
 interface PRMStorageInterface
 {
-    public function store(string $name, string $zipFileContents);
+    public function store(string $path, string $zipFileContents);
+    public function getDownloadURL(string $path);
 }
