@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use App\Services\interfaces\RemarksService;
-use App\Services\RemarksDockerServer;
-use App\Services\RemarksRunDockerContainer;
+use App\Services\Remarks\RemarksDockerServer;
+use App\Services\Remarks\RemarksRunDockerContainer;
+use App\Services\Remarks\RemarksService;
 use App\Services\RMapi;
 use Illuminate\Support\ServiceProvider;
 use URL;

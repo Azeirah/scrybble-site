@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Remarks;
 
 use App\DataClasses\RemarksConfig;
-use App\Helpers\UserStorage;
+use App\Services\Remarks;
 use Eloquent\Pathogen\AbsolutePath;
 use Eloquent\Pathogen\AbsolutePathInterface;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 
-class RemarksDockerServer implements interfaces\RemarksService
+class RemarksDockerServer implements Remarks\RemarksService
 {
 
     /**

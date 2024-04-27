@@ -5,9 +5,9 @@ namespace App\Listeners;
 use App\Events\RemarkableFileDownloadedEvent;
 use App\Helpers\FileManipulations;
 use App\Helpers\UserStorage;
-use App\Services\interfaces\RemarksService;
+use App\Services\interfaces\PRMStorageInterface;
 use App\Services\RemarkableService;
-use App\Services\RemarksRunDockerContainer;
+use App\Services\Remarks\RemarksService;
 use Eloquent\Pathogen\AbsolutePath;
 use Eloquent\Pathogen\RelativePath;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -19,7 +19,7 @@ use Throwable;
 
 class ProcessDownloadedZipListener implements ShouldQueue
 {
-    public function handle(RemarkableFileDownloadedEvent $evt): void
+    public function handle(RemarkableFileDownloadedEvent $evt, PRMStorageInterface $PRMStorage): void
     {
         $remarks_service = app(RemarksService::class);
         $remarkable_service = app(RemarkableService::class);
@@ -88,10 +88,18 @@ class ProcessDownloadedZipListener implements ShouldQueue
 
         // 6. Upload zip to S3
         $sync_context->logStep("Uploading zip to storage");
-        $s3_download_path = "userZips/{$sync_context->sync_id}.zip";
-        if (!Storage::disk('s3')->put($s3_download_path, $user_storage->get($to1))) {
-            $sync_context->logStep("Failed to upload zip to storage");
-            throw new RuntimeException('Unable to upload zip to s3');
+        $prmContents = $user_storage->get($to1);
+        if (is_null($prmContents)) {
+            $msg = "Result zip file `" . $to1 . "` does not exist.";
+            $sync_context->logError($msg);
+            throw new RuntimeException($msg);
+        }
+        $download_path = "userZips/{$sync_context->sync_id}.zip";
+        try {
+            $PRMStorage->store($download_path, $prmContents, $sync_context);
+        } catch (RuntimeException $e) {
+            $sync_context->logError($e->getMessage());
+            throw $e;
         }
         $sync_context->logStep("Uploaded zip to storage");
 
@@ -101,7 +109,7 @@ class ProcessDownloadedZipListener implements ShouldQueue
 
         $user = $sync_context->user;
         $lock = Cache::lock('append-to-sync-table-for-userid-' . $user->id, 10);
-        $lock->get(fn() => $sync_context->sync->complete($s3_download_path));
+        $lock->get(fn() => $sync_context->sync->complete($download_path));
     }
 
     public function failed(RemarkableFileDownloadedEvent $evt, Throwable $exception): void
