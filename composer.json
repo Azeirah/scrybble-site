@@ -9,7 +9,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
-        "ext-xdebug": "*",
         "ext-zip": "*",
         "backpack/crud": "^5.6",
         "doctrine/dbal": "^3.5",
@@ -26,6 +25,7 @@
         "sentry/sentry-laravel": "^3.1"
     },
     "require-dev": {
+        "ext-xdebug": "*",
         "backpack/generators": "^3.3",
         "barryvdh/laravel-debugbar": "^3.8",
         "barryvdh/laravel-ide-helper": "^2.12",
@@ -72,7 +72,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true

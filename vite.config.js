@@ -15,6 +15,7 @@ export default defineConfig({
         sentryVitePlugin({
             org: "streamsoft",
             project: "scrybble-frontend",
+            release: "scrybble" + process.env.npm_package_version,
 
             // Specify the directory containing build artifacts
             include: '.',

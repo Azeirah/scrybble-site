@@ -29,13 +29,13 @@ class AppServiceProvider extends ServiceProvider
             'production' => new RemarksRunDockerContainer()
         });
 
-        $this->app->bind(PRMStorageInterface::class, fn() => match (strtolower(config('app.storage_platform'))) {
+        $this->app->bind(PRMStorageInterface::class, fn() => match (strtolower(config('scrybble.storage_platform'))) {
             // TODO: Implement disk storage instead of stubbing
             'disk' => new class implements PRMStorageInterface {
                 public function store(string $path, string $zipFileContents) {}
                 public function getDownloadURL(string $path) {}
             },
-            "aws" => new S3PRMStorage(),
+            "S3" => new S3PRMStorage(),
         });
     }
 

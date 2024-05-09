@@ -29,6 +29,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Storage platform
+    |--------------------------------------------------------------------------
+    |
+    | Where PRM files are kept and made available for download
+    | Options
+    | - "S3": aws S3 or compatible API
+    | - "disk": uses storage_path() + "efs/"
+     */
+    'storage_platform' => env("APP_STORAGE_PLATFORM", 'disk'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

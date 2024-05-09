@@ -19,7 +19,12 @@ use Throwable;
 
 class ProcessDownloadedZipListener implements ShouldQueue
 {
-    public function handle(RemarkableFileDownloadedEvent $evt, PRMStorageInterface $PRMStorage): void
+
+    public function __construct(private PRMStorageInterface $PRMStorage)
+    {
+    }
+
+    public function handle(RemarkableFileDownloadedEvent $evt): void
     {
         $remarks_service = app(RemarksService::class);
         $remarkable_service = app(RemarkableService::class);
@@ -96,7 +101,7 @@ class ProcessDownloadedZipListener implements ShouldQueue
         }
         $download_path = "userZips/{$sync_context->sync_id}.zip";
         try {
-            $PRMStorage->store($download_path, $prmContents, $sync_context);
+            $this->PRMStorage->store($download_path, $prmContents, $sync_context);
         } catch (RuntimeException $e) {
             $sync_context->logError($e->getMessage());
             throw $e;
