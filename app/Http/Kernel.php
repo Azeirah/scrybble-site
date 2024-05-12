@@ -46,6 +46,7 @@ class Kernel extends HttpKernel
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
+        SelfHostedMiddleware::class
     ];
 
     /**
@@ -84,7 +85,6 @@ class Kernel extends HttpKernel
         'auth.is-admin' => isAdminMiddleware::class,
         'cache.headers' => SetCacheHeaders::class,
         'can' => Authorize::class,
-        'deployment.self-hosted' => SelfHostedMiddleware::class,
         'guest' => RedirectIfAuthenticated::class,
         'password.confirm' => RequirePassword::class,
         'signed' => ValidateSignature::class,

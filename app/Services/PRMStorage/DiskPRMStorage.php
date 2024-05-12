@@ -1,19 +1,17 @@
 <?php
 
-namespace App\Services\interfaces;
+namespace App\Services\PRMStorage;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 
-class S3PRMStorage implements PRMStorageInterface
-{
+class DiskPRMStorage implements PRMStorageInterface {
     private FilesystemAdapter|Filesystem $disk;
 
-    public function __construct()
-    {
-        $this->disk = Storage::disk('s3');
+    function __construct() {
+        $this->disk = Storage::disk('efs');
     }
 
     /**
@@ -25,11 +23,11 @@ class S3PRMStorage implements PRMStorageInterface
     {
         $success = $this->disk->put($path, $prmFileContents);
         if (!$success) {
-            throw new RuntimeException('Failed to upload zip to S3');
+            throw new RuntimeException('Failed to store PRM on disk');
         }
     }
 
-    public function getDownloadURL(string $path)
+    public function getDownloadURL(string $path): string
     {
         return $this->disk->temporaryUrl($path, now()->addMinutes(5));
     }

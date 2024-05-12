@@ -1,0 +1,32 @@
+FROM laauurraaa/composer-8.1.7 as build-php
+LABEL authors="lb"
+
+COPY . /app/
+WORKDIR /app/
+RUN composer install --prefer-dist --no-dev --optimize-autoloader --no-interaction
+
+FROM node:lts-alpine3.15 as build-js
+COPY --from=build-php /app/ /app/
+WORKDIR /app/
+RUN npm ci
+RUN npm install -g cross-env
+RUN npm run build
+RUN rm -rf node_modules
+
+FROM laauurraaa/smg-app-base-image:1.1 as production
+
+ENV APP_ENV=production
+ENV APP_DEBUG=false
+
+COPY --chown=www-data:www-data --from=build-js /app/ /var/www/html/
+RUN rm -rf /var/www/html/public/hot
+
+COPY ./deployment/php/conf.d/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+COPY deployment/php/conf.d/php-overrides.ini /usr/local/etc/php/conf.d/php-overrides.ini
+COPY ./deployment/000-default.conf /etc/apache2/sites-available/000-default.conf
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+COPY .env.azure-prod /var/www/html/.env
+
+RUN a2enmod rewrite
+
+RUN php artisan optimize

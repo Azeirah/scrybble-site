@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Services\interfaces;
-
-use App\DataClasses\SyncContext;
+namespace App\Services\PRMStorage;
 
 /**
  * PRM stands for [P]rocessed [R]e[M]arkable file

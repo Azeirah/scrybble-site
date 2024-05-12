@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\Sync;
-use App\Services\interfaces\PRMStorageInterface;
+use App\Services\PRMStorage\PRMStorageInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\UnauthorizedException;

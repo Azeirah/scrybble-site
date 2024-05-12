@@ -19,11 +19,8 @@ class DownloadRemarkableFileJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private SyncContext $sync_context;
-
-    public function __construct(SyncContext $sync_context)
+    public function __construct(private SyncContext $sync_context)
     {
-        $this->sync_context = $sync_context;
     }
 
     public function handle(): void

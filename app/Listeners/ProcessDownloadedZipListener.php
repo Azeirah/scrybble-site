@@ -5,7 +5,7 @@ namespace App\Listeners;
 use App\Events\RemarkableFileDownloadedEvent;
 use App\Helpers\FileManipulations;
 use App\Helpers\UserStorage;
-use App\Services\interfaces\PRMStorageInterface;
+use App\Services\PRMStorage\PRMStorageInterface;
 use App\Services\RemarkableService;
 use App\Services\Remarks\RemarksService;
 use Eloquent\Pathogen\AbsolutePath;
@@ -101,7 +101,7 @@ class ProcessDownloadedZipListener implements ShouldQueue
         }
         $download_path = "userZips/{$sync_context->sync_id}.zip";
         try {
-            $this->PRMStorage->store($download_path, $prmContents, $sync_context);
+            $this->PRMStorage->store($download_path, $prmContents);
         } catch (RuntimeException $e) {
             $sync_context->logError($e->getMessage());
             throw $e;
