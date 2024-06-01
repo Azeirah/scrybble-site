@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\MissingRMApiAuthenticationTokenException;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class OnboardingStateService
@@ -13,13 +14,16 @@ class OnboardingStateService
 
     public function getState(): string
     {
+        /**
+        * @var User
+        */
         $user = Auth::user();
 
         if (!$user) {
             return "unauthenticated";
         }
 
-        if (!$user->gumroadLicense()->exists()) {
+        if (config("scrybble.deployment_environment") === "commercial" && !$user->gumroadLicense()->exists()) {
             return "setup-gumroad";
         }
 

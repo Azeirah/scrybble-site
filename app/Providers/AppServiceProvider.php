@@ -2,27 +2,41 @@
 
 namespace App\Providers;
 
-use App\Services\interfaces\RemarksService;
-use App\Services\RemarksDockerServer;
-use App\Services\RemarksRunDockerContainer;
+use App\Models\User;
+use App\Services\PRMStorage\DiskPRMStorage;
+use App\Services\PRMStorage\PRMStorageInterface;
+use App\Services\PRMStorage\S3PRMStorage;
+use App\Services\Remarks\RemarksDockerServer;
+use App\Services\Remarks\RemarksRunDockerContainer;
+use App\Services\Remarks\RemarksService;
 use App\Services\RMapi;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 use URL;
 
-class AppServiceProvider extends ServiceProvider {
+class AppServiceProvider extends ServiceProvider
+{
     /**
      * Register any application services.
      *
      * @return void
      */
-    public function register() {
+    public function register(): void
+    {
         $this->app->singleton(RMapi::class, function () {
             return new RMapi();
         });
 
-        $this->app->bind(RemarksService::class, fn() => match (config('app.env')) {
-            'local' => new RemarksDockerServer(),
-            'production' => new RemarksRunDockerContainer()
+        $this->app->bind(RemarksService::class, fn() => match (config('scrybble.host_runner')) {
+            'docker' => new RemarksDockerServer(),
+            'bare-metal' => new RemarksRunDockerContainer()
+        });
+
+        $this->app->bind(PRMStorageInterface::class, fn() => match (config('scrybble.storage_platform')) {
+            // TODO: Implement disk storage instead of stubbing
+            'disk' => new DiskPRMStorage(),
+            "s3" => new S3PRMStorage(),
         });
     }
 
@@ -31,9 +45,16 @@ class AppServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function boot() {
+    public function boot(): void
+    {
         if ($this->app->environment('production')) {
             URL::forceScheme('https');
+        }
+
+        if (config('scrybble.storage_platform') === "disk") {
+            Storage::disk('efs')->buildTemporaryUrlsUsing(fn($path, $expiration, $options) =>
+                URL::temporarySignedRoute("prmdownload", $expiration, array_merge($options, ['path' => $path]))
+            );
         }
     }
 }

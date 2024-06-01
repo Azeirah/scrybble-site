@@ -3,6 +3,7 @@ import {setCredentials, User} from "../AuthSlice"
 import {useNavigate} from "react-router-dom"
 import {useAppDispatch} from "../hooks"
 import {useEffect} from "react"
+import * as Sentry from "@sentry/react"
 
 function getCookie(name) {
     const value = `; ${document.cookie}`
@@ -113,7 +114,21 @@ export const apiRoot = createApi({
             })
         }),
         getUser: builder.query<User, void>({
-            query: () => "/sanctum/user"
+            query: () => "/sanctum/user",
+            async onQueryStarted(_, {queryFulfilled}) {
+                try {
+                    const result = await queryFulfilled;
+                    Sentry.setTags({
+                        name: result.data.name,
+                        email: result.data.email
+                    });
+                } catch (e) {
+                    Sentry.setTags({
+                        name: null,
+                        email: null
+                    })
+                }
+            }
         }),
         logout: builder.mutation<void, void>({
             query: () => ({url: "/logout", method: "POST"})
@@ -193,7 +208,7 @@ export const apiRoot = createApi({
                 }
             }
         }),
-        posts: builder.query<{title: string, slug: string}[], void>({
+        posts: builder.query<{ title: string, slug: string }[], void>({
             query() {
                 return {
                     url: `/api/posts`,
@@ -201,7 +216,7 @@ export const apiRoot = createApi({
                 }
             }
         }),
-        post: builder.query<{title: string; content: string; created_at: string}, string>({
+        post: builder.query<{ title: string; content: string; created_at: string }, string>({
             query(slug) {
                 return {
                     url: `/api/posts/${slug}`,

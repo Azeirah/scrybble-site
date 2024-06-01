@@ -1,18 +1,21 @@
-import {configureStore} from "@reduxjs/toolkit"
-import {apiRoot} from "./api/apiRoot"
-import authSlice from "./AuthSlice"
-import * as Sentry from "@sentry/react"
+import { configureStore } from "@reduxjs/toolkit";
+import { apiRoot } from "./api/apiRoot";
+import authSlice from "./AuthSlice";
+import * as Sentry from "@sentry/react";
 
-const sentryReduxEnhancer = Sentry.createReduxEnhancer()
+const sentryReduxEnhancer = Sentry.createReduxEnhancer();
 
 export const store = configureStore({
     reducer: {
         [apiRoot.reducerPath]: apiRoot.reducer,
-        auth: authSlice
+        auth: authSlice,
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiRoot.middleware),
-    enhancers: [sentryReduxEnhancer]
-})
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(apiRoot.middleware),
+    enhancers: (getDefaultEnhancers) => {
+        return getDefaultEnhancers().concat(sentryReduxEnhancer);
+    },
+});
 
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

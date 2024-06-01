@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\Remarks;
 
 use App\DataClasses\RemarksConfig;
-use App\Services\interfaces\RemarksService;
 use Eloquent\Pathogen\AbsolutePathInterface;
 use RuntimeException;
 

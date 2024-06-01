@@ -53,6 +53,10 @@ Route::get('/base/reset-password/{token}', [HomeController::class, 'index'])->na
 // https://docs.sentry.io/platforms/javascript/guides/react/troubleshooting/#dealing-with-ad-blockers
 Route::post("/tunnel", [SentryTunnelController::class, "index"]);
 
+Route::get('prmdownload/{path}', function (string $path) {
+    return Storage::disk('efs')->download($path);
+})->where('path', '.*')->name('prmdownload');
+
 Route::group(['middleware' => ['auth'], 'prefix' => "api"], static function () {
     Route::get('onboardingState', OnboardingStateController::class);
     Route::get('licenseInformation', GumroadLicenseInformationController::class);

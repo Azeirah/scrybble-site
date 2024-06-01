@@ -2,18 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\UserStorage;
 use App\Models\Sync;
-use App\Models\User;
-use App\Services\RMapi;
-use Illuminate\Support\Facades\Storage;
 
 class FailedSynchronizationsController extends Controller
 {
     public function index()
     {
-        $failed_syncs = Sync
-            ::where('completed', false)
+        $failed_syncs = Sync::query()
+            ->where('completed', false)
             ->where('message', 'Start processing downloaded files')
             ->orWhere('severity', 'error')
             ->join('sync_logs', 'sync_id', '=', 'sync.id')
@@ -30,27 +26,26 @@ class FailedSynchronizationsController extends Controller
                 'contexts' => $fs[1]['context'],
                 'created_at' => $fs[0]['created_at']->diffForHumans()
             ]);
+
         return view('admin.failedSyncs', [
             'failed_syncs' => $failed_syncs
         ]);
     }
 
-    public function download()
+    public function download(): void
     {
-        $user = User::find(request()->query('user'));
-        $path = request()->query('path');
-        $hashedPath = RMapi::hashedFilepath($path);
-        $userStorage = UserStorage::get($user);
-
-        $storage = Storage::disk('s3');
-        $file = $userStorage->get($hashedPath);
-        $s3_path = urlencode("failed_sync/$path");
-        if (!$storage->put($s3_path, $file)) {
-            abort(500, "Failed to upload the file");
-        }
-
-        return redirect($storage->temporaryUrl($s3_path, now()->addMinutes(1)));
+        // $user = User::find(request()->query('user'));
+        // $path = request()->query('path');
+        // $hashedPath = RMapi::hashedFilepath($path);
+        // $userStorage = UserStorage::get($user);
+        //
+        // $storage = Storage::disk('s3');
+        // $file = $userStorage->get($hashedPath);
+        // $s3_path = urlencode("failed_sync/$path");
+        // if (!$storage->put($s3_path, $file)) {
+        //     abort(500, "Failed to upload the file");
+        // }
+        //
+        // return redirect($storage->temporaryUrl($s3_path, now()->addMinutes(1)));
     }
-
-
 }

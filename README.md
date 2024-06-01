@@ -36,11 +36,10 @@ We use Laravel sail for development.
 composer install --ignore-platform-reqs
 
 alias sail="./vendor/bin/sail"
-cp .env.example .env
-
 sail up -d
 sail composer install
 
+cp .env.example .env
 sail artisan migrate
 sail npm install
 sail npm run dev

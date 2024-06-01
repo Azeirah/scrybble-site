@@ -6,13 +6,15 @@ import {Provider} from "react-redux"
 import {store} from "./store/store"
 import {
     BrowserRouter,
-    createRoutesFromChildren, Link,
+    createRoutesFromChildren,
+    Link,
     matchRoutes,
     Route,
     Routes,
     useLocation,
     useNavigate,
-    useNavigationType, useParams
+    useNavigationType,
+    useParams
 } from "react-router-dom"
 import LoginCard from "./components/feature/LoginCard/LoginCard"
 import {useAppDispatch} from "./store/hooks"
@@ -29,7 +31,6 @@ import {BrowserTracing} from "@sentry/tracing"
 import * as Sentry from "@sentry/react"
 import {ResetPasswordTokenCard} from "./components/feature/ResetPasswordTokenCard"
 import UserProfile from "./pages/UserProfile/UserProfile";
-import {composeWithDevTools} from "@reduxjs/toolkit/dist/devtoolsExtension";
 import ReactMarkdown from "react-markdown";
 
 let Dashboard = React.lazy(() => import("./pages/Dashboard"))
@@ -59,8 +60,6 @@ const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes)
 
 function ObsidianPosts() {
     const {data, isLoading} = usePostsQuery();
-
-    console.log(data);
 
     return <div style={{width: "640px"}}>
         <h1>Learning Obsidian</h1>

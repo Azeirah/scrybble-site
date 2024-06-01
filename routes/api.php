@@ -20,6 +20,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['middleware' => ['auth:api']], static function () {
+$syncMiddleware = [];
+if (config('scrybble.deployment_environment') !== 'self-hosted') {
+  $syncMiddleware []= "auth:api";
+}
+Route::group(['middleware' => $syncMiddleware], static function () {
     Route::get('sync/delta', [SyncController::class, 'index']);
 });
