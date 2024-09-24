@@ -40,6 +40,8 @@ sail up -d
 sail composer install
 
 cp .env.example .env
+# The following command may fail initially.
+# Wait up to a minute and try again if it's your first time setting up
 sail artisan migrate
 sail npm install
 sail npm run dev
