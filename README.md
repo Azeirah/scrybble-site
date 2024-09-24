@@ -53,7 +53,7 @@ You can find a hosted version of scrybble at [scrybble.ink](https://scrybble.ink
 
 ## RMapi
 
-We use https://github.com/juruen/rmapi as a direct dependency for this project. This is used to authenticate and sync
+We use https://github.com/ddvk/rmapi as a direct dependency for this project. This is used to authenticate and sync
 with the ReMarkable API.
 
 Current build is not the release build, but a self-built version of the master branch. This is how to build the binary
@@ -62,7 +62,7 @@ with compatibility for our dev docker image as well as our host environment.
 ```sh
 # make sure go is installed
 
-git clone https://github.com/juruen/rmapi
+git clone https://github.com/ddvk/rmapi
 cd rmapi
 CGO_ENABLED=0 go install
 
