@@ -239,7 +239,6 @@ class RMapi
     private function getDownloadedZipLocation(string $rmapiDownloadPath): PathInterface
     {
         $filename = Path::fromString($rmapiDownloadPath)->name();
-        return Path::fromString($filename)->joinExtensions('zip');
+        return Path::fromString($filename)->joinExtensions('rmdoc');
     }
-
 }
