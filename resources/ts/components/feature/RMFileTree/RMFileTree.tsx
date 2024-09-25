@@ -8,18 +8,14 @@ import {
     useRMFileTreeQuery,
     useSelectFileForSyncMutation,
     useSyncStatusQuery
-} from "../../../store/api/apiRoot"
+} from "../../../store/api/apiRoot.js"
 import toast from "react-hot-toast"
 import {debounce} from "lodash-es"
-import {faFile, faFolder, faHighlighter} from "@fortawesome/free-solid-svg-icons"
+import {faHighlighter} from "@fortawesome/free-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {Dialog} from "../../reusable/Dialog/Dialog";
+import {Dialog} from "../../reusable/Dialog/Dialog.tsx";
 
 const syncSettingsEnabled = false;
-
-const DirectoryIcon = () => <FontAwesomeIcon icon={faFolder}/>
-
-const FileIcon = () => <FontAwesomeIcon icon={faFile}/>
 
 function DirectoryItem({item}: { item: Directory }) {
     return <span>
@@ -42,11 +38,9 @@ function useHasNoSyncs() {
     const {firstTime} = useSyncStatusQuery(undefined, {
         selectFromResult: ({data, isSuccess}) => {
             return {
-                firstTime: data ? data.length === 0 : false,
-                isSuccess
+                firstTime: data ? data.length === 0 : false, isSuccess
             }
-        },
-        skip: !userLoaded
+        }, skip: !userLoaded
     })
     return firstTime
 }
@@ -73,7 +67,11 @@ export default function RMFileTree() {
 
     return <div className="container">
         <Dialog open={firstTime && !helpDialogClosed} close={() => setHelpDialogClosed(true)}
-                title="Since this is your first time">
+                title="Since this is your first time"
+                actions={<button onClick={() => setHelpDialogClosed(true)} className="btn btn-primary">
+                    Close
+                </button>}
+        >
             <p>
                 To get started, install the <b>scrybble</b> plugin in Obsidian.
             </p>

@@ -14,6 +14,7 @@ use App\Http\Controllers\OnetimecodeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\RMFiletreeController;
 use App\Http\Controllers\SentryTunnelController;
+use App\Http\Controllers\ShareSyncResultController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,13 +38,9 @@ Route::middleware(['middleware' => 'auth:sanctum'])->get('/sanctum/user', functi
 });
 
 Route::group(['middleware' => ['auth']], static function () {
-    Route::get('/app/', [DashboardController::class, 'index'])
-        ->name('dashboard');
+    Route::get('/app/', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::post(
-        '/connect-license',
-        [ConnectedGumroadLicenseController::class, 'store']
-    )->name('connect-license');
+    Route::post('/connect-license', [ConnectedGumroadLicenseController::class, 'store'])->name('connect-license');
 });
 
 // required by Fortify: https://github.com/laravel/fortify/issues/155#issuecomment-732531717
@@ -63,16 +60,15 @@ Route::group(['middleware' => ['auth'], 'prefix' => "api"], static function () {
 
     Route::post('gumroadLicense', [ConnectedGumroadLicenseController::class, "store"]);
 
-    Route::post(
-        '/onetimecode',
-        [OnetimecodeController::class, 'create']);
+    Route::post('/onetimecode', [OnetimecodeController::class, 'create']);
 
-    Route::post('/file', [FileController::class, 'show'])
-        ->name('download');
+    Route::post('/file', [FileController::class, 'show'])->name('download');
 
     Route::get('inspect-sync', [InspectSyncController::class, "index"]);
 
     Route::post('RMFileTree', [RMFiletreeController::class, 'index']);
+
+    Route::post('share-sync-result', [ShareSyncResultController::class, 'share']);
 });
 
 Route::group(['prefix' => 'api'], static function () {

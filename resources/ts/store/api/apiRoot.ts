@@ -1,7 +1,7 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react"
-import {setCredentials, User} from "../AuthSlice"
+import {setCredentials, User} from "../AuthSlice.ts"
 import {useNavigate} from "react-router-dom"
-import {useAppDispatch} from "../hooks"
+import {useAppDispatch} from "../hooks.ts"
 import {useEffect} from "react"
 import * as Sentry from "@sentry/react"
 
@@ -66,7 +66,7 @@ export type LicenseInformation = {
 export type OnboardingState = "setup-gumroad" | "setup-one-time-code" | "setup-one-time-code-again" | "ready";
 
 export type OnetimecodeQuery = { code }
-export type SyncStatus = { filename: string, created_at: string, completed: boolean, error: boolean }
+export type SyncStatus = { id: number; filename: string, created_at: string, completed: boolean, error: boolean }
 export const apiRoot = createApi({
     reducerPath: "api",
     baseQuery: fetchBaseQuery({

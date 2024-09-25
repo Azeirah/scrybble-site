@@ -3,6 +3,34 @@
     list-style: none;
     text-align: left !important;
 
+    .syncs {
+        a.share-error{
+            cursor: pointer;
+        }
+        li {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+        }
+
+        li > button {
+            text-wrap: nowrap;
+        }
+
+        span.badge {
+            height: fit-content;
+        }
+
+        .filename {
+            text-wrap: wrap;
+        }
+    }
+
+    .share-info-dialog {
+        .form-group > * {
+            margin: 4px 0;
+        }
+    }
+
     .legend {
         > div {
             display: flex;
