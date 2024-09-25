@@ -13,6 +13,7 @@ class InspectSyncController extends Controller {
                           ->limit(10)
                           ->get()
                           ->map(fn(Sync $syncItem) => [
+                              'id' => $syncItem->id,
                               'filename' => $syncItem->filename,
                               'created_at' => $syncItem->created_at->diffForHumans(),
                               'completed' => $syncItem->completed,

@@ -1,20 +1,21 @@
 import * as React from "react"
-import {useEffect} from "react"
+import {Suspense, useEffect} from "react"
 
 import {createRoot} from "react-dom/client"
 import {Provider} from "react-redux"
 import {store} from "./store/store"
 import {
     BrowserRouter,
+    createBrowserRouter,
     createRoutesFromChildren,
     Link,
     matchRoutes,
-    Route,
+    Route, RouterProvider,
     Routes,
     useLocation,
     useNavigate,
     useNavigationType,
-    useParams
+    useParams, useRouteError
 } from "react-router-dom"
 import LoginCard from "./components/feature/LoginCard/LoginCard"
 import {useAppDispatch} from "./store/hooks"
@@ -27,7 +28,6 @@ import {RegisterCard} from "./components/feature/RegisterCard/RegisterCard"
 import {LandingPage} from "./pages/LandingPage/LandingPage"
 import {Toaster} from "react-hot-toast"
 import ResetPasswordCard from "./components/feature/ResetPasswordCard/ResetPasswordCard"
-import {BrowserTracing} from "@sentry/tracing"
 import * as Sentry from "@sentry/react"
 import {ResetPasswordTokenCard} from "./components/feature/ResetPasswordTokenCard"
 import UserProfile from "./pages/UserProfile/UserProfile";
@@ -39,15 +39,11 @@ let PurchasedPage = React.lazy(() => import("./pages/PurchasedPage"))
 
 Sentry.init({
     dsn: "https://4201915825194ef6ab9263518b836ee4@o199243.ingest.sentry.io/4504527483305984",
-    integrations: [new BrowserTracing({
-        routingInstrumentation: Sentry.reactRouterV6Instrumentation(
-            React.useEffect,
-            useLocation,
-            useNavigationType,
-            createRoutesFromChildren,
-            matchRoutes
-        )
-    })],
+    integrations: [
+         Sentry.reactRouterV6BrowserTracingIntegration({
+            useEffect: React.useEffect, useLocation, useNavigationType, createRoutesFromChildren, matchRoutes
+        })
+    ],
     tunnel: "/tunnel",
 
     // Set tracesSampleRate to 1.0 to capture 100%
@@ -56,7 +52,7 @@ Sentry.init({
     tracesSampleRate: 1.0
 })
 
-const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes)
+const sentryCreateBrowserRouter = Sentry.wrapCreateBrowserRouter(createBrowserRouter);
 
 function ObsidianPosts() {
     const {data, isLoading} = usePostsQuery();
@@ -69,11 +65,7 @@ function ObsidianPosts() {
             your Obsidian vault for your goals.</p>
 
         <h2>Guides</h2>
-        {isLoading ? "Loading..." :
-            data.map((post) =>
-                <Link to={`/learn/obsidian/${post.slug}`}>{post.title}</Link>
-            )
-        }
+        {isLoading ? "Loading..." : data.map((post) => <Link to={`/learn/obsidian/${post.slug}`}>{post.title}</Link>)}
     </div>;
 }
 
@@ -82,47 +74,43 @@ function ObsidianPost() {
     const {data: post, isLoading} = usePostQuery(slug);
 
     return <>
-        {isLoading ?
-            "Loading..." :
-            <div style={{width: "640px"}}>
-                <h1>{post.title}</h1>
-                <ReactMarkdown>
-                    {post.content}
-                </ReactMarkdown>
-            </div>
-        }
+        {isLoading ? "Loading..." : <div style={{width: "640px"}}>
+            <h1>{post.title}</h1>
+            <ReactMarkdown>
+                {post.content}
+            </ReactMarkdown>
+        </div>}
     </>;
 }
 
-function AppRoutes() {
-    return (
-        <React.Suspense>
-            <SentryRoutes>
-                <Route path="/" element={<MainLayout/>}>
-                    <Route path="purchased" element={<PurchasedPage/>}/>
-                    <Route path="dashboard" element={<Dashboard/>}/>
-                    <Route path="inspect-sync" element={<InspectSync/>}/>
-
-                    <Route path="profile" element={<UserProfile/>}></Route>
-                    <Route path="auth" element={<AuthPage/>}>
-                        <Route path="login" element={<LoginCard/>}/>
-                        <Route path="register" element={<RegisterCard/>}/>
-                        <Route path="reset-password" element={<ResetPasswordCard/>}/>
-                    </Route>
-                    <Route path="base" element={<AuthPage/>}>
-                        <Route path="reset-password/:token" element={<ResetPasswordTokenCard/>}/>
-                    </Route>
-                    <Route path="learn">
-                        <Route path="obsidian" element={<ObsidianPosts/>}/>
-                        <Route path="obsidian/:slug" element={<ObsidianPost/>}/>
-                    </Route>
-                    <Route path="roadmap" element={<Roadmap/>}/>
-                    <Route index element={<LandingPage/>}/>
-                </Route>
-            </SentryRoutes>
-        </React.Suspense>
-    )
+function DashboardError() {
+    const error = useRouteError();
+    console.log(`HIIII there was an error: ${error}`);
+    return "There was an error loading your ReMarkable files.";
 }
+
+const routes = <Route path="/" element={<MainLayout/>}>
+    <Route path="purchased" element={<PurchasedPage/>}/>
+    <Route path="dashboard" element={<Dashboard/>}
+           errorElement={<DashboardError/>}/>
+    <Route path="inspect-sync" element={<InspectSync/>}/>
+
+    <Route path="profile" element={<UserProfile/>}></Route>
+    <Route path="auth" element={<AuthPage/>}>
+        <Route path="login" element={<LoginCard/>}/>
+        <Route path="register" element={<RegisterCard/>}/>
+        <Route path="reset-password" element={<ResetPasswordCard/>}/>
+    </Route>
+    <Route path="base" element={<AuthPage/>}>
+        <Route path="reset-password/:token" element={<ResetPasswordTokenCard/>}/>
+    </Route>
+    <Route path="learn">
+        <Route path="obsidian" element={<ObsidianPosts/>}/>
+        <Route path="obsidian/:slug" element={<ObsidianPost/>}/>
+    </Route>
+    <Route path="roadmap" element={<Roadmap/>}/>
+    <Route index element={<LandingPage/>}/>
+</Route>
 
 function Auth() {
     const {data, isSuccess} = useGetUserQuery()
@@ -142,14 +130,18 @@ function Auth() {
     return null
 }
 
+
+const router = sentryCreateBrowserRouter(createRoutesFromChildren(routes));
+
 export default function App() {
 
     return <Provider store={store}>
-        <BrowserRouter>
-            <AppRoutes/>
-            <Auth/>
-            <Toaster/>
-        </BrowserRouter>
+        <Suspense>
+            <RouterProvider router={router}>
+                <Auth/>
+                <Toaster/>
+            </RouterProvider>
+        </Suspense>
     </Provider>
 }
 

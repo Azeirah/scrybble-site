@@ -55,7 +55,7 @@ export default function RMFileTree() {
     const {search} = useLocation()
     const params = new URLSearchParams(search)
     const path = params.get("path")
-    const {data: filetree, isLoading} = useRMFileTreeQuery(path ?? "/")
+    const {data: filetree, isLoading, isError, error} = useRMFileTreeQuery(path ?? "/")
     const navigate = useNavigate()
     const firstTime = useHasNoSyncs()
     const [helpDialogClosed, setHelpDialogClosed] = useState(false)
@@ -66,6 +66,10 @@ export default function RMFileTree() {
         toast.success(`File ${item.name} will be synced!`)
         selectForSync(item.path)
     }, 1000), [selectForSync])
+
+    if (error) {
+        throw error;
+    }
 
     return <div className="container">
         <Dialog open={firstTime && !helpDialogClosed} close={() => setHelpDialogClosed(true)}

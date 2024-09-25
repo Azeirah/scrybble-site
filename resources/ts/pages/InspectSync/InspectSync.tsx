@@ -32,7 +32,7 @@ export default function InspectSync() {
             {isSuccess ?
                 <>
                     <ul className="list-group bg-dark">
-                        {syncStatus.map((item) => <SyncItem {...item}/>)}
+                        {syncStatus.map((item) => <SyncItem key={item.id} {...item}/>)}
                     </ul>
                     <h3 className="mt-4">Legend</h3>
                     <div className="legend">
