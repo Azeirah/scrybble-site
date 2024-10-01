@@ -12,9 +12,9 @@ use App\Http\Controllers\InspectSyncController;
 use App\Http\Controllers\OnboardingStateController;
 use App\Http\Controllers\OnetimecodeController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\RemarkableDocumentShareController;
 use App\Http\Controllers\RMFiletreeController;
 use App\Http\Controllers\SentryTunnelController;
-use App\Http\Controllers\ShareSyncResultController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -68,7 +68,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => "api"], static function () {
 
     Route::post('RMFileTree', [RMFiletreeController::class, 'index']);
 
-    Route::post('share-sync-result', [ShareSyncResultController::class, 'share']);
+    Route::post('remarkable-document-share', [RemarkableDocumentShareController::class, 'store']);
 });
 
 Route::group(['prefix' => 'api'], static function () {

@@ -1,10 +1,11 @@
-import {SyncStatus, useSyncStatusQuery} from "../../store/api/apiRoot.js"
+import {SyncStatus, useShareRemarkableDocumentMutation, useSyncStatusQuery} from "../../store/api/apiRoot.js"
 import * as React from "react"
 import {useEffect, useRef, useState} from "react"
 import "./InspectSync.scss"
 import {Dialog} from "../../components/reusable/Dialog/Dialog.js";
 import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import toast from "react-hot-toast";
 
 type FileSyncHandle = {
     id: number, variant: "error" | "success", filename: SyncStatus["filename"]
@@ -17,11 +18,11 @@ function SyncItem({id, created_at, filename, completed, error, openDialog}: Sync
         className={`list-group-item gap-2 ${error ? "list-group-item-danger" : ""} ${completed ? "list-group-item-success" : "list-group-item-warning"}`}>
         <span className="filename">{filename}</span>
         <span className="badge bg-info rounded-pill">{created_at}</span>
-        <a onClick={() => {
+        {completed || error ? <a onClick={() => {
             openDialog({
                 id, filename, variant: completed ? "success" : "error"
             });
-        }} className="share-error">Share info with developer</a>
+        }} className="share-error">Share info with developer</a> : null}
     </li>
 }
 
@@ -30,30 +31,49 @@ function ShareDialog({shareInfoDialogOpen, setShareInfoDialogOpen}: {
 }) {
     const [devAccess, setDevAccess] = useState(false);
     const [openAccess, setOpenAccess] = useState(false);
+    const [send] = useShareRemarkableDocumentMutation();
 
     const formRef = useRef<HTMLFormElement>();
 
-    const isSuccess = shareInfoDialogOpen?.['variant'] === "success";
     const isError = shareInfoDialogOpen?.['variant'] === "error";
 
     return <Dialog className="share-info-dialog" open={shareInfoDialogOpen !== false}
                    close={() => setShareInfoDialogOpen(false)}
                    title={"Your ReMarkable document isn't syncing well. Need help?"}
                    actions={<div className="d-flex gap-2">
-                       <button className="btn btn-warning" disabled={!devAccess && !openAccess} onClick={() => {
-
-                       }}>Share this file
+                       <button className="btn btn-warning" disabled={!devAccess && !openAccess} onClick={async () => {
+                           if (shareInfoDialogOpen === false) return;
+                           let details = {
+                               developer_access_consent_granted: devAccess,
+                               open_access_consent_granted: openAccess,
+                               sync_id: shareInfoDialogOpen['id']
+                           };
+                           const form = new FormData(formRef.current)
+                           if (form.has("comment")) {
+                               details["feedback"] = form.get("comment");
+                           }
+                           try {
+                               await send(details).unwrap();
+                               toast.success("Shared ReMarkable document.")
+                               setShareInfoDialogOpen(false);
+                           } catch (e) {
+                               toast.error("Was unable to share the ReMarkable document. Contact developer.");
+                           }
+                       }}>Share this document
                        </button>
-                       <button onClick={() => setShareInfoDialogOpen(false)} className="btn btn-primary">
-                           I don't want to share this file at all
+                       <button onClick={() => {
+                           setShareInfoDialogOpen(false);
+                           toast.success('hi');
+                       }} className="btn btn-primary">
+                           I don't want to share this document at all
                        </button>
                    </div>}>
         <>
             <p>
-                Your privacy matters. The Scrybble developers cannot just access your files.
+                Your privacy matters. The Scrybble developers cannot just access your documents.
             </p>
             <p>
-                Would you like to give permission to share the ReMarkable document files that Scrybble downloaded so
+                Would you like to give permission to share the ReMarkable documents that Scrybble downloaded so
                 that it can be investigated for {shareInfoDialogOpen['variant'] === "success" ? "problems" : "errors"}?
             </p>
 
@@ -78,7 +98,7 @@ function ShareDialog({shareInfoDialogOpen, setShareInfoDialogOpen}: {
                                onChange={() => {
                                    setOpenAccess((open) => !open);
                                }}/>
-                        <label className="form-check-label" htmlFor="check-open-access">Share this file with
+                        <label className="form-check-label" htmlFor="check-open-access">Share this document with
                             the wider ReMarkable development community (This means anyone can access it)</label>
                     </div>
                     <a className="btn btn-info btn-sm" href="#more-info-collapse"
@@ -90,12 +110,12 @@ function ShareDialog({shareInfoDialogOpen, setShareInfoDialogOpen}: {
                     </a>
                     <div className="collapse mx-4" id="more-info-collapse">
                         <p>
-                            Sharing your file with everyone may feel strange. Why would you want that?
+                            Sharing your document with everyone may feel strange. Why would you want that?
                             It's because Scrybble and the ReMarkable development community is built on <a
                             href="/open-core">open
                             principles</a>.
                         </p>
-                        <p>When you share a file with the wider community, it means <a href="/contributors">any
+                        <p>When you share a document with the wider community, it means <a href="/contributors">any
                             developer</a> is
                             allowed to use it to make
                             sure their application works well for you. Not just Scrybble.
@@ -103,7 +123,7 @@ function ShareDialog({shareInfoDialogOpen, setShareInfoDialogOpen}: {
                         <label htmlFor="comment">What's wrong with this ReMarkable document?</label>
                         <p className="text-success">
                             Want a thriving community of
-                            tools for the ReMarkable? You can contribute your files to the community!</p>
+                            tools for the ReMarkable? You can contribute your documents to the community!</p>
                     </div>
                     <div className="mt-4">
                         <label htmlFor="comment">What's up with this document?</label>
@@ -129,8 +149,8 @@ function ShareDialog({shareInfoDialogOpen, setShareInfoDialogOpen}: {
             <div className="mt-2">
                 <h5>Who will it be shared with?</h5>
                 <div>
-                    {devAccess && openAccess ? "This file will be shared with anyone." : null}
-                    {devAccess && !openAccess ? "This file will be shared with the developer(s) of Scrybble" : null}
+                    {devAccess && openAccess ? "This document will be shared with anyone." : null}
+                    {devAccess && !openAccess ? "This document will be shared with the developer(s) of Scrybble" : null}
                     {!devAccess && !openAccess ? "Nobody. You haven't given permission to share." : null}
                 </div>
             </div>
@@ -154,7 +174,8 @@ export default function InspectSync() {
     }, [])
 
     return <div className="page-centering-container" id="inspect-sync">
-        <ShareDialog shareInfoDialogOpen={shareInfoDialogOpen} setShareInfoDialogOpen={setShareInfoDialogOpen}/>
+        <ShareDialog shareInfoDialogOpen={shareInfoDialogOpen} setShareInfoDialogOpen={setShareInfoDialogOpen}
+                     key={shareInfoDialogOpen === false ? 0 : shareInfoDialogOpen.id}/>
         <div className="w-75">
             <h1>Sync status</h1>
             <p>Your most recent syncs are displayed below. </p>

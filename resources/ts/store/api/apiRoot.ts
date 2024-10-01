@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom"
 import {useAppDispatch} from "../hooks.ts"
 import {useEffect} from "react"
 import * as Sentry from "@sentry/react"
+import {BaseQueryArg} from "@reduxjs/toolkit/dist/query/baseQueryTypes.js";
 
 function getCookie(name) {
     const value = `; ${document.cookie}`
@@ -226,6 +227,20 @@ export const apiRoot = createApi({
                     method: "GET"
                 }
             }
+        }),
+        shareRemarkableDocument: builder.mutation<void, {
+            sync_id: number,
+            feedback?: string,
+            developer_access_consent_granted: boolean,
+            open_access_consent_granted: boolean
+        }>({
+            query(body) {
+                return {
+                    url: `/api/remarkable-document-share`,
+                    method: "POST",
+                    body
+                }
+            }
         })
     })
 })
@@ -262,7 +277,9 @@ export const {
     useGumroadSaleInfoQuery,
     useLicenseInformationQuery,
     usePostsQuery,
-    usePostQuery
+    usePostQuery,
+
+    useShareRemarkableDocumentMutation
 } = apiRoot
 
 export {useLogin}
