@@ -156,29 +156,37 @@ class RMapi
         }, collect())->sort()->map(function ($name) use ($path) {
             preg_match('/\[([df])]\s(.+)/', $name, $matches);
             [, $type, $filepath] = $matches;
-            return [
-                'type' => $type,
-                'name' => $filepath,
-                'path' => $type === 'd' ? "$path$filepath/" : "$path$filepath"];
+            return ['type' => $type, 'name' => $filepath, 'path' => $type === 'd' ? "$path$filepath/" : "$path$filepath"];
         })->values();
     }
 
-    public function refresh(): bool
+    /**
+     * @param $strategy string Either "hard" or "soft". Hard removes the cache on disk, soft calls the "refresh" api in rmapi
+     * @return bool
+     */
+    public function refresh(string $strategy = "soft"): bool
     {
-        $redis = Redis::client();
-        $key = "rmapi:lastRefreshed:$this->userId";
-        $ttl = $redis->ttl($key);
-
-        if ($ttl === -1 || $ttl === -2) {
+        $hardRefresh = fn() => $this->storage->delete("rmapi/tree.cache");
+        $softRefresh = function () {
             [$refresh_output, $refresh_exit_code] = $this->executeRMApiCommand("refresh");
             if ($refresh_exit_code !== 0) {
                 $all_refresh_output = implode("\n", $refresh_output);
                 throw new RuntimeException("Failed to refresh: `$all_refresh_output`");
             }
-            $redis->set($key, "", [
-                // 120 seconds
-                "EX" => 120
-            ]);
+        };
+
+        $redis = Redis::client();
+        $key = "rmapi:lastRefreshed:$this->userId";
+        $ttl = $redis->ttl($key);
+
+        if ($ttl === -1 || $ttl === -2) {
+            if ($strategy === "soft") {
+                $softRefresh();
+            } elseif ($strategy === "hard") {
+                $hardRefresh();
+            }
+            $redis->set($key, "", [// 120 seconds
+                "EX" => 120]);
             return true;
         }
 
@@ -215,11 +223,7 @@ class RMapi
             throw new RuntimeException("Unable to rename downloaded RMZip to hashed filePath " . $location . " to " . $newLocation);
         }
 
-        return [
-            'output' => $output,
-            'downloaded_zip_location' => $newLocation,
-            'folder' => $folders->replaceName("")->string()
-        ];
+        return ['output' => $output, 'downloaded_zip_location' => $newLocation, 'folder' => $folders->replaceName("")->string()];
     }
 
     /**
