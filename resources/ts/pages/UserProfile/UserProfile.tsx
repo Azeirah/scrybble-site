@@ -1,5 +1,5 @@
 import React from "react";
-import {useGetUserQuery, useLicenseInformationQuery} from "../../store/api/apiRoot";
+import {useGetUserQuery, useLicenseInformationQuery} from "../../store/api/apiRoot.ts";
 import "./UserProfile.scss"
 
 export default function UserProfile() {
@@ -16,17 +16,17 @@ export default function UserProfile() {
         </div>}
 
         <h2>Your subscription</h2>
-
-
         {licenseLoading ? "Loading..." : <>
-            {licenseData.exists ? <>
-                {licenseData.licenseInformation.active ?
-                    <span className="badge bg-success">Active</span> :
-                    <span className="badge bg-danger">Inactive</span>}
-                <div>
-                    <a href={`https://app.gumroad.com/subscriptions/${licenseData.licenseInformation.subscription_id}/manage`}>Manage your subscription</a>
-                </div>
-            </> : <>Unable to load license information</>}
+            {licenseData?.lifetime ? <span className="badge bg-success">Lifetime license!</span> :
+                licenseData?.exists ? <>
+                    {licenseData.licenseInformation.active ? <span className="badge bg-success">Active</span> :
+                        <span className="badge bg-danger">Inactive</span>}
+                    <div>
+                        <a href={`https://app.gumroad.com/subscriptions/${licenseData.licenseInformation.subscription_id}/manage`}>Manage
+                            your subscription</a>
+                    </div>
+                </> : <>Unable to load license information</>}
+
         </>}
     </div>;
 }

@@ -50,10 +50,13 @@ export interface Directory extends RMTreeItem {
 
 export type LicenseInformation = {
     license: string;
+    lifetime: boolean;
 } & {
     exists: false;
+    lifetime: boolean;
 } | {
     exists: true;
+    lifetime: boolean;
     licenseInformation: {
         active: boolean;
         uses: number;

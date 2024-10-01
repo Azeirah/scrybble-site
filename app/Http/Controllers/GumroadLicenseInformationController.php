@@ -15,10 +15,10 @@ class GumroadLicenseInformationController extends Controller
      */
     public function __invoke(GumroadApi $gumroadApi)
     {
-        $license = Auth::user()->gumroadLicense->license;
-        $response = [
-            'license' => $license,
-        ];
+        $licenseObj = Auth::user()->gumroadLicense;
+        $license = $licenseObj->license;
+        $response = ['license' => $license,];
+        $isLifetime = boolval($licenseObj->lifetime);
 
         try {
             $res = $gumroadApi->verifyLicense($license);
@@ -30,16 +30,12 @@ class GumroadLicenseInformationController extends Controller
             $failed = $purchase['subscription_failed_at'];
 
             $response['exists'] = true;
-            $response['licenseInformation'] = [
-                "uses" => $info['uses'],
-                "order_number" => $purchase['order_number'],
-                "sale_id" => $purchase['sale_id'],
-                "subscription_id" => $purchase['subscription_id'],
-                "active" => $cancelled === null && $ended === null&& $failed === null
-            ];
+            $response['licenseInformation'] = ["uses" => $info['uses'], "order_number" => $purchase['order_number'], "sale_id" => $purchase['sale_id'], "subscription_id" => $purchase['subscription_id'], "active" => $cancelled === null && $ended === null && $failed === null];
+            $response['lifetime'] = $isLifetime;
         } catch (ClientException $e) {
             if ($e->getCode() === 404) {
                 $response['exists'] = false;
+                $response['lifetime'] = $isLifetime;
             } else {
                 throw $e;
             }
