@@ -15,8 +15,8 @@ return new class extends Migration {
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Sync::class);
             $table->text('feedback')->nullable();
-            $table->binary("developer_access_consent_granted")->default(false);
-            $table->binary("open_access_consent_granted")->default(false);
+            $table->boolean("developer_access_consent_granted")->default(false);
+            $table->boolean("open_access_consent_granted")->default(false);
 
             $table->timestamps();
         });
