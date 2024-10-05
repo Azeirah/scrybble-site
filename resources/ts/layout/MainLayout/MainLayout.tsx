@@ -1,28 +1,27 @@
-import {useAppDispatch, useAppSelector} from "../../store/hooks.ts"
-import {apiRoot, useGetUserQuery, useLogoutMutation} from "../../store/api/apiRoot.ts"
+import {useAppSelector} from "../../store/hooks.ts"
+import {apiRoot, selectUser, useGetUserQuery, useLogoutMutation} from "../../store/api/apiRoot.ts"
 import {Link, Outlet, useNavigate} from "react-router-dom"
 import * as React from "react"
 import {useEffect} from "react"
 import "./MainLayout.scss"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBook} from "@fortawesome/free-solid-svg-icons"
-import {setCredentials} from "../../store/AuthSlice.js";
 
 const knowledgeBaseVisible = false;
 const obsidianPostsVisible = true;
 
 function Auth() {
-    const {data, isSuccess} = useGetUserQuery()
+    const {data, isSuccess, isError} = useGetUserQuery()
     const navigate = useNavigate()
-    const dispatch = useAppDispatch()
 
     useEffect(() => {
         if (isSuccess) {
-            if (data) {
-                dispatch(setCredentials(data))
-            } else {
+            if (data == null) {
                 navigate("/auth/login")
             }
+        }
+        if (isError) {
+            navigate("/auth/login")
         }
     }, [isSuccess])
 
@@ -30,8 +29,10 @@ function Auth() {
 }
 
 export function MainLayout() {
-    const user = useAppSelector((state) => state.auth.user)
+    const user = useAppSelector(selectUser);
     const [logout, {}] = useLogoutMutation()
+
+    console.log(user);
 
     const prefetchSyncStatus = apiRoot.usePrefetch('syncStatus')
 

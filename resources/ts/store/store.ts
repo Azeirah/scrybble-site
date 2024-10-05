@@ -1,14 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { apiRoot } from "./api/apiRoot.ts";
-import authSlice from "./AuthSlice";
 import * as Sentry from "@sentry/react";
 
 const sentryReduxEnhancer = Sentry.createReduxEnhancer();
 
 export const store = configureStore({
     reducer: {
-        [apiRoot.reducerPath]: apiRoot.reducer,
-        auth: authSlice,
+        [apiRoot.reducerPath]: apiRoot.reducer
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(apiRoot.middleware),

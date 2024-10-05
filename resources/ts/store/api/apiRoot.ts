@@ -1,9 +1,12 @@
-import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react"
-import {setCredentials, User} from "../AuthSlice.ts"
+import {createApi, fetchBaseQuery, FetchBaseQueryError} from "@reduxjs/toolkit/query/react"
 import {useNavigate} from "react-router-dom"
-import {useAppDispatch} from "../hooks.ts"
 import {useEffect} from "react"
 import * as Sentry from "@sentry/react"
+import {createSelector} from "@reduxjs/toolkit";
+
+export type User = {
+    name: string; email: string;
+}
 
 function getCookie(name) {
     const value = `; ${document.cookie}`
@@ -12,9 +15,7 @@ function getCookie(name) {
 }
 
 export type LoginData = {
-    email: string;
-    password: string;
-    remember?: true;
+    email: string; password: string; remember?: true;
 }
 
 export type RequestPasswordResetData = {
@@ -22,10 +23,7 @@ export type RequestPasswordResetData = {
 }
 
 export type ResetPasswordData = {
-    email: string;
-    password: string;
-    password_confirmation: string;
-    token: string;
+    email: string; password: string; password_confirmation: string; token: string;
 }
 
 export interface RegisterForm {
@@ -49,20 +47,12 @@ export interface Directory extends RMTreeItem {
 }
 
 export type LicenseInformation = {
-    license: string;
-    lifetime: boolean;
+    license: string; lifetime: boolean;
 } & {
-    exists: false;
-    lifetime: boolean;
+    exists: false; lifetime: boolean;
 } | {
-    exists: true;
-    lifetime: boolean;
-    licenseInformation: {
-        active: boolean;
-        uses: number;
-        order_number: number;
-        sale_id: string;
-        subscription_id: string;
+    exists: true; lifetime: boolean; licenseInformation: {
+        active: boolean; uses: number; order_number: number; sale_id: string; subscription_id: string;
     }
 }
 
@@ -70,164 +60,124 @@ export type OnboardingState = "setup-gumroad" | "setup-one-time-code" | "setup-o
 
 export type OnetimecodeQuery = { code }
 export type SyncStatus = { id: number; filename: string, created_at: string, completed: boolean, error: boolean }
+
+export function isFetchBaseQueryError(error: unknown,): error is FetchBaseQueryError {
+    return typeof error === 'object' && error != null && 'status' in error
+}
+
+
 export const apiRoot = createApi({
-    reducerPath: "api",
-    baseQuery: fetchBaseQuery({
+    reducerPath: "api", baseQuery: fetchBaseQuery({
         prepareHeaders: async (headers) => {
             headers.set("Accept", "application/json")
             headers.set("X-XSRF-TOKEN", decodeURIComponent(getCookie("XSRF-TOKEN")))
             return headers
         }
-    }),
-    tagTypes: ["sync-status"],
+    }), tagTypes: ["sync-status", "user"],
 
     endpoints: (builder) => ({
         login: builder.mutation<void, LoginData>({
             query: (user) => {
                 return ({
-                    url: "/login",
-                    method: "POST",
-                    body: user
+                    url: "/login", method: "POST", body: user
                 })
             }
-        }),
-        requestPasswordReset: builder.mutation<void, RequestPasswordResetData>({
+        }), requestPasswordReset: builder.mutation<void, RequestPasswordResetData>({
             query: (email) => {
                 return {
-                    url: "/forgot-password",
-                    method: "POST",
-                    body: email
+                    url: "/forgot-password", method: "POST", body: email
                 }
             }
-        }),
-        resetPassword: builder.mutation<{ message: string }, ResetPasswordData>({
+        }), resetPassword: builder.mutation<{ message: string }, ResetPasswordData>({
             query: (body) => {
                 return {
-                    url: "/reset-password",
-                    method: "POST",
-                    body
+                    url: "/reset-password", method: "POST", body
                 }
             }
-        }),
-        register: builder.mutation<unknown, RegisterForm>({
+        }), register: builder.mutation<unknown, RegisterForm>({
             query: (registration) => ({
-                url: "/register",
-                method: "POST",
-                body: registration
+                url: "/register", method: "POST", body: registration
             })
-        }),
-        getUser: builder.query<User, void>({
-            query: () => "/sanctum/user",
-            async onQueryStarted(_, {queryFulfilled}) {
+        }), getUser: builder.query<User, void>({
+            query: () => "/sanctum/user", async onQueryStarted(_, {queryFulfilled}) {
                 try {
                     const result = await queryFulfilled;
                     Sentry.setTags({
-                        name: result.data.name,
-                        email: result.data.email
+                        name: result.data.name, email: result.data.email
                     });
                 } catch (e) {
                     Sentry.setTags({
-                        name: null,
-                        email: null
+                        name: null, email: null
                     })
                 }
-            }
-        }),
-        logout: builder.mutation<void, void>({
-            query: () => ({url: "/logout", method: "POST"})
-        }),
-        onboardingState: builder.query<OnboardingState, void>({
+            }, providesTags: ["user"]
+        }), logout: builder.mutation<void, void>({
+            query: () => ({url: "/logout", method: "POST"}), invalidatesTags: ['user'],
+        }), onboardingState: builder.query<OnboardingState, void>({
             query: () => "/api/onboardingState"
-        }),
-        sendGumroadLicense: builder.mutation<{ newState: OnboardingState }, string>({
+        }), sendGumroadLicense: builder.mutation<{ newState: OnboardingState }, string>({
             query: (license) => ({
-                url: "/api/gumroadLicense",
-                method: "POST",
-                body: {license}
-            }),
-            async onQueryStarted(license, {dispatch, queryFulfilled}) {
+                url: "/api/gumroadLicense", method: "POST", body: {license}
+            }), async onQueryStarted(license, {dispatch, queryFulfilled}) {
                 const {data: {newState}} = await queryFulfilled
                 dispatch(apiRoot.util.updateQueryData("onboardingState", undefined, () => {
                     return newState
                 }))
             }
-        }),
-        licenseInformation: builder.query<LicenseInformation, void>({
+        }), licenseInformation: builder.query<LicenseInformation, void>({
             query: () => ({
-                url: "/api/licenseInformation",
-                method: "GET"
+                url: "/api/licenseInformation", method: "GET"
             })
-        }),
-        sendOnetimecode: builder.mutation<{ newState: OnboardingState }, OnetimecodeQuery>({
+        }), sendOnetimecode: builder.mutation<{ newState: OnboardingState }, OnetimecodeQuery>({
             query: (body) => ({
-                url: "api/onetimecode",
-                method: "POST",
-                body
-            }),
-            async onQueryStarted(license, {dispatch, queryFulfilled}) {
+                url: "api/onetimecode", method: "POST", body
+            }), async onQueryStarted(license, {dispatch, queryFulfilled}) {
                 const {data: {newState}} = await queryFulfilled
                 dispatch(apiRoot.util.updateQueryData("onboardingState", undefined, () => {
                     return newState
                 }))
             }
-        }),
-        RMFileTree: builder.query<{ items: ReadonlyArray<RMTreeItem>, cwd: string }, string | void>({
+        }), RMFileTree: builder.query<{ items: ReadonlyArray<RMTreeItem>, cwd: string }, string | void>({
             query(path = "/") {
                 return {
-                    url: `api/RMFileTree`,
-                    method: "POST",
-                    body: {
+                    url: `api/RMFileTree`, method: "POST", body: {
                         path
                     }
                 }
             }
-        }),
-        selectFileForSync: builder.mutation<unknown, string>({
+        }), selectFileForSync: builder.mutation<unknown, string>({
             query(file) {
                 return {
-                    url: "api/file",
-                    method: "POST",
-                    body: {
+                    url: "api/file", method: "POST", body: {
                         file
                     }
                 }
-            },
-            invalidatesTags: ["sync-status"]
-        }),
-        syncStatus: builder.query<SyncStatus[], void>({
+            }, invalidatesTags: ["sync-status"]
+        }), syncStatus: builder.query<SyncStatus[], void>({
             query() {
                 return {
-                    url: "api/inspect-sync",
-                    method: "GET"
+                    url: "api/inspect-sync", method: "GET"
                 }
-            },
-            providesTags: ["sync-status"]
-        }),
-        gumroadSaleInfo: builder.query<{ email: string, license_key: string }, string>({
+            }, providesTags: ["sync-status"]
+        }), gumroadSaleInfo: builder.query<{ email: string, license_key: string }, string>({
             query(sale_id) {
                 return {
-                    url: `/api/gumroadSale/${sale_id}`,
-                    method: "GET"
+                    url: `/api/gumroadSale/${sale_id}`, method: "GET"
                 }
             }
-        }),
-        posts: builder.query<{ title: string, slug: string }[], void>({
+        }), posts: builder.query<{ title: string, slug: string }[], void>({
             query() {
                 return {
-                    url: `/api/posts`,
-                    method: "GET"
+                    url: `/api/posts`, method: "GET"
                 }
             }
-        }),
-        post: builder.query<{ title: string; content: string; created_at: string }, string>({
+        }), post: builder.query<{ title: string; content: string; created_at: string }, string>({
             query(slug) {
                 return {
-                    url: `/api/posts/${slug}`,
-                    method: "GET"
+                    url: `/api/posts/${slug}`, method: "GET"
                 }
             }
-        }),
-        shareRemarkableDocument: builder.mutation<void, {
+        }), shareRemarkableDocument: builder.mutation<void, {
             sync_id: number,
             feedback?: string,
             developer_access_consent_granted: boolean,
@@ -235,9 +185,7 @@ export const apiRoot = createApi({
         }>({
             query(body) {
                 return {
-                    url: `/api/remarkable-document-share`,
-                    method: "POST",
-                    body
+                    url: `/api/remarkable-document-share`, method: "POST", body
                 }
             }
         })
@@ -247,17 +195,24 @@ export const apiRoot = createApi({
 function useLogin(to = "/") {
     const [getUser, {isSuccess: loggedIn, data: userData}] = useLazyGetUserQuery()
     const navigate = useNavigate()
-    const dispatch = useAppDispatch()
 
     useEffect(() => {
         if (loggedIn && userData) {
-            dispatch(setCredentials(userData))
             navigate(to)
         }
     }, [loggedIn, userData])
 
     return getUser
 }
+
+const selectUserResult = apiRoot.endpoints.getUser.select()
+
+export const selectUser = createSelector([selectUserResult], (userData) => {
+    if (userData.isError) {
+        return null;
+    }
+    return userData.data;
+});
 
 export const {
     useLoginMutation,

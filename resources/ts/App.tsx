@@ -1,5 +1,5 @@
 import * as React from "react"
-import {Suspense, useEffect} from "react"
+import {Suspense} from "react"
 
 import {createRoot} from "react-dom/client"
 import {Provider} from "react-redux"
@@ -12,15 +12,12 @@ import {
     Route,
     RouterProvider,
     useLocation,
-    useNavigate,
     useNavigationType,
     useParams,
     useRouteError
 } from "react-router-dom"
 import LoginCard from "./components/feature/LoginCard/LoginCard.tsx"
-import {useAppDispatch} from "./store/hooks.ts"
-import {useGetUserQuery, usePostQuery, usePostsQuery} from "./store/api/apiRoot.ts"
-import {setCredentials} from "./store/AuthSlice.ts"
+import {usePostQuery, usePostsQuery} from "./store/api/apiRoot.ts"
 import {AuthPage} from "./layout/AuthLayout.tsx"
 import {MainLayout} from "./layout/MainLayout/MainLayout.tsx"
 import {Roadmap} from "./pages/Roadmap.tsx"
