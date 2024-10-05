@@ -2,18 +2,17 @@ import React, {useCallback, useState} from "react"
 import "./RMFileTree.scss"
 import {Link, useLocation, useNavigate} from "react-router-dom"
 import {
-    Directory,
-    File,
-    useGetUserQuery,
     useRMFileTreeQuery,
     useSelectFileForSyncMutation,
     useSyncStatusQuery
-} from "../../../store/api/apiRoot.js"
+} from "../../../store/api/apiRoot.ts"
 import toast from "react-hot-toast"
 import {debounce} from "lodash-es"
 import {faHighlighter} from "@fortawesome/free-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {Dialog} from "../../reusable/Dialog/Dialog.tsx";
+import {Directory, File} from "../../../@types/ReMarkable.ts";
+import {useGetUserQuery} from "../../../store/api/authApi.ts";
 
 const syncSettingsEnabled = false;
 

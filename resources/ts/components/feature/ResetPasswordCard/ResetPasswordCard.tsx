@@ -1,6 +1,7 @@
-import {RequestPasswordResetData, useRequestPasswordResetMutation} from "../../../store/api/apiRoot.ts"
 import {ErrorResponse} from "../../../laravelTypes.ts"
 import * as React from "react"
+import {RequestPasswordResetData} from "../../../@types/Authentication.ts";
+import {useRequestPasswordResetMutation} from "../../../store/api/authApi.ts";
 
 export default function ResetPasswordCard() {
     const [resetPasswordRequest, {isSuccess, error, data}] = useRequestPasswordResetMutation()

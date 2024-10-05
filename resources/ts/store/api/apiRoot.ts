@@ -1,49 +1,21 @@
-import {createApi, fetchBaseQuery, FetchBaseQueryError} from "@reduxjs/toolkit/query/react"
+import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react"
 import {useNavigate} from "react-router-dom"
 import {useEffect} from "react"
 import * as Sentry from "@sentry/react"
 import {createSelector} from "@reduxjs/toolkit";
-
-export type User = {
-    name: string; email: string;
-}
+import {
+    LoginData,
+    RegisterForm,
+    RequestPasswordResetData,
+    ResetPasswordData,
+    User
+} from "../../@types/Authentication.ts";
+import {RMTreeItem} from "../../@types/ReMarkable.ts";
 
 function getCookie(name) {
     const value = `; ${document.cookie}`
     const parts = value.split(`; ${name}=`)
     if (parts.length === 2) return parts.pop().split(";").shift()
-}
-
-export type LoginData = {
-    email: string; password: string; remember?: true;
-}
-
-export type RequestPasswordResetData = {
-    email: string;
-}
-
-export type ResetPasswordData = {
-    email: string; password: string; password_confirmation: string; token: string;
-}
-
-export interface RegisterForm {
-    name: string,
-    email: string,
-    password: string
-}
-
-interface RMTreeItem {
-    type: "f" | "d"
-    name: string,
-    path: string
-}
-
-export interface File extends RMTreeItem {
-    type: "f",
-}
-
-export interface Directory extends RMTreeItem {
-    type: "d",
 }
 
 export type LicenseInformation = {
@@ -61,11 +33,6 @@ export type OnboardingState = "setup-gumroad" | "setup-one-time-code" | "setup-o
 export type OnetimecodeQuery = { code }
 export type SyncStatus = { id: number; filename: string, created_at: string, completed: boolean, error: boolean }
 
-export function isFetchBaseQueryError(error: unknown,): error is FetchBaseQueryError {
-    return typeof error === 'object' && error != null && 'status' in error
-}
-
-
 export const apiRoot = createApi({
     reducerPath: "api", baseQuery: fetchBaseQuery({
         prepareHeaders: async (headers) => {
@@ -76,44 +43,7 @@ export const apiRoot = createApi({
     }), tagTypes: ["sync-status", "user"],
 
     endpoints: (builder) => ({
-        login: builder.mutation<void, LoginData>({
-            query: (user) => {
-                return ({
-                    url: "/login", method: "POST", body: user
-                })
-            }
-        }), requestPasswordReset: builder.mutation<void, RequestPasswordResetData>({
-            query: (email) => {
-                return {
-                    url: "/forgot-password", method: "POST", body: email
-                }
-            }
-        }), resetPassword: builder.mutation<{ message: string }, ResetPasswordData>({
-            query: (body) => {
-                return {
-                    url: "/reset-password", method: "POST", body
-                }
-            }
-        }), register: builder.mutation<unknown, RegisterForm>({
-            query: (registration) => ({
-                url: "/register", method: "POST", body: registration
-            })
-        }), getUser: builder.query<User, void>({
-            query: () => "/sanctum/user", async onQueryStarted(_, {queryFulfilled}) {
-                try {
-                    const result = await queryFulfilled;
-                    Sentry.setTags({
-                        name: result.data.name, email: result.data.email
-                    });
-                } catch (e) {
-                    Sentry.setTags({
-                        name: null, email: null
-                    })
-                }
-            }, providesTags: ["user"]
-        }), logout: builder.mutation<void, void>({
-            query: () => ({url: "/logout", method: "POST"}), invalidatesTags: ['user'],
-        }), onboardingState: builder.query<OnboardingState, void>({
+        onboardingState: builder.query<OnboardingState, void>({
             query: () => "/api/onboardingState"
         }), sendGumroadLicense: builder.mutation<{ newState: OnboardingState }, string>({
             query: (license) => ({
@@ -192,42 +122,13 @@ export const apiRoot = createApi({
     })
 })
 
-function useLogin(to = "/") {
-    const [getUser, {isSuccess: loggedIn, data: userData}] = useLazyGetUserQuery()
-    const navigate = useNavigate()
-
-    useEffect(() => {
-        if (loggedIn && userData) {
-            navigate(to)
-        }
-    }, [loggedIn, userData])
-
-    return getUser
-}
-
-const selectUserResult = apiRoot.endpoints.getUser.select()
-
-export const selectUser = createSelector([selectUserResult], (userData) => {
-    if (userData.isError) {
-        return null;
-    }
-    return userData.data;
-});
-
 export const {
-    useLoginMutation,
-    useLazyGetUserQuery,
-    useGetUserQuery,
-    useLogoutMutation,
-    useRegisterMutation,
     useOnboardingStateQuery,
     useSendGumroadLicenseMutation,
     useSendOnetimecodeMutation,
     useRMFileTreeQuery,
     useSelectFileForSyncMutation,
     useSyncStatusQuery,
-    useRequestPasswordResetMutation,
-    useResetPasswordMutation,
     useGumroadSaleInfoQuery,
     useLicenseInformationQuery,
     usePostsQuery,
@@ -235,5 +136,3 @@ export const {
 
     useShareRemarkableDocumentMutation
 } = apiRoot
-
-export {useLogin}

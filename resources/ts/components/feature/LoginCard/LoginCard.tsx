@@ -1,7 +1,8 @@
 import React, {useEffect} from "react"
-import {LoginData, useLogin, useLoginMutation} from "../../../store/api/apiRoot.ts"
 import {ErrorResponse} from "../../../laravelTypes.ts"
 import {Link} from "react-router-dom"
+import {LoginData} from "../../../@types/Authentication.ts";
+import {useLogin, useLoginMutation} from "../../../store/api/authApi.ts";
 
 export default function () {
     const [login, {isSuccess, error}] = useLoginMutation()

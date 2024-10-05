@@ -1,8 +1,8 @@
-import {SyncStatus, useShareRemarkableDocumentMutation, useSyncStatusQuery} from "../../store/api/apiRoot.js"
+import {SyncStatus, useShareRemarkableDocumentMutation, useSyncStatusQuery} from "../../store/api/apiRoot.ts"
 import * as React from "react"
 import {useEffect, useRef, useState} from "react"
 import "./InspectSync.scss"
-import {Dialog} from "../../components/reusable/Dialog/Dialog.js";
+import {Dialog} from "../../components/reusable/Dialog/Dialog.tsx";
 import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import toast from "react-hot-toast";

@@ -1,6 +1,7 @@
 import React from "react";
-import {useGetUserQuery, useLicenseInformationQuery} from "../../store/api/apiRoot.ts";
+import {useLicenseInformationQuery} from "../../store/api/apiRoot.ts";
 import "./UserProfile.scss"
+import {useGetUserQuery} from "../../store/api/authApi.ts";
 
 export default function UserProfile() {
     const {data: licenseData, isSuccess: licenseSuccess, isLoading: licenseLoading} = useLicenseInformationQuery();
