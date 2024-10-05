@@ -1,13 +1,13 @@
 export interface RMTreeItem {
-    type: "f" | "d"
-    name: string,
-    path: string
+  type: 'f' | 'd'
+  name: string
+  path: string
 }
 
 export interface File extends RMTreeItem {
-    type: "f",
+  type: 'f'
 }
 
 export interface Directory extends RMTreeItem {
-    type: "d",
+  type: 'd'
 }

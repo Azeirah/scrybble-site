@@ -19,3 +19,5 @@ xochitl-binaries/
 .ebextensions/
 .platform/
 .pytest_cache/
+
+.env.azure-prod

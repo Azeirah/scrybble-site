@@ -12,8 +12,8 @@ class SelfHostedMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (config("scrybble.deployment_environment") === "self-hosted") {
-            $user = User::query()->firstOrCreate(["id" => 1, "name" => "Amdin", "email" => "", "password" => "Admin"]);
-            Auth::login($user);
+            $user = User::query()->firstOrCreate(["name" => "Admin"], [ "email" => "", "password" => "Admin"]);
+            Auth::login($user, ["remember" => true]);
         }
         return $next($request);
     }
