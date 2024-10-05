@@ -1,7 +1,7 @@
 import React, {useState} from "react"
 import "./GumroadLicenseCard.scss"
-import {useSendGumroadLicenseMutation} from "../../../store/api/apiRoot"
-import FormError from "../../reusable/FormError/FormError"
+import {useSendGumroadLicenseMutation} from "../../../store/api/apiRoot.ts"
+import FormError from "../../reusable/FormError/FormError.tsx"
 
 export default function GumroadLicenseCard() {
     const [sendGumroadLicense, {isSuccess, error}] = useSendGumroadLicenseMutation()

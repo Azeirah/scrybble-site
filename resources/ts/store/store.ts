@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { apiRoot } from "./api/apiRoot";
+import { apiRoot } from "./api/apiRoot.ts";
 import authSlice from "./AuthSlice";
 import * as Sentry from "@sentry/react";
 

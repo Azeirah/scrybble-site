@@ -1,8 +1,8 @@
-import {ResetPasswordData, useResetPasswordMutation} from "../../store/api/apiRoot"
+import {ResetPasswordData, useResetPasswordMutation} from "../../store/api/apiRoot.ts"
 import {useParams} from "react-router-dom"
 import * as React from "react"
 import {useState} from "react"
-import {ErrorResponse} from "../../laravelTypes"
+import {ErrorResponse} from "../../laravelTypes.ts"
 
 export function ResetPasswordTokenCard() {
     const [resetPassword, {isSuccess, error, data}] = useResetPasswordMutation()

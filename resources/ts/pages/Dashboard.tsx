@@ -1,9 +1,9 @@
 import React, {useEffect} from "react"
-import {useOnboardingStateQuery} from "../store/api/apiRoot"
-import RMFileTree from "../components/feature/RMFileTree/RMFileTree"
-import RMOneTimeCodeCard from "../components/feature/RMOneTimeCodeCard/RMOneTimeCodeCard"
+import {useOnboardingStateQuery} from "../store/api/apiRoot.ts"
+import RMFileTree from "../components/feature/RMFileTree/RMFileTree.tsx"
+import RMOneTimeCodeCard from "../components/feature/RMOneTimeCodeCard/RMOneTimeCodeCard.tsx"
 import {useNavigate} from "react-router-dom"
-import GumroadLicenseCard from "../components/feature/GumroadLicenseCard/GumroadLicenseCard"
+import GumroadLicenseCard from "../components/feature/GumroadLicenseCard/GumroadLicenseCard.tsx"
 import {cond, constant, isEqual} from "lodash-es";
 
 

@@ -4,7 +4,6 @@ import {useNavigate} from "react-router-dom"
 import {useAppDispatch} from "../hooks.ts"
 import {useEffect} from "react"
 import * as Sentry from "@sentry/react"
-import {BaseQueryArg} from "@reduxjs/toolkit/dist/query/baseQueryTypes.js";
 
 function getCookie(name) {
     const value = `; ${document.cookie}`

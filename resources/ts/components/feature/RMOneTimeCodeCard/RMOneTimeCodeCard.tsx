@@ -1,6 +1,6 @@
 import React from "react"
-import {OnetimecodeQuery, useSendOnetimecodeMutation} from "../../../store/api/apiRoot"
-import FormError from "../../reusable/FormError/FormError"
+import {OnetimecodeQuery, useSendOnetimecodeMutation} from "../../../store/api/apiRoot.ts"
+import FormError from "../../reusable/FormError/FormError.tsx"
 
 export default function RMOneTimeCodeCard({firstTime}: { firstTime: boolean }) {
     const [sendOnetimecode, {error, isLoading}] = useSendOnetimecodeMutation()

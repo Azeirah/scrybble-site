@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useEffect} from "react"
-import {useGetUserQuery} from "../store/api/apiRoot";
+import {useGetUserQuery} from "../store/api/apiRoot.ts";
 import {Link, useNavigate, useSearchParams} from "react-router-dom";
 
 export default function PurchasedPage() {

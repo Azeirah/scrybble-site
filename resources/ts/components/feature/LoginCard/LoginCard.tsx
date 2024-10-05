@@ -1,6 +1,6 @@
 import React, {useEffect} from "react"
-import {LoginData, useLogin, useLoginMutation} from "../../../store/api/apiRoot"
-import {ErrorResponse} from "../../../laravelTypes"
+import {LoginData, useLogin, useLoginMutation} from "../../../store/api/apiRoot.ts"
+import {ErrorResponse} from "../../../laravelTypes.ts"
 import {Link} from "react-router-dom"
 
 export default function () {

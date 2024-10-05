@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit"
-import {RootState} from "./store"
-import {apiRoot} from "./api/apiRoot"
+import {RootState} from "./store.ts"
+import {apiRoot} from "./api/apiRoot.ts"
 
 export type User = {
     name: string;

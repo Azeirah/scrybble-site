@@ -1,7 +1,7 @@
-import {RegisterForm, useGumroadSaleInfoQuery, useLogin, useRegisterMutation} from "../../../store/api/apiRoot"
+import {RegisterForm, useGumroadSaleInfoQuery, useLogin, useRegisterMutation} from "../../../store/api/apiRoot.ts"
 import * as React from "react"
 import {useEffect, useState} from "react"
-import {ErrorResponse} from "../../../laravelTypes"
+import {ErrorResponse} from "../../../laravelTypes.ts"
 import {useSearchParams} from "react-router-dom";
 
 function usePrefillEmailField() {
