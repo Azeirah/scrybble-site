@@ -3,39 +3,39 @@ import {Suspense, useEffect} from "react"
 
 import {createRoot} from "react-dom/client"
 import {Provider} from "react-redux"
-import {store} from "./store/store"
+import {store} from "./store/store.ts"
 import {
-    BrowserRouter,
     createBrowserRouter,
     createRoutesFromChildren,
     Link,
     matchRoutes,
-    Route, RouterProvider,
-    Routes,
+    Route,
+    RouterProvider,
     useLocation,
     useNavigate,
     useNavigationType,
-    useParams, useRouteError
+    useParams,
+    useRouteError
 } from "react-router-dom"
-import LoginCard from "./components/feature/LoginCard/LoginCard"
-import {useAppDispatch} from "./store/hooks"
-import {useGetUserQuery, usePostQuery, usePostsQuery} from "./store/api/apiRoot"
-import {setCredentials} from "./store/AuthSlice"
-import {AuthPage} from "./layout/AuthLayout"
-import {MainLayout} from "./layout/MainLayout/MainLayout"
-import {Roadmap} from "./pages/Roadmap"
-import {RegisterCard} from "./components/feature/RegisterCard/RegisterCard"
-import {LandingPage} from "./pages/LandingPage/LandingPage"
+import LoginCard from "./components/feature/LoginCard/LoginCard.tsx"
+import {useAppDispatch} from "./store/hooks.ts"
+import {useGetUserQuery, usePostQuery, usePostsQuery} from "./store/api/apiRoot.ts"
+import {setCredentials} from "./store/AuthSlice.ts"
+import {AuthPage} from "./layout/AuthLayout.tsx"
+import {MainLayout} from "./layout/MainLayout/MainLayout.tsx"
+import {Roadmap} from "./pages/Roadmap.tsx"
+import {RegisterCard} from "./components/feature/RegisterCard/RegisterCard.tsx"
+import {LandingPage} from "./pages/LandingPage/LandingPage.tsx"
 import {Toaster} from "react-hot-toast"
-import ResetPasswordCard from "./components/feature/ResetPasswordCard/ResetPasswordCard"
+import ResetPasswordCard from "./components/feature/ResetPasswordCard/ResetPasswordCard.tsx"
 import * as Sentry from "@sentry/react"
-import {ResetPasswordTokenCard} from "./components/feature/ResetPasswordTokenCard"
-import UserProfile from "./pages/UserProfile/UserProfile";
+import {ResetPasswordTokenCard} from "./components/feature/ResetPasswordTokenCard.tsx"
+import UserProfile from "./pages/UserProfile/UserProfile.tsx";
 import ReactMarkdown from "react-markdown";
 
-let Dashboard = React.lazy(() => import("./pages/Dashboard"))
-let InspectSync = React.lazy(() => import("./pages/InspectSync/InspectSync"))
-let PurchasedPage = React.lazy(() => import("./pages/PurchasedPage"))
+let Dashboard = React.lazy(() => import("./pages/Dashboard.tsx"))
+let InspectSync = React.lazy(() => import("./pages/InspectSync/InspectSync.tsx"))
+let PurchasedPage = React.lazy(() => import("./pages/PurchasedPage.tsx"))
 
 Sentry.init({
     dsn: "https://4201915825194ef6ab9263518b836ee4@o199243.ingest.sentry.io/4504527483305984",
@@ -112,35 +112,17 @@ const routes = <Route path="/" element={<MainLayout/>}>
     <Route index element={<LandingPage/>}/>
 </Route>
 
-function Auth() {
-    const {data, isSuccess} = useGetUserQuery()
-    const navigate = useNavigate()
-    const dispatch = useAppDispatch()
 
-    useEffect(() => {
-        if (isSuccess) {
-            if (data) {
-                dispatch(setCredentials(data))
-            } else {
-                navigate("/auth/login")
-            }
-        }
-    }, [isSuccess])
-
-    return null
-}
 
 
 const router = sentryCreateBrowserRouter(createRoutesFromChildren(routes));
 
-export default function App() {
+function App() {
 
     return <Provider store={store}>
         <Suspense>
-            <RouterProvider router={router}>
-                <Auth/>
-                <Toaster/>
-            </RouterProvider>
+            <RouterProvider router={router}/>
+            <Toaster/>
         </Suspense>
     </Provider>
 }

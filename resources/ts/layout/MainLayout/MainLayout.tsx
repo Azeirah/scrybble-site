@@ -1,13 +1,33 @@
-import {useAppSelector} from "../../store/hooks"
-import {apiRoot, useLogoutMutation} from "../../store/api/apiRoot"
-import {Link, Outlet} from "react-router-dom"
+import {useAppDispatch, useAppSelector} from "../../store/hooks.ts"
+import {apiRoot, useGetUserQuery, useLogoutMutation} from "../../store/api/apiRoot.ts"
+import {Link, Outlet, useNavigate} from "react-router-dom"
 import * as React from "react"
+import {useEffect} from "react"
 import "./MainLayout.scss"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBook} from "@fortawesome/free-solid-svg-icons"
+import {setCredentials} from "../../store/AuthSlice.js";
 
 const knowledgeBaseVisible = false;
 const obsidianPostsVisible = true;
+
+function Auth() {
+    const {data, isSuccess} = useGetUserQuery()
+    const navigate = useNavigate()
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        if (isSuccess) {
+            if (data) {
+                dispatch(setCredentials(data))
+            } else {
+                navigate("/auth/login")
+            }
+        }
+    }, [isSuccess])
+
+    return null
+}
 
 export function MainLayout() {
     const user = useAppSelector((state) => state.auth.user)
@@ -15,41 +35,36 @@ export function MainLayout() {
 
     const prefetchSyncStatus = apiRoot.usePrefetch('syncStatus')
 
-    return <div id="mainLayout">
-        <nav className="navbar navbar-expand-md navbar-dark shadow-sm mb-4">
-            <div className="container">
-                <Link className="navbar-brand" to="/">
-                    Scrybble
-                </Link>
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent" aria-expanded="false"
-                        aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"/>
-                </button>
+    return <>
+        <Auth/>
+        <div id="mainLayout">
+            <nav className="navbar navbar-expand-md navbar-dark shadow-sm mb-4">
+                <div className="container">
+                    <Link className="navbar-brand" to="/">
+                        Scrybble
+                    </Link>
+                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarSupportedContent"
+                            aria-controls="navbarSupportedContent" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"/>
+                    </button>
 
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul className="navbar-nav me-auto">
-                        <li className="nav-item">
-                            <Link to="/roadmap" className="nav-link">Roadmap</Link>
-                        </li>
-                        {knowledgeBaseVisible ?
+                    <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul className="navbar-nav me-auto">
                             <li className="nav-item">
+                                <Link to="/roadmap" className="nav-link">Roadmap</Link>
+                            </li>
+                            {knowledgeBaseVisible ? <li className="nav-item">
                                 <Link to="/learn" className="nav-link text-info">
                                     <FontAwesomeIcon icon={faBook} style={{marginRight: "4px"}}/>Learn scrybble</Link>
-                            </li>
-                            : null
-                        }
-                        {obsidianPostsVisible ?
-                            <li className="nav-item">
+                            </li> : null}
+                            {obsidianPostsVisible ? <li className="nav-item">
                                 <Link to="/learn/obsidian" className="nav-link text-obsidian">
                                     <FontAwesomeIcon icon={faBook} style={{marginRight: "4px"}}/>Learn Obsidian</Link>
-                            </li>
-                            : null
-                        }
-                        <li className="nav-item border-right border-dark border"></li>
-                        {user ?
-                            <>
+                            </li> : null}
+                            <li className="nav-item border-right border-dark border"></li>
+                            {user ? <>
                                 <li className="nav-item">
                                     <Link to="/dashboard" className="nav-link">Dashboard</Link>
                                 </li>
@@ -58,13 +73,11 @@ export function MainLayout() {
                                         prefetchSyncStatus()
                                     }}>Sync status</Link>
                                 </li>
-                            </> : null
-                        }
-                    </ul>
+                            </> : null}
+                        </ul>
 
-                    <ul className="navbar-nav ms-auto">
-                        {!user ?
-                            <>
+                        <ul className="navbar-nav ms-auto">
+                            {!user ? <>
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/auth/login">Login</Link>
                                 </li>
@@ -72,9 +85,7 @@ export function MainLayout() {
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/auth/register">Register</Link>
                                 </li>
-                            </>
-                            :
-                            <li className="nav-item dropdown">
+                            </> : <li className="nav-item dropdown">
                                 <Link id="navbarDropdown" className="nav-link dropdown-toggle" to="#" role="button"
                                       data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     {user.name}
@@ -92,19 +103,19 @@ export function MainLayout() {
                                     >Logout
                                     </a>
                                 </div>
-                            </li>
-                        }
-                    </ul>
+                            </li>}
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
-        <main className="container d-flex flex-column"
-             style={{flexGrow: 1, flexShrink: 0}}>
-            <Outlet/>
-        </main>
-        <footer className="border-top border-2 border-dark">
+            </nav>
+            <main className="container d-flex flex-column"
+                  style={{flexGrow: 1, flexShrink: 0}}>
+                <Outlet/>
+            </main>
+            <footer className="border-top border-2 border-dark">
             <span>© {(new Date()).getFullYear()} Streamsoft. Streamsoft is a sole-proprietorship registered in the
                 Netherlands.</span>
-        </footer>
-    </div>
+            </footer>
+        </div>
+    </>
 }
