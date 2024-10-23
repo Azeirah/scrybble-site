@@ -21,6 +21,7 @@ class SyncContext implements Arrayable
 
         $sync = new Sync();
         $sync->filename = $this->input_filename;
+        $sync->job_id = $this->sync->id;
         $sync->user()->associate($user);
         $sync->save();
         $this->sync = $sync;

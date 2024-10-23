@@ -7,7 +7,6 @@ use App\Models\Sync;
 use App\Services\PRMStorage\PRMStorageInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\UnauthorizedException;
 
 /**
  *
@@ -25,9 +24,9 @@ class SyncController extends Controller
         $results =
             Sync::forUser($user)
                 ->whereIsCompleted()
-                ->get(['filename', 'user_storage_download_path', 'id'])
+                ->get(['filename', 'job_id', 'id'])
                 ->map(fn(Sync $sync) => [
-                    'download_url' => $PRMStorage->getDownloadURL($sync->user_storage_download_path),
+                    'download_url' => $PRMStorage->getDownloadURL("userZips/" . $sync->job_id . ".zip"),
                     'filename' => $sync->filename,
                     'id' => $sync->id
                 ]);
