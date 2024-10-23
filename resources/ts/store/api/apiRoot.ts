@@ -1,15 +1,4 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
-import * as Sentry from '@sentry/react'
-import { createSelector } from '@reduxjs/toolkit'
-import {
-  LoginData,
-  RegisterForm,
-  RequestPasswordResetData,
-  ResetPasswordData,
-  User,
-} from '../../@types/Authentication.ts'
 import { RMTreeItem } from '../../@types/ReMarkable.ts'
 
 function getCookie(name) {

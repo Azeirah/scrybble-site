@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Services\Remarks;
 
-use App\DataClasses\RemarksConfig;
 use Eloquent\Pathogen\AbsolutePathInterface;
 use RuntimeException;
 
@@ -17,18 +16,16 @@ class RemarksRunDockerContainer implements RemarksService
     /**
      * @param AbsolutePathInterface $sourceDirectory
      * @param AbsolutePathInterface $targetDirectory
-     * @param RemarksConfig $config
      * @return void
      */
-    public function extractNotesAndHighlights(AbsolutePathInterface $sourceDirectory, AbsolutePathInterface $targetDirectory, RemarksConfig $config): void
+    public function extractNotesAndHighlights(AbsolutePathInterface $sourceDirectory, AbsolutePathInterface $targetDirectory): void
     {
         // docker run -v "$PWD/files":/store laauurraaa/remarks-bin /store /store --targets md
         $source_dir = $sourceDirectory->string();
         $target_dir = $targetDirectory->string();
-        $params = $config->toRemarksParams();
         $command =
 
-            "docker run -v \"$source_dir/\":/in -v \"$target_dir\":/out laauurraaa/remarks-bin:{$this->remarks_version} /in /out $params 2>&1";
+            "docker run -v \"$source_dir/\":/in -v \"$target_dir\":/out laauurraaa/remarks-bin:{$this->remarks_version} /in /out 2>&1";
         exec($command, $output, $result_code);
 
         if ($result_code !== 0) {

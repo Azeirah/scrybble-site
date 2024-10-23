@@ -9,9 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
-/**
- * @mixin IdeHelperSync
- */
 class Sync extends Model {
     protected $table = 'sync';
 
@@ -48,13 +45,14 @@ class Sync extends Model {
         return Carbon::now()->addMinutes($minutes)->lessThan($this->created_at);
     }
 
-    public function hasError() {
+    public function hasError(): bool
+    {
         return $this->logs()->where('severity', 'error')->count() > 0;
     }
 
-    public function complete(string $s3_download_path) {
+    public function complete(): void
+    {
         $this->completed = true;
-        $this->S3_download_path = $s3_download_path;
         $this->save();
     }
 }
