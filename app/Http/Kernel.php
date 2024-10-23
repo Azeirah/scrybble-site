@@ -84,6 +84,7 @@ class Kernel extends HttpKernel
         'auth.session' => AuthenticateSession::class,
         'auth.is-admin' => isAdminMiddleware::class,
         'cache.headers' => SetCacheHeaders::class,
+        'deployment.self-hosted' => selfHostedMiddleware::class,
         'can' => Authorize::class,
         'guest' => RedirectIfAuthenticated::class,
         'password.confirm' => RequirePassword::class,
