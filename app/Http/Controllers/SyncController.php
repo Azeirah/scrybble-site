@@ -22,11 +22,6 @@ class SyncController extends Controller
     {
         $user = Auth::user();
 
-        // TODO: Isn't this typically done with a Laravel guard or policy?
-        if ($user === null) {
-            throw new UnauthorizedException('You need to be logged in in order to interact with the API');
-        }
-
         $results =
             Sync::forUser($user)
                 ->whereIsCompleted()
