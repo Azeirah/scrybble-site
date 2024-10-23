@@ -114,7 +114,7 @@ class ProcessDownloadedZipListener implements ShouldQueue
 
         $user = $sync_context->user;
         $lock = Cache::lock('append-to-sync-table-for-userid-' . $user->id, 10);
-        $lock->get(fn() => $sync_context->sync->complete($download_path));
+        $lock->get(fn() => $sync_context->sync->complete());
     }
 
     public function failed(RemarkableFileDownloadedEvent $evt, Throwable $exception): void
