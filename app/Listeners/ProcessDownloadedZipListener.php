@@ -63,8 +63,7 @@ class ProcessDownloadedZipListener implements ShouldQueue
             $sync_context->logStep("Processing ReMarkable file");
             $remarks_service->extractNotesAndHighlights(
                 sourceDirectory: $absolute_job_dir,
-                targetDirectory: $absolute_outdir,
-                config: $sync_context->remarks_config);
+                targetDirectory: $absolute_outdir);
             $sync_context->logStep("Processed ReMarkable file");
         } catch (RuntimeException $exception) {
             $sync_context->logError("Extraction failed. Error", [

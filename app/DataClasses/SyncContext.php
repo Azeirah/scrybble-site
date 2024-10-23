@@ -15,7 +15,7 @@ class SyncContext implements Arrayable
     public mixed $folder;
     public string $downloaded_zip_location;
 
-    public function __construct(public string $input_filename, public User $user, public RemarksConfig $remarks_config)
+    public function __construct(public string $input_filename, public User $user)
     {
         $this->sync_id = Str::random();
 

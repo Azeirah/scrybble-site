@@ -45,7 +45,8 @@ class Sync extends Model {
         return Carbon::now()->addMinutes($minutes)->lessThan($this->created_at);
     }
 
-    public function hasError() {
+    public function hasError(): bool
+    {
         return $this->logs()->where('severity', 'error')->count() > 0;
     }
 

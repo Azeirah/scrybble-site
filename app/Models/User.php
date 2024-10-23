@@ -54,9 +54,4 @@ class User extends Authenticatable
     {
         return $this->hasOne(GumroadLicense::class);
     }
-
-    public function syncSetting(): HasMany
-    {
-        return $this->hasMany(SyncSetting::class);
-    }
 }
