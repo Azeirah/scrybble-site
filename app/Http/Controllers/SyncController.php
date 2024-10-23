@@ -24,9 +24,9 @@ class SyncController extends Controller
         $results =
             Sync::forUser($user)
                 ->whereIsCompleted()
-                ->get(['filename', 'job_id', 'id'])
+                ->get(['filename', 'sync_id', 'id'])
                 ->map(fn(Sync $sync) => [
-                    'download_url' => $PRMStorage->getDownloadURL("userZips/" . $sync->job_id . ".zip"),
+                    'download_url' => $PRMStorage->getDownloadURL("userZips/" . $sync->sync_id . ".zip"),
                     'filename' => $sync->filename,
                     'id' => $sync->id
                 ]);
