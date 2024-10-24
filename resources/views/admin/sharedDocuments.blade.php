@@ -9,24 +9,21 @@
 
 @section('content')
     <div class="m-4">
-        <h1>Failed Syncs</h1>
+        <h1>Shared documents</h1>
         <table class="table table-dark table-bordered table-striped">
             <thead>
             <tr>
-                <th>#</th>
-                <th>User</th>
+                <th>Sync id</th>
                 <th>When</th>
                 <th>Filename</th>
                 <th>Generated output</th>
-                <th>ReMarkable input</th>
+                <th>.rmn file</th>
             </tr>
             </thead>
             <tbody>
             @foreach ($shared as $shared_file)
                 <tr>
                     <td>{{$shared_file['id']}}</td>
-{{--                    if is admin--}}
-                    <td>{{$shared_file['user']}}</td>
                     <td>{{$shared_file['created_at']}}</td>
                     <td>{{$shared_file['filename']}}</td>
                     <td>

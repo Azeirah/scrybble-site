@@ -4,15 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\RemarkableDocumentShare;
 use App\Services\DownloadService;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\GoneHttpException;
 
-class FailedSynchronizationsController extends Controller
+class SharedDocumentsController extends Controller
 {
     public function index(DownloadService $downloadService)
     {
-        $shared = RemarkableDocumentShare::with("sync:id,filename,created_at,sync_id,user_id")->where('developer_access_consent_granted', true)->get();
+        $user = Auth::user();
+        $shared = RemarkableDocumentShare::with("sync:id,filename,created_at,sync_id,user_id")->where('developer_access_consent_granted', true)->select([
+            "id",
+            "sync_id",
+            "user_id",
+            "developer_access_consent_granted",
+            "open_access_consent_granted"
+        ])->get();
 
-        return view("admin.failedSyncs", [
+        if ($user->id !== 1) {
+           $shared = $shared->filter(fn ($item) => !$item["open_access_consent_granted"]);
+        }
+
+        return view("admin.sharedDocuments", [
             'shared' => $shared->map(function ($shared) use ($downloadService) {
                 $public_sync_id = $shared->sync->sync_id;
 
@@ -32,10 +44,9 @@ class FailedSynchronizationsController extends Controller
 
                 return [
                     'id' => $public_sync_id,
-                    'created_at' => $shared->sync->created_at,
+                    'created_at' => $shared->sync->created_at->diffForHumans(),
                     'output_href' => $output_href,
                     'input_href' => $input_href,
-                    'user' => $shared->sync->user_id,
                     'filename' => $shared->sync->filename,
                 ];
             })

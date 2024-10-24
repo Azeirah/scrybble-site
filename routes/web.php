@@ -4,7 +4,7 @@ use App\Http\Controllers\ClientSecretController;
 use App\Http\Controllers\ConnectedGumroadLicenseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DownloadController;
-use App\Http\Controllers\FailedSynchronizationsController;
+use App\Http\Controllers\SharedDocumentsController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\GumroadLicenseInformationController;
 use App\Http\Controllers\GumroadSaleController;
@@ -78,7 +78,7 @@ Route::group(['prefix' => 'api'], static function () {
 });
 
 
-Route::get('failed_syncs', [FailedSynchronizationsController::class, 'index']);
+Route::get('shared_documents', [SharedDocumentsController::class, 'index']);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::fallback([HomeController::class, 'index']);

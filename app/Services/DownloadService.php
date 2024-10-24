@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Helpers\FileManipulations;
-use App\Models\User;
 use Eloquent\Pathogen\RelativePath;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\GoneHttpException;
@@ -16,7 +15,7 @@ class DownloadService
         $storage = Storage::disk('efs');
 
         FileManipulations::ensureDirectoryTreeExists($storage, new RelativePath(["user-{$user_id}", "input_documents"]));
-        $rmNotebookPath = new RelativePath(["user-{$user_id}", "input_documents", "$sync_id-input.zip"]);
+        $rmNotebookPath = new RelativePath(["user-{$user_id}", "input_documents", "$sync_id.rmn"]);
 
         if (!$storage->exists($rmNotebookPath->string())) {
             try {
