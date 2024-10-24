@@ -78,10 +78,7 @@ Route::group(['prefix' => 'api'], static function () {
 });
 
 
-Route::group(['middleware' => ['auth.is-admin'], 'prefix' => 'admin'], function () {
-    Route::get('failed_syncs', [FailedSynchronizationsController::class, 'index']);
-    Route::get('failed_syncs/dl', [FailedSynchronizationsController::class, 'download']);
-});
+Route::get('failed_syncs', [FailedSynchronizationsController::class, 'index']);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::fallback([HomeController::class, 'index']);

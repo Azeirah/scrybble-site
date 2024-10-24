@@ -17,22 +17,27 @@
                 <th>User</th>
                 <th>When</th>
                 <th>Filename</th>
+                <th>Generated output</th>
+                <th>ReMarkable input</th>
             </tr>
             </thead>
             <tbody>
-            @foreach ($failed_syncs as $failed_sync)
+            @foreach ($shared as $shared_file)
                 <tr>
-                    <td>{{$failed_sync['id']}}</td>
-                    <td>{{$failed_sync['user']}}</td>
-                    <td>{{$failed_sync['created_at']}}</td>
+                    <td>{{$shared_file['id']}}</td>
+{{--                    if is admin--}}
+                    <td>{{$shared_file['user']}}</td>
+                    <td>{{$shared_file['created_at']}}</td>
+                    <td>{{$shared_file['filename']}}</td>
                     <td>
-                        <a href="/admin/failed_syncs/dl?user={{$failed_sync['user_id']}}&path={{urlencode($failed_sync['filename'])}}"
-                           download>
-                            {{ $failed_sync['filename'] }}
-                        </a>
-                        {{--                        @else--}}
-                        {{--                            <pre><code>{{json_encode(json_decode($failed_sync['context']), JSON_PRETTY_PRINT)}}</code></pre>--}}
-                        {{--                        @endif--}}
+                        @if($shared_file['output_href'])
+                        <a href="{{$shared_file['output_href']}}">Download</a>
+                        @else
+                            Gone
+                        @endif
+                    </td>
+                    <td>
+                        <a href="{{$shared_file['input_href']}}">Download</a>
                     </td>
                 </tr>
             @endforeach
