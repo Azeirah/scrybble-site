@@ -15,6 +15,7 @@
             <tr>
                 <th>Sync id</th>
                 <th>When</th>
+                <th>Feedback</th>
                 <th>Filename</th>
                 <th>Generated output</th>
                 <th>.rmn file</th>
@@ -25,6 +26,7 @@
                 <tr>
                     <td>{{$shared_file['id']}}</td>
                     <td>{{$shared_file['created_at']}}</td>
+                    <td>{{$shared_file['feedback']}}</td>
                     <td>{{$shared_file['filename']}}</td>
                     <td>
                         @if($shared_file['output_href'])

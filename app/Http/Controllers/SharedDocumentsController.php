@@ -16,6 +16,7 @@ class SharedDocumentsController extends Controller
             "id",
             "sync_id",
             "user_id",
+            "feedback",
             "developer_access_consent_granted",
             "open_access_consent_granted"
         ])->get();
@@ -45,6 +46,7 @@ class SharedDocumentsController extends Controller
                 return [
                     'id' => $public_sync_id,
                     'created_at' => $shared->sync->created_at->diffForHumans(),
+                    'feedback' => $shared->feedback,
                     'output_href' => $output_href,
                     'input_href' => $input_href,
                     'filename' => $shared->sync->filename,
