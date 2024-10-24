@@ -13,7 +13,6 @@ use Eloquent\Pathogen\RelativePath;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\MaxAttemptsExceededException;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 use Throwable;
 
@@ -98,9 +97,9 @@ class ProcessDownloadedZipListener implements ShouldQueue
             $sync_context->logError($msg);
             throw new RuntimeException($msg);
         }
-        $download_path = "userZips/{$sync_context->sync_id}.zip";
+        $download_path = "processed/{$sync_context->sync_id}.zip";
         try {
-            $this->PRMStorage->store($download_path, $prmContents);
+            $user_storage->put($download_path, $prmContents);
         } catch (RuntimeException $e) {
             $sync_context->logError($e->getMessage());
             throw $e;

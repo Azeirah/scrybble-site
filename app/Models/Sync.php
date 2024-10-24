@@ -33,7 +33,7 @@ class Sync extends Model {
     }
 
     public function scopeWhereIsCompleted(Builder $query) {
-        return $query->where('completed', true);
+        return $query->where('completed', true)->whereNotNull('sync_id');
     }
 
     public function logs(): HasMany {
