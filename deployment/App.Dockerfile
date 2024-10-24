@@ -1,5 +1,5 @@
 ARG RELEASE_HASH
-FROM laauurraaa/composer-8.1.7 as build-php
+FROM laauurraaa/composer-8.1.7 AS build-php
 RUN test -n "$RELEASE_HASH" || echo "RELEASE_HASH must be set for a build"
 LABEL authors="lb"
 
@@ -7,17 +7,18 @@ COPY . /app/
 WORKDIR /app/
 RUN composer install --prefer-dist --no-dev --optimize-autoloader --no-interaction
 
-FROM node:lts-alpine3.15 as build-js
+FROM node:lts-alpine3.15 AS build-js
+ARG RELEASE_HASH
 COPY --from=build-php /app/ /app/
 COPY ../.env.azure-prod /app/.env
 WORKDIR /app/
-ENV RELEASE_HASH=${RELEASE_HASH}
+ENV RELEASE_HASH=$RELEASE_HASH
 RUN npm ci
 RUN npm install -g cross-env
 RUN npm run build
 RUN rm -rf node_modules
 
-FROM laauurraaa/smg-app-base-image:1.1 as production
+FROM laauurraaa/smg-app-base-image:1.1 AS production
 
 ENV APP_ENV=production
 ENV APP_DEBUG=false

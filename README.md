@@ -1,17 +1,6 @@
 # Scrybble
 
-This is the back-end and front-end for [Scrybble](https://scrybble.ink). It's relatively easy to set-up locally, but is generally not meant to  be used locally. This project has been open-sourced after being private for a while and was not designed with open-source in mind initially.
-
-The biggest issue is that locally you cannot process .rm files with remarks because it is in a docker container. Locally this project is run with docker-compose, the server runs on AWS beanstalk without docker.
-
-The problem is that the remarks package is used as a docker-container on live. If you run docker locally you cannot execute another docker container from within docker. You can either
-
-1. Figure out how docker-in-docker works
-2. Use this as a downloading interface and run it manually
-3. Change the code so that remarks is hosted as a docker service to talk to instead
-4. Figure out how to run this without docker locally
-
-I'm not going to focus on making this possible myself. The code is mostly here for inspection or tinkering.
+This is the back-end and front-end for [Scrybble](https://scrybble.ink). It's relatively easy to set-up locally, but does require some technical knowledge.
 
 ## Pre-requisites
 

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useEffect } from 'react'
-import { useGetUserQuery } from '../store/api/apiRoot.ts'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { useGetUserQuery } from '../store/api/authApi.js'
 
 export default function PurchasedPage() {
   const { data, isLoading } = useGetUserQuery()

@@ -21,7 +21,7 @@ class SharedDocumentsController extends Controller
             "open_access_consent_granted"
         ])->get();
 
-        if ($user->id !== 1) {
+        if ($user?->id !== 1) {
            $shared = $shared->filter(fn ($item) => !$item["open_access_consent_granted"]);
         }
 
