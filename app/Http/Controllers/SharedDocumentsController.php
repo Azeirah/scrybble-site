@@ -22,7 +22,7 @@ class SharedDocumentsController extends Controller
         ])->get();
 
         if ($user?->id !== 1) {
-           $shared = $shared->filter(fn ($item) => !$item["open_access_consent_granted"]);
+           $shared = $shared->filter(fn ($item) => $item["open_access_consent_granted"]);
         }
 
         return view("admin.sharedDocuments", [
