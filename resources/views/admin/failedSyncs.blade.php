@@ -37,7 +37,11 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{$shared_file['input_href']}}">Download</a>
+                        @if($shared_file['input_href'])
+                            <a href="{{$shared_file['input_href']}}">Download</a>
+                        @else
+                            Gone
+                        @endif
                     </td>
                 </tr>
             @endforeach

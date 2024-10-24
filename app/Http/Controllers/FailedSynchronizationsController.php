@@ -23,11 +23,18 @@ class FailedSynchronizationsController extends Controller
                     } catch (GoneHttpException) {}
                 }
 
+                $input_href = null;
+                if ($public_sync_id) {
+                    try {
+                        $input_href = $downloadService->downloadReMarkableInputZip($shared['user_id'], $public_sync_id);
+                    } catch (GoneHttpException) {}
+                }
+
                 return [
-                    'id' => $shared->id,
+                    'id' => $public_sync_id,
                     'created_at' => $shared->sync->created_at,
                     'output_href' => $output_href,
-                    'input_href' => "hoi",
+                    'input_href' => $input_href,
                     'user' => $shared->sync->user_id,
                     'filename' => $shared->sync->filename,
                 ];
