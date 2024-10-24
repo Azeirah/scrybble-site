@@ -3,6 +3,7 @@
 use App\Http\Controllers\ClientSecretController;
 use App\Http\Controllers\ConnectedGumroadLicenseController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\FailedSynchronizationsController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\GumroadLicenseInformationController;
@@ -50,9 +51,7 @@ Route::get('/base/reset-password/{token}', [HomeController::class, 'index'])->na
 // https://docs.sentry.io/platforms/javascript/guides/react/troubleshooting/#dealing-with-ad-blockers
 Route::post("/tunnel", [SentryTunnelController::class, "index"]);
 
-Route::get('prmdownload/{path}', function (string $path) {
-    return Storage::disk('efs')->download($path);
-})->where('path', '.*')->name('prmdownload');
+Route::get('prmdownload/{path}', [DownloadController::class, "download"])->where('path', '.*')->name('prmdownload');
 
 Route::group(['middleware' => ['auth'], 'prefix' => "api"], static function () {
     Route::get('onboardingState', OnboardingStateController::class);
