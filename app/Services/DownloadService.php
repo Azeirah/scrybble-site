@@ -10,7 +10,7 @@ use UnexpectedValueException;
 
 class DownloadService
 {
-    public function downloadReMarkableInputZip(int $user_id, string $sync_id)
+    public function prepareRMNZipUrl(int $user_id, string $sync_id)
     {
         $storage = Storage::disk('efs');
 
@@ -32,7 +32,7 @@ class DownloadService
      * @param string $sync_id
      * @return string
      */
-    public function downloadProcessedRemarksZip(int $user_id, string $sync_id): string
+    public function prepareProcessedRemarksZipUrl(int $user_id, string $sync_id): string
     {
         $storage = Storage::disk('efs');
 
@@ -40,6 +40,6 @@ class DownloadService
         if ($storage->exists($path)) {
             return $storage->temporaryUrl($path, now()->addMinutes(5));
         }
-        throw new GoneHttpException("File has been deleted");
+        throw new GoneHttpException("File with sync id ${sync_id} has been deleted");
     }
 }

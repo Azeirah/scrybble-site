@@ -32,14 +32,14 @@ class SharedDocumentsController extends Controller
                 $output_href = null;
                 if ($public_sync_id) {
                     try {
-                        $output_href = $downloadService->downloadProcessedRemarksZip($shared['user_id'], $public_sync_id);
+                        $output_href = $downloadService->prepareProcessedRemarksZipUrl($shared['user_id'], $public_sync_id);
                     } catch (GoneHttpException) {}
                 }
 
                 $input_href = null;
                 if ($public_sync_id) {
                     try {
-                        $input_href = $downloadService->downloadReMarkableInputZip($shared['user_id'], $public_sync_id);
+                        $input_href = $downloadService->prepareRMNZipUrl($shared['user_id'], $public_sync_id);
                     } catch (GoneHttpException) {}
                 }
 
