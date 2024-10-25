@@ -37,7 +37,7 @@ export function LandingPage() {
                             to
                             <img
                                 className="obsidian"
-                                src="/img/obsidian-sketch.jpg"
+                                src="/img/obsidian-logo-sketch.png"
                                 alt="obsidian-logo"
                             />
                         </h2>
