@@ -25,6 +25,7 @@ export function LandingPage() {
                         I have a license
                     </Link>
                 </div>
+                {/*https://www.coolseotools.com/image-pencil-sketch*/}
                 <div className="block remarkable-to-obsidian">
                     <div className="images">
                         <h2>
