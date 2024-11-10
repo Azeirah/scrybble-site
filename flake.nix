@@ -1,8 +1,8 @@
 {
-  description = "A basic Go project";
+  description = "rmapi - ReMarkable Cloud API CLI client";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24-05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -12,20 +12,18 @@
         pkgs = nixpkgs.legacyPackages.${system};
       in
       {
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            go
-            gopls
-            go-tools
-            golangci-lint
-          ];
-        };
-
         packages.default = pkgs.buildGoModule {
-          pname = "my-go-project";
-          version = "0.1.0";
-          src = ./.;
-          vendorSha256 = null; # Set this to the actual hash after first build
+          pname = "rmapi";
+          version = "0.0.25";
+
+          src = pkgs.fetchFromGitHub {
+            owner = "ddvk";
+            repo = "rmapi";
+            rev = "master";
+            sha256 = "sha256-GhyZRwsywnFQ4GABbbSOtjVgUuIn5k4iaqPfiyVOAIs=";
+          };
+
+          vendorHash = "sha256-5m3/XFyBEWM8UB3WylkBj+QWI5XsnlVD4K3BhKVVCB4=";
         };
       }
     );
