@@ -2,7 +2,7 @@
   description = "Scrybble development environment";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -10,6 +10,8 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+
+        scrybble-php83 = pkgs.php83.withExtensions ({enabled, all}: enabled ++ [ all.xdebug ]);
 
         rmapiBuild = pkgs.buildGoModule {
           pname = "rmapi";
@@ -34,7 +36,15 @@
           buildInputs = [
             pkgs.nodejs_22
             pkgs.bun
+            scrybble-php83
+            scrybble-php83.packages.composer
           ];
+
+          shellHook = ''
+            composer install
+
+            echo "Hello, welcome to the Scrybble Development environment :)"
+          '';
         };
 
         packages.default = pkgs.stdenv.mkDerivation {
