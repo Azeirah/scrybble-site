@@ -4,17 +4,9 @@ This is the back-end and front-end for [Scrybble](https://scrybble.ink). It's re
 
 ## Pre-requisites
 
-To install and use the scrybble site, make sure you have the following installed on your system before starting with the set-up section.
+1. Nix or NixOS, [installer](https://determinate.systems/posts/determinate-nix-installer/)
 
-1. Everything assumes you're running on a Linux OS. Windows and MacOS are not officially supported.
-2. [Docker and docker compose](https://docs.docker.com/engine/install/ubuntu/)
-3. Git - `sudo apt install git`
-4. [Composer](https://getcomposer.org/download/)
-
-Optional:
-
-1. Python3 if you want to run remarks as a standalone script
-2. Go if you want to compile rmapi from scratch to use a customized build
+That's it.
 
 ## Set-up local dev environment
 
@@ -65,8 +57,8 @@ into an annotated pdf, or a bunch of markdown.
 
 I host a dockerfile at hub.docker.com, tagged `laauurraaa/remarks-bin:latest`.
 
-`docker run -v "$PWD/YOUR FOLDER WITH REMARKABLE STUFF/":/store laauurraaa/remarks-bin:0.2.1 /store/in/v3_coords_notebook /store/out`
+`docker run -v "$PWD/YOUR FOLDER WITH REMARKABLE STUFF/":/store laauurraaa/remarks-bin:0.2.1 /store/in/YOUR_NOTEBOOK /store/out`
 
-See the file `remarks.version` in the root directory for the most recent remarkable version.
+This command runs remarks over a test file, if you have any.
 
-This command runs remarks over a test file in the remarks project from the root of rm-notesync.
+See the file `remarks.version` in the root directory for the most recent remarks version.
