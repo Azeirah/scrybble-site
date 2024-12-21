@@ -41,9 +41,12 @@
           ];
 
           shellHook = ''
-            composer install
-
             echo "Hello, welcome to the Scrybble Development environment :)"
+            if [[ ! -d ./vendor ]]; then
+              composer install
+            fi
+
+            composer outdated -DM
           '';
         };
 
