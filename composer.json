@@ -27,7 +27,6 @@
     "require-dev": {
         "ext-xdebug": "*",
         "backpack/generators": "^3.3",
-        "barryvdh/laravel-debugbar": "^3.8",
         "barryvdh/laravel-ide-helper": "^2.12",
         "fakerphp/faker": "^1.9.1",
         "laravel/breeze": "^1.9",
