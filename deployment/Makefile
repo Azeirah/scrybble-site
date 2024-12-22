@@ -1,4 +1,4 @@
-commit := `git rev-parse HEAD`
+commit := `git rev-parse master`
 container := laauurraaa/scrybble-server:${commit}
 
 release: build-app upload-app
