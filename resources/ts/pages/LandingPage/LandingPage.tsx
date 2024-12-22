@@ -116,7 +116,7 @@ export function LandingPage() {
                                    rel="noopener noreferrer">
                                     Bright.nl
                                 </a>
-                                <span className="text-muted fs-sm fw-light">(October 2024)</span>
+                                <span className="fs-sm">(October 2024)</span>
                             </div>
 
                             <div className="ms-2">
