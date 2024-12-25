@@ -11,17 +11,8 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        scrybble-php = pkgs.php83.withExtensions ({ enabled, all }:
-          enabled ++ [
-            all.xdebug
-            all.pdo
-            all.pdo_mysql
-            all.mysqli
-            all.mbstring
-            all.tokenizer
-            all.curl
-            all.zip
-          ]);
+        php = (import ./nix/php.nix { inherit pkgs; });
+        rmapi = (import ./nix/remarks.nix { inherit pkgs; });
 
         setup-script = pkgs.writeScriptBin "setup-scrybble" ''
                     #!${pkgs.bash}/bin/bash
@@ -34,7 +25,7 @@
           We'll set up your development environment for you.
           EOF
                       if ${pkgs.gum}/bin/gum confirm; then
-                        ${pkgs.gum}/bin/gum spin --title "Installing composer packages" -- ${scrybble-php.packages.composer}/bin/composer install
+                        ${pkgs.gum}/bin/gum spin --title "Installing composer packages" -- ${php.scrybble-php.packages.composer}/bin/composer install
                         cp .env.example .env
 
                         ${pkgs.gum}/bin/gum spin --show-error --title "Migrating db" -- ./vendor/bin/sail artisan migrate
@@ -44,7 +35,7 @@
                         exit 1
                       fi
                     else
-                      ${scrybble-php.packages.composer}/bin/composer outdated -DM
+                      ${php.scrybble-php.packages.composer}/bin/composer outdated -DM
                     fi
         '';
       in {
@@ -53,8 +44,8 @@
             # TODO: Deprecated in favor of bun
             pkgs.nodejs_22
             pkgs.bun
-            scrybble-php
-            scrybble-php.packages.composer
+            php.scrybble-php
+            php.scrybble-php.packages.composer
             setup-script
           ];
 
@@ -69,31 +60,19 @@
                         ${pkgs.gum}/bin/gum format <<EOF
             # Welcome to the Scrybble development environment :)
 
-            - Use [sail](https://laravel.com/docs/11.x/sail) for interacting with Laravel, docker and composer
+            - Use [sail](https://laravel.com/docs/11.x/sail) for interacting with _Laravel_, _docker_ and _composer_
             - Use [bun](https://bun.sh/) for the frontend
-              - \`bun run dev\` - run frontend server
+
+            ## Running
+
+            - \`sail up -d\` to start the backend
+            - \`bun run dev\` to start the frontend
 
             EOF
           '';
         };
 
-        packages.rmapi = pkgs.buildGoModule {
-          pname = "rmapi";
-          version = "0.0.28";
-
-          CGO_ENABLED = 0;
-          # strips debug information
-          ldflags = [ "-s" "-w" ];
-
-          src = pkgs.fetchFromGitHub {
-            owner = "ddvk";
-            repo = "rmapi";
-            rev =
-              "fe71ae7"; # TODO: Should be configurable with a flake command input.
-            sha256 = "sha256-GhyZRwsywnFQ4GABbbSOtjVgUuIn5k4iaqPfiyVOAIs=";
-          };
-
-          vendorHash = "sha256-5m3/XFyBEWM8UB3WylkBj+QWI5XsnlVD4K3BhKVVCB4=";
-        };
+        packages.rmapi = rmapi.rmapi;
+        packages.php83-build-image = php.php-docker-image;
       });
 }
